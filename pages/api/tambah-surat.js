@@ -1,5 +1,6 @@
 import formidable from "formidable";
 import fs from "fs";
+export const runtime = "nodejs";
 
 export const config = {
   api: { bodyParser: false },
@@ -59,4 +60,5 @@ export default async function handler(req, res) {
     });
   }
 }
+
 
