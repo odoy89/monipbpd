@@ -39,7 +39,7 @@ export default async function handler(req, res) {
       const buffer = fs.readFileSync(files.file.filepath);
 
       const response = await fetch(
-        process.env.NEXT_PUBLIC_APPSCRIPT_URL,
+        process.env.APPSCRIPT_URL,
         {
           method: "POST",
           headers: {
@@ -75,3 +75,4 @@ export default async function handler(req, res) {
     }
   });
 }
+
