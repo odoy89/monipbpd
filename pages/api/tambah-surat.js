@@ -16,7 +16,7 @@ export default async function handler(req, res) {
 
     const isEdit = !!fields.NO?.[0];
 
-    const fileArr = files.FILE_SURAT;
+   const fileArr = files.file;
     const file = Array.isArray(fileArr) ? fileArr[0] : fileArr;
     const fileLama = fields.FILE_LAMA?.[0] || "";
 
@@ -69,3 +69,4 @@ export default async function handler(req, res) {
     });
   }
 }
+
