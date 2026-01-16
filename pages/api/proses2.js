@@ -1,4 +1,6 @@
 import formidable from "formidable";
+export const runtime = "nodejs";
+
 import fs from "fs";
 
 export const config = {
@@ -78,5 +80,6 @@ export default async function handler(req, res) {
     });
   }
 }
+
 
 
