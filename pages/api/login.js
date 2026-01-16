@@ -21,7 +21,7 @@ export default async function handler(req, res) {
 
     const data = await response.json();
 
-    console.log("FROM APPSCRIPT:", data); // 🔴 DEBUG
+    console.log("APPSCRIPT_URL =", process.env.NEXT_PUBLIC_APPSCRIPT_URL);   // 🔴 DEBUG
 
     return res.status(200).json(data);
 
@@ -33,3 +33,4 @@ export default async function handler(req, res) {
     });
   }
 }
+
