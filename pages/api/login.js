@@ -4,30 +4,32 @@ export default async function handler(req, res) {
   }
 
   try {
-    const body = typeof req.body === "string"
-      ? JSON.parse(req.body)
-      : req.body;
+    const body =
+      typeof req.body === "string"
+        ? JSON.parse(req.body)
+        : req.body;
 
-    const response = await fetch(
-      process.env.NEXT_PUBLIC_APPSCRIPT_URL,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          action: "login",
-          username: body.username,
-          password: body.password,
-        }),
-      }
-    );
+    const response = await fetch(process.env.NEXT_PUBLIC_APPSCRIPT_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        action: "login",
+        username: body.username,
+        password: body.password
+      })
+    });
 
     const data = await response.json();
+
+    console.log("FROM APPSCRIPT:", data); // 🔴 DEBUG
+
     return res.status(200).json(data);
 
   } catch (err) {
+    console.error(err);
     return res.status(500).json({
       status: "error",
-      message: "Login API error",
+      message: "Login API error"
     });
   }
 }
