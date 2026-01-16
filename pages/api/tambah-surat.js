@@ -7,52 +7,42 @@ export const config = {
 
 export default async function handler(req, res) {
   if (req.method !== "POST") {
-    return res.status(405).json({ status: "error", message: "Method not allowed" });
+    return res.status(405).json({ status: "error" });
   }
 
   try {
-    const form = formidable({ multiples: false, keepExtensions: true });
-    const [fields, files] = await form.parse(req);
+    const form = formidable({ keepExtensions: true });
 
-    const isEdit = !!fields.NO?.[0];
+    const { fields, files } = await new Promise((resolve, reject) => {
+      form.parse(req, (err, fields, files) => {
+        if (err) reject(err);
+        else resolve({ fields, files });
+      });
+    });
 
-    const fileArr = files.FILE_SURAT;
-    const file = Array.isArray(fileArr) ? fileArr[0] : fileArr;
-    const fileLama = fields.FILE_LAMA?.[0] || "";
+    // 🔥 INI KUNCI
+    const file = files.file; // HARUS "file"
 
-    // ❗ CREATE wajib file
-    if (!isEdit && (!file || !file.filepath)) {
+    if (!file || !file.filepath) {
       return res.status(400).json({
         status: "error",
         message: "File PDF wajib diupload",
       });
     }
 
-    let fileBase64 = "";
-    let fileName = "";
-
-    // jika upload file baru
-    if (file && file.filepath) {
-      const buffer = fs.readFileSync(file.filepath);
-      fileBase64 = buffer.toString("base64");
-      fileName = file.originalFilename || "surat.pdf";
-    }
+    const buffer = fs.readFileSync(file.filepath);
 
     const payload = {
-      action: isEdit ? "update" : "create",
-      NO: fields.NO?.[0] || "",
-
+      action: "create",
       NAMA_PELANGGAN: fields.NAMA_PELANGGAN?.[0] || "",
       JENIS_TRANSAKSI: fields.JENIS_TRANSAKSI?.[0] || "",
       TANGGAL_SURAT: fields.TANGGAL_SURAT?.[0] || "",
       TANGGAL_TERIMA_SURAT: fields.TANGGAL_TERIMA_SURAT?.[0] || "",
-
-      FILE_BASE64: fileBase64,
-      FILE_NAME: fileName,
-      FILE_LAMA: fileLama,
+      FILE_BASE64: buffer.toString("base64"),
+      FILE_NAME: file.originalFilename,
     };
 
-    const response = await fetch(process.env.APPSCRIPT_URL, {
+    const response = await fetch(process.env.NEXT_PUBLIC_APPSCRIPT_URL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
@@ -62,13 +52,10 @@ export default async function handler(req, res) {
     return res.status(200).json(result);
 
   } catch (err) {
-    console.error("API TAMBAH SURAT ERROR:", err);
+    console.error("TAMBAH SURAT ERROR:", err);
     return res.status(500).json({
       status: "error",
-      message: err.message || "Server error",
+      message: String(err),
     });
   }
 }
-
-
-
