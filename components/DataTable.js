@@ -37,7 +37,10 @@ export default function DataTable({
             </tr>
           )}
 
-          {data.map((d, i) => (
+            {data.map((d, i) => {
+  const STATUS = String(d.STATUS || "").toUpperCase().trim();
+  return (
+    <tr key={d.NO || i}>
             <tr key={d.NO || i}>
               <td>{i + 1}</td>
               <td>{d.NAMA_PELANGGAN}</td>
@@ -64,55 +67,46 @@ export default function DataTable({
                   {d.STATUS}
                 </span>
               </td>
-
-              <td>
+<td>
   <div className="aksi" style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
-{(d.EVIDEN_1 || d.EVIDEN_2) && (
-  <button
-    className="btn-info"
-    onClick={() => onFoto(d)}
-  >
-    Foto
-  </button>
-)}
 
-    <button
-      className="btn-detail"
-      onClick={() => onDetail(d)}
-    >
+    {(d.EVIDEN_1 || d.EVIDEN_2) && (
+      <button className="btn-info" onClick={() => onFoto(d)}>
+        Foto
+      </button>
+    )}
+
+    <button className="btn-detail" onClick={() => onDetail(d)}>
       Detail
     </button>
 
-    {d.STATUS !== "SELESAI" && (
-  <button className="btn-edit" onClick={() => onEdit(d)}>
-    Edit
-  </button>
-)}
+    {STATUS !== "SELESAI" && (
+      <button className="btn-edit" onClick={() => onEdit(d)}>
+        Edit
+      </button>
+    )}
 
-{d.STATUS === "PROGRES" && (
-  <button className="btn-lanjut" onClick={() => onProgress(d)}>
-    Lanjut Progres Pekerjaan
-  </button>
-)}
-
-    {/* MENUNGGU → PROSES TAHAP 2 */}
-    {d.STATUS === "MENUNGGU" && (
-      <button
-        className="btn-lanjut"
-        onClick={() => onProses(d)}
-      >
+    {STATUS === "MENUNGGU" && (
+      <button className="btn-lanjut" onClick={() => onProses(d)}>
         Lanjut Proses
       </button>
     )}
 
-{role === "ADMIN" && (
-  <button className="btn-hapus" onClick={() => onDelete(d)}>
-    Hapus
-  </button>
-)}
+    {STATUS === "PROGRES" && (
+      <button className="btn-lanjut" onClick={() => onProgress(d)}>
+        Lanjut Progres Pekerjaan
+      </button>
+    )}
+
+    {role === "ADMIN" && (
+      <button className="btn-hapus" onClick={() => onDelete(d)}>
+        Hapus
+      </button>
+    )}
 
   </div>
 </td>
+
 
             </tr>
           ))}
@@ -121,3 +115,4 @@ export default function DataTable({
     </div>
   );
 }
+
