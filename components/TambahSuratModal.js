@@ -7,77 +7,99 @@ export default function TambahSuratModal({ open, data, onClose, onSuccess }) {
   const [tglTerima, setTglTerima] = useState("");
   const [file, setFile] = useState(null);
   const [saving, setSaving] = useState(false);
+
   const fileLama = data?.FILE_SURAT || "";
 
-
-  /* ===== PREFILL EDIT ===== */
+  /* ===== PREFILL ===== */
   useEffect(() => {
-  if (!open) return;
+    if (!open) return;
 
-  if (data) {
-    setNama(data.NAMA_PELANGGAN || "");
-    setJenis(data.JENIS_TRANSAKSI || "");
-    setTglSurat(toInputDate(data.TANGGAL_SURAT));
-    setTglTerima(toInputDate(data.TANGGAL_TERIMA_SURAT));
-    setFile(null);
-  } else {
-    setNama("");
-    setJenis("");
-    setTglSurat("");
-    setTglTerima("");
-    setFile(null);
-  }
-}, [open, data]);
-
+    if (data) {
+      setNama(data.NAMA_PELANGGAN || "");
+      setJenis(data.JENIS_TRANSAKSI || "");
+      setTglSurat(toInputDate(data.TANGGAL_SURAT));
+      setTglTerima(toInputDate(data.TANGGAL_TERIMA_SURAT));
+      setFile(null);
+    } else {
+      setNama("");
+      setJenis("");
+      setTglSurat("");
+      setTglTerima("");
+      setFile(null);
+    }
+  }, [open, data]);
 
   if (!open) return null;
 
   function toInputDate(val) {
-  if (!val) return "";
-  if (val.includes("-")) return val; // sudah yyyy-mm-dd
-  const [d, m, y] = val.split("/");
-  return `${y}-${m}-${d}`;
-}
+    if (!val) return "";
+    if (val.includes("-")) return val;
+    const [d, m, y] = val.split("/");
+    return `${y}-${m}-${d}`;
+  }
 
-
+  /* ===== SUBMIT ===== */
   async function handleSubmit(e) {
     e.preventDefault();
-    const fileLama = data?.FILE_SURAT || "";
 
-  // ✅ FIX UTAMA DI SINI
-  if (!file && !fileLama) {
-    alert("File PDF tidak ditemukan");
-    return;
-  }
+    if (!file && !fileLama) {
+      alert("File PDF wajib diupload");
+      return;
+    }
+
     setSaving(true);
 
-    const formData = new FormData();
-    formData.append("action", data ? "update" : "create");
-    if (data) formData.append("NO", data.NO);
+    let fileBase64 = "";
+    let fileName = "";
 
-    formData.append("NAMA_PELANGGAN", nama);
-    formData.append("JENIS_TRANSAKSI", jenis);
-    formData.append("TANGGAL_SURAT", tglSurat);
-    formData.append("TANGGAL_TERIMA_SURAT", tglTerima);
-    if (file) formData.append("FILE_SURAT", file);
-    if (data?.FILE_SURAT) {
-  formData.append("FILE_LAMA", data.FILE_SURAT);
-}
-
-
-    const res = await fetch("/api/tambah-surat", {
-      method: "POST",
-      body: formData
-    });
-
-    const json = await res.json();
-    setSaving(false);
-
-    if (json.status === "ok") {
-      onSuccess();
-      onClose();
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = async () => {
+        fileBase64 = reader.result.split(",")[1];
+        fileName = file.name;
+        await kirimData(fileBase64, fileName);
+      };
+      reader.readAsDataURL(file);
     } else {
-      alert(json.message || "Gagal menyimpan");
+      await kirimData("", "");
+    }
+  }
+
+  async function kirimData(fileBase64, fileName) {
+    try {
+      const payload = {
+        action: data ? "update" : "create",
+        NO: data?.NO || "",
+        NAMA_PELANGGAN: nama,
+        JENIS_TRANSAKSI: jenis,
+        TANGGAL_SURAT: tglSurat,
+        TANGGAL_TERIMA_SURAT: tglTerima,
+        FILE_BASE64: fileBase64,
+        FILE_NAME: fileName,
+        FILE_LAMA: fileLama
+      };
+
+      const res = await fetch(
+        process.env.APPSCRIPT_URL,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        }
+      );
+
+      const json = await res.json();
+      setSaving(false);
+
+      if (json.status === "ok") {
+        onSuccess();
+        onClose();
+      } else {
+        alert(json.message || "Gagal menyimpan");
+      }
+    } catch (err) {
+      setSaving(false);
+      alert("Gagal koneksi ke server");
     }
   }
 
@@ -113,16 +135,25 @@ export default function TambahSuratModal({ open, data, onClose, onSuccess }) {
 
           <div className="form-group">
             <label>File Surat (PDF)</label>
-            {data?.FILE_SURAT && (
+            {fileLama && (
               <small>
-                File lama: <a href={data.FILE_SURAT} target="_blank">Download</a>
+                File lama:{" "}
+                <a href={fileLama} target="_blank" rel="noreferrer">
+                  Download
+                </a>
               </small>
             )}
-            <input type="file" accept="application/pdf" onChange={e => setFile(e.target.files[0])} />
+            <input
+              type="file"
+              accept="application/pdf"
+              onChange={e => setFile(e.target.files[0])}
+            />
           </div>
 
           <div className="modal-actions">
-            <button type="button" className="btn-ghost" onClick={onClose}>Batal</button>
+            <button type="button" className="btn-ghost" onClick={onClose}>
+              Batal
+            </button>
             <button className="btn-primary" disabled={saving}>
               {saving ? "Menyimpan..." : "Simpan"}
             </button>
