@@ -9,7 +9,7 @@ export default async function handler(req, res) {
         ? JSON.parse(req.body)
         : req.body;
 
-    const response = await fetch(process.env.APPSCRIPT_URL, {
+    const response = await fetch(process.env.NEXT_PUBLIC_APPSCRIPT_URL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -21,7 +21,7 @@ export default async function handler(req, res) {
 
     const data = await response.json();
 
-    console.log("APPSCRIPT_URL =", process.env.APPSCRIPT_URL);   // 🔴 DEBUG
+    console.log("APPSCRIPT_URL =", process.env.NEXT_PUBLIC_APPSCRIPT_URL);   // 🔴 DEBUG
 
     return res.status(200).json(data);
 
@@ -33,5 +33,6 @@ export default async function handler(req, res) {
     });
   }
 }
+
 
 
