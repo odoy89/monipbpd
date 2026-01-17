@@ -14,7 +14,7 @@ async function submitProses2(data, file) {
   }
 
   const res = await fetch(
-    process.env.NEXT_PUBLIC_APPSCRIPT_URL,
+    process.env.APPSCRIPT_URL,
     {
       method: "POST",
       body: formData,
