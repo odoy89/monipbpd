@@ -1,8 +1,6 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 
 export default function TambahSuratModal({ open, data, onClose, onSuccess }) {
-  if (!open) return null;
-
   const [nama, setNama] = useState("");
   const [jenis, setJenis] = useState("");
   const [tglSurat, setTglSurat] = useState("");
@@ -10,8 +8,9 @@ export default function TambahSuratModal({ open, data, onClose, onSuccess }) {
   const [file, setFile] = useState(null);
   const [saving, setSaving] = useState(false);
 
-  /* ===== PREFILL EDIT ===== */
   useEffect(() => {
+    if (!open) return;
+
     if (data) {
       setNama(data.NAMA_PELANGGAN || "");
       setJenis(data.JENIS_TRANSAKSI || "");
@@ -27,11 +26,23 @@ export default function TambahSuratModal({ open, data, onClose, onSuccess }) {
     }
   }, [open, data]);
 
+  if (!open) return null;
+
   function toInputDate(val) {
     if (!val) return "";
     if (val.includes("-")) return val;
     const [d, m, y] = val.split("/");
     return `${y}-${m}-${d}`;
+  }
+
+  function fileToBase64(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () =>
+        resolve(reader.result.split(",")[1]);
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
   }
 
   async function handleSubmit(e) {
@@ -48,49 +59,36 @@ export default function TambahSuratModal({ open, data, onClose, onSuccess }) {
     let fileName = "";
 
     if (file) {
-      const reader = new FileReader();
-      reader.onload = async () => {
-        fileBase64 = reader.result.split(",")[1];
-        fileName = file.name;
-        await kirimData(fileBase64, fileName);
-      };
-      reader.readAsDataURL(file);
-    } else {
-      // edit tanpa ganti file
-      await kirimData("", "");
+      fileBase64 = await fileToBase64(file);
+      fileName = file.name;
     }
-  }
 
-  async function kirimData(FILE_BASE64, FILE_NAME) {
-    try {
-      const res = await fetch(process.env.APPSCRIPT_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          action: data ? "update" : "create",
-          NO: data?.NO || "",
-          NAMA_PELANGGAN: nama,
-          JENIS_TRANSAKSI: jenis,
-          TANGGAL_SURAT: tglSurat,
-          TANGGAL_TERIMA_SURAT: tglTerima,
-          FILE_BASE64,
-          FILE_NAME,
-          FILE_LAMA: data?.FILE_SURAT || ""
-        })
-      });
+    const payload = {
+      action: data ? "update" : "create",
+      NO: data?.NO || "",
+      NAMA_PELANGGAN: nama,
+      JENIS_TRANSAKSI: jenis,
+      TANGGAL_SURAT: tglSurat,
+      TANGGAL_TERIMA_SURAT: tglTerima,
+      FILE_BASE64: fileBase64,
+      FILE_NAME: fileName,
+      FILE_LAMA: data?.FILE_SURAT || ""
+    };
 
-      const json = await res.json();
-      setSaving(false);
+    const res = await fetch("/api/tambah-surat", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
 
-      if (json.status === "ok") {
-        onSuccess();
-        onClose();
-      } else {
-        alert(json.message || "Gagal menyimpan");
-      }
-    } catch (err) {
-      setSaving(false);
-      alert("Gagal koneksi ke server");
+    const json = await res.json();
+    setSaving(false);
+
+    if (json.status === "ok") {
+      onSuccess();
+      onClose();
+    } else {
+      alert(json.message || "Gagal menyimpan");
     }
   }
 
@@ -128,10 +126,12 @@ export default function TambahSuratModal({ open, data, onClose, onSuccess }) {
             <label>File Surat (PDF)</label>
             {data?.FILE_SURAT && (
               <small>
-                File lama: <a href={data.FILE_SURAT} target="_blank">Download</a>
+                File lama:{" "}
+                <a href={data.FILE_SURAT} target="_blank">Download</a>
               </small>
             )}
-            <input type="file" accept="application/pdf" onChange={e => setFile(e.target.files[0])} />
+            <input type="file" accept="application/pdf"
+              onChange={e => setFile(e.target.files[0])} />
           </div>
 
           <div className="modal-actions">
