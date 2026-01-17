@@ -1,6 +1,6 @@
 export default async function handler(req, res) {
   try {
-    const r = await fetch(process.env.APPSCRIPT_URL, {
+    const r = await fetch(process.env.NEXT_PUBLIC_APPSCRIPT_URL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ action: "getTarifList" })
@@ -27,3 +27,4 @@ export default async function handler(req, res) {
     return res.status(200).json({});
   }
 }
+
