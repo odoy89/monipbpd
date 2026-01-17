@@ -13,7 +13,7 @@ export default async function handler(req, res) {
       });
     }
 
-    const response = await fetch(process.env.APPSCRIPT_URL, {
+    const response = await fetch(process.env.NEXT_PUBLIC_APPSCRIPT_URL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload)
@@ -29,3 +29,4 @@ export default async function handler(req, res) {
     });
   }
 }
+
