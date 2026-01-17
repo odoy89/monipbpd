@@ -1,6 +1,6 @@
 export default async function handler(req, res) {
   try {
-    const resp = await fetch(process.env.APPSCRIPT_URL, {
+    const resp = await fetch(process.env.NEXT_PUBLIC_APPSCRIPT_URL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -22,3 +22,4 @@ export default async function handler(req, res) {
     return res.status(500).json({ message: String(err) });
   }
 }
+
