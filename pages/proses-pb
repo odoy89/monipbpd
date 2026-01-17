@@ -1,0 +1,22 @@
+async function submitProsesPB(data, file) {
+  const formData = new FormData();
+
+  formData.append("action", "prosesPB");
+  formData.append("NO", data.NO);
+  formData.append("TARIF", data.TARIF);
+  formData.append("DAYA", data.DAYA);
+
+  if (file) {
+    formData.append("FILE_BALASAN", file);
+  }
+
+  const res = await fetch(
+    process.env.NEXT_PUBLIC_APPSCRIPT_URL,
+    {
+      method: "POST",
+      body: formData,
+    }
+  );
+
+  return await res.json();
+}
