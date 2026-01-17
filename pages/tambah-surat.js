@@ -12,7 +12,7 @@ export default function TambahSurat() {
 
     try {
       const res = await fetch(
-        process.env.NEXT_PUBLIC_APPSCRIPT_URL,
+        process.env.APPSCRIPT_URL,
         {
           method: "POST",
           body: formData,
@@ -48,3 +48,4 @@ export default function TambahSurat() {
     </form>
   );
 }
+
