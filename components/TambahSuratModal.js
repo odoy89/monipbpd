@@ -38,8 +38,7 @@ export default function TambahSuratModal({ open, data, onClose, onSuccess }) {
   function fileToBase64(file) {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
-      reader.onload = () =>
-        resolve(reader.result.split(",")[1]);
+      reader.onload = () => resolve(reader.result.split(",")[1]);
       reader.onerror = reject;
       reader.readAsDataURL(file);
     });
@@ -48,6 +47,7 @@ export default function TambahSuratModal({ open, data, onClose, onSuccess }) {
   async function handleSubmit(e) {
     e.preventDefault();
 
+    // Validasi: kalau create (data undefined) wajib upload file; kalau edit boleh pakai FILE_LAMA
     if (!file && !data?.FILE_SURAT) {
       alert("File PDF wajib diupload");
       return;
@@ -55,40 +55,46 @@ export default function TambahSuratModal({ open, data, onClose, onSuccess }) {
 
     setSaving(true);
 
-    let fileBase64 = "";
-    let fileName = "";
+    try {
+      let fileBase64 = "";
+      let fileName = "";
 
-    if (file) {
-      fileBase64 = await fileToBase64(file);
-      fileName = file.name;
-    }
+      if (file) {
+        fileBase64 = await fileToBase64(file);
+        fileName = file.name;
+      }
 
-    const payload = {
-      action: data ? "update" : "create",
-      NO: data?.NO || "",
-      NAMA_PELANGGAN: nama,
-      JENIS_TRANSAKSI: jenis,
-      TANGGAL_SURAT: tglSurat,
-      TANGGAL_TERIMA_SURAT: tglTerima,
-      FILE_BASE64: fileBase64,
-      FILE_NAME: fileName,
-      FILE_LAMA: data?.FILE_SURAT || ""
-    };
+      const payload = {
+        action: data ? "update" : "create",
+        NO: data?.NO || "",
+        NAMA_PELANGGAN: nama,
+        JENIS_TRANSAKSI: jenis,
+        TANGGAL_SURAT: tglSurat,
+        TANGGAL_TERIMA_SURAT: tglTerima,
+        FILE_BASE64: fileBase64,
+        FILE_NAME: fileName,
+        FILE_LAMA: data?.FILE_SURAT || ""
+      };
 
-    const res = await fetch("/api/tambah-surat", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload)
-    });
+      const res = await fetch("/api/tambah-surat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
 
-    const json = await res.json();
-    setSaving(false);
+      const json = await res.json();
+      setSaving(false);
 
-    if (json.status === "ok") {
-      onSuccess();
-      onClose();
-    } else {
-      alert(json.message || "Gagal menyimpan");
+      if (json.status === "ok") {
+        onSuccess();
+        onClose();
+      } else {
+        alert(json.message || "Gagal menyimpan");
+      }
+    } catch (err) {
+      setSaving(false);
+      console.error("TAMBAH SURAT ERROR CLIENT:", err);
+      alert("Gagal koneksi ke server");
     }
   }
 
@@ -127,11 +133,10 @@ export default function TambahSuratModal({ open, data, onClose, onSuccess }) {
             {data?.FILE_SURAT && (
               <small>
                 File lama:{" "}
-                <a href={data.FILE_SURAT} target="_blank">Download</a>
+                <a href={data.FILE_SURAT} target="_blank" rel="noreferrer">Download</a>
               </small>
             )}
-            <input type="file" accept="application/pdf"
-              onChange={e => setFile(e.target.files[0])} />
+            <input type="file" accept="application/pdf" onChange={e => setFile(e.target.files[0])} />
           </div>
 
           <div className="modal-actions">
