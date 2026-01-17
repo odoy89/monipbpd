@@ -8,16 +8,20 @@ export default function TambahSurat() {
     setLoading(true);
 
     const formData = new FormData(e.target);
+    formData.append("action", "create");
 
     try {
-      const res = await fetch("/api/tambah-surat", {
-        method: "POST",
-        body: formData,
-      });
+      const res = await fetch(
+        process.env.APPSCRIPT_URL,
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
 
       const data = await res.json();
 
-      if (!res.ok) {
+      if (!res.ok || data.status !== "success") {
         alert(data.message || "Gagal upload");
       } else {
         alert("Berhasil disimpan");
