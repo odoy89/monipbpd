@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 
 export default function TambahSuratModal({ open, data, onClose, onSuccess }) {
+  if (!open) return null;
+
   const [nama, setNama] = useState("");
   const [jenis, setJenis] = useState("");
   const [tglSurat, setTglSurat] = useState("");
@@ -8,12 +10,8 @@ export default function TambahSuratModal({ open, data, onClose, onSuccess }) {
   const [file, setFile] = useState(null);
   const [saving, setSaving] = useState(false);
 
-  const fileLama = data?.FILE_SURAT || "";
-
-  /* ===== PREFILL ===== */
+  /* ===== PREFILL EDIT ===== */
   useEffect(() => {
-    if (!open) return;
-
     if (data) {
       setNama(data.NAMA_PELANGGAN || "");
       setJenis(data.JENIS_TRANSAKSI || "");
@@ -29,8 +27,6 @@ export default function TambahSuratModal({ open, data, onClose, onSuccess }) {
     }
   }, [open, data]);
 
-  if (!open) return null;
-
   function toInputDate(val) {
     if (!val) return "";
     if (val.includes("-")) return val;
@@ -38,11 +34,10 @@ export default function TambahSuratModal({ open, data, onClose, onSuccess }) {
     return `${y}-${m}-${d}`;
   }
 
-  /* ===== SUBMIT ===== */
   async function handleSubmit(e) {
     e.preventDefault();
 
-    if (!file && !fileLama) {
+    if (!file && !data?.FILE_SURAT) {
       alert("File PDF wajib diupload");
       return;
     }
@@ -61,32 +56,28 @@ export default function TambahSuratModal({ open, data, onClose, onSuccess }) {
       };
       reader.readAsDataURL(file);
     } else {
+      // edit tanpa ganti file
       await kirimData("", "");
     }
   }
 
-  async function kirimData(fileBase64, fileName) {
+  async function kirimData(FILE_BASE64, FILE_NAME) {
     try {
-      const payload = {
-        action: data ? "update" : "create",
-        NO: data?.NO || "",
-        NAMA_PELANGGAN: nama,
-        JENIS_TRANSAKSI: jenis,
-        TANGGAL_SURAT: tglSurat,
-        TANGGAL_TERIMA_SURAT: tglTerima,
-        FILE_BASE64: fileBase64,
-        FILE_NAME: fileName,
-        FILE_LAMA: fileLama
-      };
-
-      const res = await fetch(
-        process.env.APPSCRIPT_URL,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload)
-        }
-      );
+      const res = await fetch(process.env.APPSCRIPT_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          action: data ? "update" : "create",
+          NO: data?.NO || "",
+          NAMA_PELANGGAN: nama,
+          JENIS_TRANSAKSI: jenis,
+          TANGGAL_SURAT: tglSurat,
+          TANGGAL_TERIMA_SURAT: tglTerima,
+          FILE_BASE64,
+          FILE_NAME,
+          FILE_LAMA: data?.FILE_SURAT || ""
+        })
+      });
 
       const json = await res.json();
       setSaving(false);
@@ -135,25 +126,16 @@ export default function TambahSuratModal({ open, data, onClose, onSuccess }) {
 
           <div className="form-group">
             <label>File Surat (PDF)</label>
-            {fileLama && (
+            {data?.FILE_SURAT && (
               <small>
-                File lama:{" "}
-                <a href={fileLama} target="_blank" rel="noreferrer">
-                  Download
-                </a>
+                File lama: <a href={data.FILE_SURAT} target="_blank">Download</a>
               </small>
             )}
-            <input
-              type="file"
-              accept="application/pdf"
-              onChange={e => setFile(e.target.files[0])}
-            />
+            <input type="file" accept="application/pdf" onChange={e => setFile(e.target.files[0])} />
           </div>
 
           <div className="modal-actions">
-            <button type="button" className="btn-ghost" onClick={onClose}>
-              Batal
-            </button>
+            <button type="button" className="btn-ghost" onClick={onClose}>Batal</button>
             <button className="btn-primary" disabled={saving}>
               {saving ? "Menyimpan..." : "Simpan"}
             </button>
