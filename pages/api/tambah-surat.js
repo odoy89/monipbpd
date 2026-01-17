@@ -1,6 +1,6 @@
-import formidable from "formidable";
-import fs from "fs";
 export const runtime = "nodejs";
+
+import fs from "fs";
 
 export const config = {
   api: { bodyParser: false },
@@ -8,21 +8,18 @@ export const config = {
 
 export default async function handler(req, res) {
   if (req.method !== "POST") {
-    return res.status(405).json({ status: "error" });
+    return res.status(405).json({ status: "error", message: "Method not allowed" });
   }
 
   try {
-    const form = formidable({ keepExtensions: true });
+    // 🔥 PENTING: dynamic import
+    const { default: formidable } = await import("formidable");
 
-    const { fields, files } = await new Promise((resolve, reject) => {
-      form.parse(req, (err, fields, files) => {
-        if (err) reject(err);
-        else resolve({ fields, files });
-      });
-    });
+    const form = formidable({ multiples: false, keepExtensions: true });
+    const [fields, files] = await form.parse(req);
 
-    // 🔥 INI KUNCI
-    const file = files.file; // HARUS "file"
+    const fileArr = files.FILE_SURAT;
+    const file = Array.isArray(fileArr) ? fileArr[0] : fileArr;
 
     if (!file || !file.filepath) {
       return res.status(400).json({
@@ -40,7 +37,7 @@ export default async function handler(req, res) {
       TANGGAL_SURAT: fields.TANGGAL_SURAT?.[0] || "",
       TANGGAL_TERIMA_SURAT: fields.TANGGAL_TERIMA_SURAT?.[0] || "",
       FILE_BASE64: buffer.toString("base64"),
-      FILE_NAME: file.originalFilename,
+      FILE_NAME: file.originalFilename || "surat.pdf",
     };
 
     const response = await fetch(process.env.APPSCRIPT_URL, {
@@ -53,12 +50,10 @@ export default async function handler(req, res) {
     return res.status(200).json(result);
 
   } catch (err) {
-    console.error("TAMBAH SURAT ERROR:", err);
+    console.error("API TAMBAH SURAT ERROR:", err);
     return res.status(500).json({
       status: "error",
-      message: String(err),
+      message: err.message || String(err),
     });
   }
 }
-
-
