@@ -8,11 +8,11 @@ export default function TambahSurat() {
     setLoading(true);
 
     const formData = new FormData(e.target);
-    formData.append("action", "create");
+    formData.append("action", "createSurat");
 
     try {
       const res = await fetch(
-        process.env.APPSCRIPT_URL,
+        process.env.NEXT_PUBLIC_APPSCRIPT_URL,
         {
           method: "POST",
           body: formData,
@@ -21,10 +21,10 @@ export default function TambahSurat() {
 
       const data = await res.json();
 
-      if (!res.ok || data.status !== "success") {
-        alert(data.message || "Gagal upload");
+      if (data.status !== "success") {
+        alert(data.message || "Gagal simpan");
       } else {
-        alert("Berhasil disimpan");
+        alert("Surat berhasil disimpan");
         e.target.reset();
       }
     } catch (err) {
@@ -36,13 +36,13 @@ export default function TambahSurat() {
 
   return (
     <form onSubmit={submit}>
-      <input name="NAMA_PELANGGAN" placeholder="Nama Pelanggan" required />
+      <input name="NAMA_PELANGGAN" required />
       <input name="JENIS_TRANSAKSI" required />
       <input type="date" name="TANGGAL_SURAT" required />
       <input type="date" name="TANGGAL_TERIMA_SURAT" required />
-      <input type="file" name="file" accept="application/pdf" required />
+      <input type="file" name="FILE_SURAT" accept="application/pdf" required />
 
-      <button type="submit" disabled={loading}>
+      <button disabled={loading}>
         {loading ? "Mengirim..." : "Simpan"}
       </button>
     </form>
