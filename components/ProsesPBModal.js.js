@@ -28,26 +28,37 @@ export default function ProsesPBModal({ open, onClose, data, onSuccess }) {
   }, [tarifBaru, tarifList]);
 
   function handleSave() {
-    fetch("/api/proses2", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        NO: data.NO,
-        ULP: ulp,
-        TARIF_BARU: tarifBaru,
-        DAYA_BARU: dayaBaru
-      })
-    })
-      .then(r => r.json())
-      .then(res => {
-        if (res.status === "ok") {
-          onSuccess();
-          onClose();
-        } else {
-          alert(res.message || "Gagal simpan");
-        }
-      });
+  if (!ulp || !tarifBaru) {
+    alert("ULP dan Tarif wajib diisi");
+    return;
   }
+
+  fetch("/api/proses2", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      action: "saveProses2",   // 🔥 penting
+      NO: String(data.NO),
+
+      KATEGORI: data.KATEGORI || "", // 🔥 WAJIB
+      ULP: ulp,
+
+      TARIF_BARU: tarifBaru,
+      DAYA_BARU: dayaBaru
+    })
+  })
+    .then(r => r.json())
+    .then(res => {
+      if (res.status === "ok") {
+        onSuccess();
+        onClose();
+      } else {
+        alert(res.message || "Gagal simpan");
+      }
+    })
+    .catch(() => alert("Koneksi error"));
+}
+
 
   if (!open) return null;
 
@@ -99,3 +110,4 @@ export default function ProsesPBModal({ open, onClose, data, onSuccess }) {
     </div>
   );
 }
+
