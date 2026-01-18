@@ -8,7 +8,6 @@ import TambahSuratModal from "../components/TambahSuratModal";
 import ProsesPBModal from "../components/ProsesPBModal";
 import ProsesModalPD from "../components/ProsesModalPD";
 
-import ProsesModal from "../components/ProsesModal";
 import VendorModal from "../components/VendorModal";
 import ProgressModal from "../components/ProgresModal";
 import EditChooserModal from "../components/EditChooserModal";
@@ -164,6 +163,9 @@ function handleDetail(row) {
       }
     });
 }
+const jenisTransaksi = String(selectedRow?.JENIS_TRANSAKSI || "")
+  .trim()
+  .toUpperCase();
 
   return (
     <Layout>
@@ -266,8 +268,8 @@ function handleDetail(row) {
         }}
       />
 
-     {/* ===== PROSES 2 : PB ===== */}
-{openProses && selectedRow?.JENIS_TRANSAKSI === "PB" && (
+    {/* ===== PROSES 2 : PB ===== */}
+{openProses && jenisTransaksi === "PB" && (
   <ProsesPBModal
     open={openProses}
     data={selectedRow}
@@ -280,7 +282,7 @@ function handleDetail(row) {
 )}
 
 {/* ===== PROSES 2 : PD ===== */}
-{openProses && selectedRow?.JENIS_TRANSAKSI === "PD" && (
+{openProses && jenisTransaksi === "PD" && (
   <ProsesModalPD
     open={openProses}
     data={selectedRow}
@@ -291,7 +293,6 @@ function handleDetail(row) {
     }}
   />
 )}
-
 
       {/* ===== VENDOR ===== */}
       <VendorModal
@@ -372,5 +373,6 @@ function handleDetail(row) {
   );
   
 }
+
 
 
