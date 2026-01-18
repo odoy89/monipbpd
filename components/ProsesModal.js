@@ -77,61 +77,78 @@ export default function ProsesModal({ open, data, onClose, onSuccess }) {
   }, [data]);
 
   /* ===== SUBMIT ===== */
-  function handleSubmit() {
-    setSaving(true);
+  async function handleSubmit() {
+  setSaving(true);
 
-    const fd = new FormData();
-    fd.append("action", "saveProses2");
-    fd.append("NO", data.NO);
+  let fileBase64 = "";
+  let fileName = "";
 
-    fd.append("KATEGORI", kategori);
-    fd.append("ULP", ulp);
-    fd.append("POTENSI_PELANGGAN", potensi);
-    fd.append("RUMAH_SELESAI_DIBANGUN", rumah);
-
-    if (isPD) {
-      fd.append("TARIF_LAMA", tarifLama);
-      fd.append("DAYA_LAMA", dayaLama);
-    }
-
-    fd.append("TARIF_BARU", tarifBaru);
-    fd.append("DAYA_BARU", dayaBaru);
-    fd.append("DELTA_VA", deltaVA);
-
-    fd.append("NO_SURAT_PENYAMPAIAN_REKSIS_KE_UP3", noReksis);
-    fd.append("TELEPON_PELANGGAN", telepon);
-
-    fd.append("SURVEY", survey ? "YA" : "TIDAK");
-    fd.append("TRAFO", trafo);
-    fd.append("JTM", jtm);
-    fd.append("JTR", jtr);
-
-    fd.append("NODIN_KE_REN", nodin ? "YA" : "TIDAK");
-
-    if (adaSuratBalasan && fileBalasan) {
-      fd.append("FILE_SURAT_BALASAN", fileBalasan);
-    }
-
-    fetch("/api/proses2?action=saveProses2", {
-  method: "POST",
-  body: fd
-});
-
-      .then(r => r.json())
-      .then(res => {
-        setSaving(false);
-        if (res.status === "ok") {
-          onSuccess();
-          onClose();
-        } else {
-          alert(res.message || "Gagal menyimpan");
-        }
-      })
-      .catch(() => {
-        setSaving(false);
-        alert("Koneksi error");
-      });
+  if (adaSuratBalasan && fileBalasan) {
+    const reader = new FileReader();
+    reader.onload = async () => {
+      fileBase64 = reader.result.split(",")[1];
+      fileName = fileBalasan.name;
+      await submitJSON(fileBase64, fileName);
+    };
+    reader.readAsDataURL(fileBalasan);
+  } else {
+    await submitJSON("", "");
   }
+}
+
+async function submitJSON(fileBase64, fileName) {
+  const payload = {
+    action: "saveProses2",
+    NO: data.NO,
+
+    KATEGORI: kategori,
+    ULP: ulp,
+
+    POTENSI_PELANGGAN: potensi,
+    RUMAH_SELESAI_DIBANGUN: rumah,
+
+    TARIF_LAMA: isPD ? tarifLama : "",
+    DAYA_LAMA: isPD ? dayaLama : "",
+
+    TARIF_BARU: tarifBaru,
+    DAYA_BARU: dayaBaru,
+    DELTA_VA: deltaVA,
+
+    NO_SURAT_PENYAMPAIAN_REKSIS_KE_UP3: noReksis,
+    TELEPON_PELANGGAN: telepon,
+
+    SURVEY: survey,
+    TRAFO: survey ? trafo : "",
+    JTM: survey ? jtm : "",
+    JTR: survey ? jtr : "",
+
+    NODIN_KE_REN: nodin,
+
+    FILE_SURAT_BALASAN_BASE64: fileBase64,
+    FILE_SURAT_BALASAN_NAME: fileName
+  };
+
+  fetch("/api/proses2", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload)
+  })
+    .then(r => r.json())
+    .then(res => {
+      setSaving(false);
+      if (res.status === "ok") {
+        onSuccess();
+        onClose();
+      } else {
+        alert(res.message || "Gagal menyimpan");
+      }
+    })
+    .catch(() => {
+      setSaving(false);
+      alert("Koneksi error");
+    });
+}
+
 
   return (
     <div className="modal-overlay">
@@ -297,6 +314,7 @@ export default function ProsesModal({ open, data, onClose, onSuccess }) {
     </div>
   );
 }
+
 
 
 
