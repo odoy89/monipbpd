@@ -9,106 +9,82 @@ export default function ProgressModal({ open, data, onClose, onSuccess }) {
   const [eviden1Lama, setEviden1Lama] = useState("");
   const [eviden2Lama, setEviden2Lama] = useState("");
 
+  if (!open || !data) return null;
+
   /* ================= HELPER ================= */
   function toInputDate(val) {
     if (!val) return "";
-    if (val.includes("-")) return val; // sudah yyyy-mm-dd
+    if (val.includes("-")) return val;
     const [d, m, y] = val.split("/");
     return `${y}-${m}-${d}`;
   }
 
-  /* ================= PREFILL EDIT ================= */
+  function fileToBase64(file) {
+    return new Promise(resolve => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result.split(",")[1]);
+      reader.readAsDataURL(file);
+    });
+  }
+
+  /* ================= PREFILL ================= */
   useEffect(() => {
-  if (!open || !data) return;
+    if (!open || !data) return;
 
-  setProgres(data.PROGRES_PEKERJAAN || "");
-  setTanggalNyala(toInputDate(data.TANGGAL_NYALA));
-
-  setEviden1Lama(data.EVIDEN_1 || "");
-  setEviden2Lama(data.EVIDEN_2 || "");
-}, [open, data]);
-
-if (!open || !data) return null;
+    setProgres(data.PROGRES_PEKERJAAN || "");
+    setTanggalNyala(toInputDate(data.TANGGAL_NYALA));
+    setEviden1Lama(data.EVIDEN_1 || "");
+    setEviden2Lama(data.EVIDEN_2 || "");
+  }, [open, data]);
 
   /* ================= SUBMIT ================= */
- function fileToBase64(file) {
-  return new Promise(resolve => {
-    const reader = new FileReader();
-    reader.onload = () => resolve(reader.result.split(",")[1]);
-    reader.readAsDataURL(file);
-  });
-}
+  async function handleSubmit() {
+    if (!data?.NO) {
+      alert("NO tidak ditemukan");
+      return;
+    }
 
-async function handleSubmit() {
-  if (!data?.NO) {
-    alert("NO tidak ditemukan");
-    return;
-  }
+    setLoading(true);
 
-  setLoading(true);
+    const payload = {
+      action: "saveProgres",
+      NO: String(data.NO),
+      PROGRES_PEKERJAAN: progres,
+      TANGGAL_NYALA: tanggalNyala || ""
+    };
 
-  const payload = {
-  action: "saveProgres",
-  NO: String(data.NO),
-  PROGRES_PEKERJAAN: progres,
-  TANGGAL_NYALA: tanggalNyala || ""
-};
+    if (eviden1) {
+      payload.EVIDEN_1_BASE64 = await fileToBase64(eviden1);
+      payload.EVIDEN_1_NAME = eviden1.name;
+    }
 
+    if (eviden2) {
+      payload.EVIDEN_2_BASE64 = await fileToBase64(eviden2);
+      payload.EVIDEN_2_NAME = eviden2.name;
+    }
 
-  if (eviden1) {
-    payload.EVIDEN_1_BASE64 = await fileToBase64(eviden1);
-    payload.EVIDEN_1_NAME = eviden1.name;
-  }
-
-  if (eviden2) {
-    payload.EVIDEN_2_BASE64 = await fileToBase64(eviden2);
-    payload.EVIDEN_2_NAME = eviden2.name;
-  }
-
-  fetch("/api/progres", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(payload)
-  })
-    .then(r => r.json())
-    .then(res => {
-      setLoading(false);
-      if (res.status === "success" || res.status === "ok") {
-        onSuccess("Progres berhasil disimpan");
-        onClose();
-      } else {
-        alert(res.message || "Gagal menyimpan progres");
-      }
+    fetch("/api/progres", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
     })
-    .catch(() => {
-      setLoading(false);
-      alert("Koneksi error");
-    });
-}
+      .then(r => r.json())
+      .then(res => {
+        setLoading(false);
+        if (res.status === "success" || res.status === "ok") {
+          onSuccess();
+          onClose();
+        } else {
+          alert(res.message || "Gagal menyimpan progres");
+        }
+      })
+      .catch(() => {
+        setLoading(false);
+        alert("Koneksi error");
+      });
+  }
 
-{/* ===== PREVIEW FOTO LAMA ===== */}
-{eviden1Lama && (
-  <div className="form-group">
-    <small>Foto Eviden 1 (lama)</small><br/>
-    <img
-      src={eviden1Lama}
-      style={{ width: "100%", maxHeight: 200, objectFit: "contain" }}
-    />
-  </div>
-)}
-
-{eviden2Lama && (
-  <div className="form-group">
-    <small>Foto Eviden 2 (lama)</small><br/>
-    <img
-      src={eviden2Lama}
-      style={{ width: "100%", maxHeight: 200, objectFit: "contain" }}
-    />
-  </div>
-)}
-
-
-
+  /* ================= RENDER ================= */
   return (
     <div className="modal-overlay">
       <div className="modal-card" style={{ maxWidth: 480 }}>
@@ -124,16 +100,36 @@ async function handleSubmit() {
           />
         </div>
 
-      <div className="form-group">
-  <label>Foto Eviden 1</label>
-  <input type="file" accept="image/*" onChange={e => setEviden1(e.target.files[0])}/>
-</div>
+        {/* FOTO LAMA */}
+        {eviden1Lama && (
+          <div className="form-group">
+            <small>Foto Eviden 1 (lama)</small>
+            <img
+              src={eviden1Lama}
+              style={{ width: "100%", maxHeight: 200, objectFit: "contain" }}
+            />
+          </div>
+        )}
 
-<div className="form-group">
-  <label>Foto Eviden 2</label>
-  <input type="file" accept="image/*" onChange={e => setEviden2(e.target.files[0])}/>
-</div>
+        {eviden2Lama && (
+          <div className="form-group">
+            <small>Foto Eviden 2 (lama)</small>
+            <img
+              src={eviden2Lama}
+              style={{ width: "100%", maxHeight: 200, objectFit: "contain" }}
+            />
+          </div>
+        )}
 
+        <div className="form-group">
+          <label>Foto Eviden 1</label>
+          <input type="file" accept="image/*" onChange={e => setEviden1(e.target.files[0])}/>
+        </div>
+
+        <div className="form-group">
+          <label>Foto Eviden 2</label>
+          <input type="file" accept="image/*" onChange={e => setEviden2(e.target.files[0])}/>
+        </div>
 
         <div className="form-group">
           <label>Tanggal Nyala</label>
@@ -148,9 +144,7 @@ async function handleSubmit() {
         </div>
 
         <div className="modal-actions">
-          <button className="btn-ghost" onClick={onClose}>
-            Tutup
-          </button>
+          <button className="btn-ghost" onClick={onClose}>Tutup</button>
           <button
             className="btn-primary"
             disabled={loading}
@@ -163,4 +157,3 @@ async function handleSubmit() {
     </div>
   );
 }
-
