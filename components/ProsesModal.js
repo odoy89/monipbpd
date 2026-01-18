@@ -265,13 +265,21 @@ async function submitJSON(fileBase64, fileName) {
           </label>
 
           {survey && (
-            <>
-              <input placeholder="TRAFO" value={trafo} onChange={e => setTrafo(e.target.value)} />
-              <input placeholder="JTM" value={jtm} onChange={e => setJtm(e.target.value)} />
-              <input placeholder="JTR" value={jtr} onChange={e => setJtr(e.target.value)} />
-            </>
-          )}
-        </div>
+  <div className="survey-row">
+    <div className="survey-col">
+      <label>TRAFO</label>
+      <input value={trafo} onChange={e => setTrafo(e.target.value)} />
+    </div>
+    <div className="survey-col">
+      <label>JTM</label>
+      <input value={jtm} onChange={e => setJtm(e.target.value)} />
+    </div>
+    <div className="survey-col">
+      <label>JTR</label>
+      <input value={jtr} onChange={e => setJtr(e.target.value)} />
+    </div>
+  </div>
+)}
 
 {/* NODIN */}
 <div className="form-group">
@@ -314,6 +322,7 @@ async function submitJSON(fileBase64, fileName) {
     </div>
   );
 }
+
 
 
 
