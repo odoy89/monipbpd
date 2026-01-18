@@ -44,7 +44,7 @@ export default function ProsesModalPD({ open, data, onClose, onSuccess }) {
   }, [open]);
 
   /* ================= SUBMIT ================= */
-  function handleSubmit() {
+ function handleSubmit() {
   if (!kategori || !ulp || !tarifLama || !dayaLama) {
     alert("Lengkapi data wajib");
     return;
@@ -65,8 +65,8 @@ export default function ProsesModalPD({ open, data, onClose, onSuccess }) {
 
       TARIF_LAMA: tarifLama,
       DAYA_LAMA: dayaLama,
-      DELTA_VA: deltaVA,
 
+      DELTA_VA: deltaVA,
       NO_SURAT_PENYAMPAIAN_REKSIS_KE_UP3: noReksis,
 
       SURVEY: survey,
@@ -80,14 +80,15 @@ export default function ProsesModalPD({ open, data, onClose, onSuccess }) {
     .then(r => r.json())
     .then(res => {
       if (res.status === "ok") {
-        onSuccess();
+        onSuccess("Proses PD berhasil disimpan");
         onClose();
       } else {
-        alert(res.message || "Gagal menyimpan PD");
+        alert(res.message || "Gagal simpan PD");
       }
     })
     .catch(() => alert("Koneksi error"));
 }
+
 
   return (
     <div className="modal-overlay">
@@ -237,4 +238,5 @@ export default function ProsesModalPD({ open, data, onClose, onSuccess }) {
     </div>
   );
 }
+
 
