@@ -82,7 +82,7 @@ export default function ProsesModal({ open, data, onClose, onSuccess }) {
   }, [open, data, tarifList]);
 
   /* ================= SUBMIT ================= */
-  function handleSubmit() {
+  async function handleSubmit() {
   if (!data?.NO) {
     alert("NO tidak ditemukan");
     return;
@@ -91,39 +91,53 @@ export default function ProsesModal({ open, data, onClose, onSuccess }) {
   setSaving(true);
   setMsg("");
 
-  const formData = new FormData();
-  formData.append("action", "saveProses2");
-  formData.append("NO", data.NO);
+  let fileBase64 = "";
+  let fileName = "";
 
-  formData.append("KATEGORI", kategori);
-  formData.append("ULP", ulp);
-  formData.append("POTENSI_PELANGGAN", potensi);
-  formData.append("RUMAH_SELESAI_DIBANGUN", rumah);
-
-  formData.append("TARIF_LAMA", tarifLama);
-  formData.append("DAYA_LAMA", dayaLama);
-  formData.append("TARIF_BARU", tarifBaru);
-  formData.append("DAYA_BARU", dayaBaru);
-  formData.append("DELTA_VA", deltaVA);
-
-  formData.append("NO_SURAT_PENYAMPAIAN_REKSIS_KE_UP3", noReksis);
-  formData.append("TELEPON_PELANGGAN", telepon);
-
-  formData.append("SURVEY", survey ? "YA" : "TIDAK");
-  formData.append("TRAFO", trafo);
-  formData.append("JTM", jtm);
-  formData.append("JTR", jtr);
-
-  formData.append("NODIN_KE_REN", nodin ? "YA" : "TIDAK");
-
-  // ✅ SURAT BALASAN
+  // === FILE SURAT BALASAN ===
   if (adaSuratBalasan && fileBalasan) {
-    formData.append("FILE_SURAT_BALASAN", fileBalasan);
+    const reader = new FileReader();
+    fileBase64 = await new Promise((resolve, reject) => {
+      reader.onload = () => resolve(reader.result.split(",")[1]);
+      reader.onerror = reject;
+      reader.readAsDataURL(fileBalasan);
+    });
+    fileName = fileBalasan.name;
   }
+
+  const payload = {
+    action: "saveProses2",
+    NO: data.NO,
+
+    KATEGORI: kategori,
+    ULP: ulp,
+    POTENSI_PELANGGAN: potensi,
+    RUMAH_SELESAI_DIBANGUN: rumah,
+
+    TARIF_LAMA: tarifLama,
+    DAYA_LAMA: dayaLama,
+    TARIF_BARU: tarifBaru,
+    DAYA_BARU: dayaBaru,
+    DELTA_VA: deltaVA,
+
+    NO_SURAT_PENYAMPAIAN_REKSIS_KE_UP3: noReksis,
+    TELEPON_PELANGGAN: telepon,
+
+    SURVEY: survey,
+    TRAFO: trafo,
+    JTM: jtm,
+    JTR: jtr,
+
+    NODIN_KE_REN: nodin,
+
+    FILE_SURAT_BALASAN_BASE64: fileBase64,
+    FILE_SURAT_BALASAN_NAME: fileName
+  };
 
   fetch("/api/proses2", {
     method: "POST",
-    body: formData
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload)
   })
     .then(r => r.json())
     .then(res => {
@@ -140,6 +154,7 @@ export default function ProsesModal({ open, data, onClose, onSuccess }) {
       alert("Koneksi error");
     });
 }
+
 
 
   return (
@@ -344,3 +359,4 @@ export default function ProsesModal({ open, data, onClose, onSuccess }) {
     </>
   );
 }
+
