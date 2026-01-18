@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { toBase64 } from "@/utils/file";
+import { toBase64 } from "../utils/files";
 
 const ULP_LIST = ["17100","17110","17120","17130","17131","17150","17180"];
 
@@ -212,3 +212,4 @@ export default function ProsesModal({ open, data, onClose, onSuccess }) {
     </div>
   );
 }
+
