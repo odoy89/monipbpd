@@ -226,6 +226,47 @@ export default function ProsesModal({ open, data, onClose, onSuccess }) {
           </select>
         </div>
 
+{/* DELTA VA */}
+<div className="form-group">
+  <label>Delta VA</label>
+  <input
+    value={deltaVA}
+    onChange={e => setDeltaVA(e.target.value)}
+  />
+</div>
+
+{/* NO REKSIS */}
+<div className="form-group">
+  <label>No Surat Penyampaian Reksis ke UP3</label>
+  <input
+    value={noReksis}
+    onChange={e => setNoReksis(e.target.value)}
+  />
+</div>
+
+{/* TELEPON */}
+<div className="form-group">
+  <label>Nomor Telepon Pelanggan</label>
+  <input
+    placeholder="08xxxxxxxxxx"
+    value={telepon}
+    onChange={e => setTelepon(e.target.value)}
+  />
+</div>
+
+{/* NODIN */}
+<div className="form-group">
+  <label>
+    <input
+      type="checkbox"
+      checked={nodin}
+      onChange={e => setNodin(e.target.checked)}
+    />{" "}
+    NODIN dikirim ke REN
+  </label>
+</div>
+
+                                              
         {/* SURVEY */}
         <div className="form-group">
           <label>
@@ -252,3 +293,4 @@ export default function ProsesModal({ open, data, onClose, onSuccess }) {
     </div>
   );
 }
+
