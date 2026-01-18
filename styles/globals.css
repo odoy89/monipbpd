@@ -447,6 +447,16 @@ body {
   border-radius: 8px;
 }
 
+.survey-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.survey-col label {
+  font-size: 12px;
+  font-weight: 600;
+}
 
 
 @media (max-width: 768px) {
@@ -500,4 +510,5 @@ body {
     grid-template-columns: 1fr;
   }
 }
+
 
