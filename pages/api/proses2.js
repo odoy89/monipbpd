@@ -7,55 +7,39 @@ export default async function handler(req, res) {
   }
 
   try {
-    let payload;
-
-    // 🔑 DETEKSI FORMDATA vs JSON
-    if (req.headers["content-type"]?.includes("multipart/form-data")) {
-      payload = req.body; // biarkan langsung
-    } else {
-      payload =
-        typeof req.body === "string"
-          ? JSON.parse(req.body)
-          : req.body;
-    }
-
     const APPSCRIPT_URL = process.env.NEXT_PUBLIC_APPSCRIPT_URL;
+
     if (!APPSCRIPT_URL) {
+      console.error("ENV EMPTY");
       return res.status(500).json({
         status: "error",
-        message: "APPSCRIPT URL belum diset"
+        message: "APPSCRIPT URL kosong"
       });
     }
 
     const response = await fetch(APPSCRIPT_URL, {
       method: "POST",
-      body:
-        payload instanceof FormData
-          ? payload
-          : JSON.stringify(payload),
-      headers:
-        payload instanceof FormData
-          ? {}
-          : { "Content-Type": "application/json" }
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(req.body)
     });
 
     const text = await response.text();
-    let result;
+    let json;
 
     try {
-      result = JSON.parse(text);
+      json = JSON.parse(text);
     } catch {
       return res.status(502).json({
         status: "error",
-        message: "Response AppScript tidak valid",
+        message: "Response AppScript bukan JSON",
         raw: text
       });
     }
 
-    return res.status(200).json(result);
+    return res.status(200).json(json);
 
   } catch (err) {
-    console.error("API PROSES2 ERROR:", err);
+    console.error("PROSES2 API ERROR:", err);
     return res.status(500).json({
       status: "error",
       message: "Gagal koneksi ke AppScript"
