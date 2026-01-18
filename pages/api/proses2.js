@@ -1,39 +1,28 @@
-export const config = {
-  api: {
-    bodyParser: true
-  }
-};
-
 export default async function handler(req, res) {
   if (req.method !== "POST") {
-    return res.status(405).json({ status: "error", message: "Method not allowed" });
+    return res.status(405).json({ status: "error" });
   }
 
   try {
-    const payload = req.body;
-
-    if (!payload || !payload.action) {
-      return res.status(400).json({
-        status: "error",
-        message: "Payload kosong / action tidak ada"
-      });
-    }
-
-    const resp = await fetch(process.env.NEXT_PUBLIC_APPSCRIPT_URL, {
+    const response = await fetch(process.env.APPSCRIPT_URL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload)
+      body: JSON.stringify(req.body)
     });
 
-    const text = await resp.text();
+    const text = await response.text();
 
-    res.status(200).send(text);
+    try {
+      return res.status(200).json(JSON.parse(text));
+    } catch {
+      return res.status(200).send(text);
+    }
 
   } catch (err) {
-    console.error("API PROSES2 ERROR:", err);
-    res.status(500).json({
+    console.error("PROSES2 API ERROR:", err);
+    return res.status(500).json({
       status: "error",
-      message: err.message
+      message: "Gagal koneksi ke AppScript"
     });
   }
 }
