@@ -94,7 +94,6 @@ export default function ProsesModal({ open, data, onClose, onSuccess }) {
   let fileBase64 = "";
   let fileName = "";
 
-  // === FILE SURAT BALASAN ===
   if (adaSuratBalasan && fileBalasan) {
     const reader = new FileReader();
     fileBase64 = await new Promise((resolve, reject) => {
@@ -107,7 +106,7 @@ export default function ProsesModal({ open, data, onClose, onSuccess }) {
 
   const payload = {
     action: "saveProses2",
-    NO: data.NO,
+    NO: String(data.NO),
 
     KATEGORI: kategori,
     ULP: ulp,
@@ -128,11 +127,14 @@ export default function ProsesModal({ open, data, onClose, onSuccess }) {
     JTM: jtm,
     JTR: jtr,
 
-    NODIN_KE_REN: nodin,
-
-    FILE_SURAT_BALASAN_BASE64: fileBase64,
-    FILE_SURAT_BALASAN_NAME: fileName
+    NODIN_KE_REN: nodin
   };
+
+  // ✅ INI KUNCINYA
+  if (adaSuratBalasan && fileBalasan) {
+    payload.FILE_SURAT_BALASAN_BASE64 = fileBase64;
+    payload.FILE_SURAT_BALASAN_NAME = fileName;
+  }
 
   fetch("/api/proses2", {
     method: "POST",
@@ -154,8 +156,6 @@ export default function ProsesModal({ open, data, onClose, onSuccess }) {
       alert("Koneksi error");
     });
 }
-
-
 
   return (
     <>
@@ -359,4 +359,5 @@ export default function ProsesModal({ open, data, onClose, onSuccess }) {
     </>
   );
 }
+
 
