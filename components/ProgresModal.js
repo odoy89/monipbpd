@@ -48,11 +48,12 @@ async function handleSubmit() {
   setLoading(true);
 
   const payload = {
-    action: "saveProgres",
-    NO: data.NO,
-    PROGRES_PEKERJAAN: progres,
-    TANGGAL_NYALA: tanggalNyala || ""
-  };
+  action: "saveProgres",
+  NO: String(data.NO),
+  PROGRES_PEKERJAAN: progres,
+  TANGGAL_NYALA: tanggalNyala || ""
+};
+
 
   if (eviden1) {
     payload.EVIDEN_1_BASE64 = await fileToBase64(eviden1);
@@ -162,3 +163,4 @@ async function handleSubmit() {
     </div>
   );
 }
+
