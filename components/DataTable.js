@@ -24,7 +24,7 @@ export default function DataTable({
             <th>Tgl Nyala</th>
             <th>Durasi</th>
             <th>Status</th>
-            <th style={{ minWidth: 220 }}>Aksi</th>
+            <th style={{ minWidth: 240 }}>Aksi</th>
           </tr>
         </thead>
 
@@ -38,6 +38,7 @@ export default function DataTable({
           ) : (
             data.map((d, i) => {
               const STATUS = String(d.STATUS || "").toUpperCase().trim();
+              const HAS_VENDOR = Boolean(d.VENDOR); // ⬅️ kunci alur vendor
 
               return (
                 <tr key={d.NO || i}>
@@ -97,6 +98,9 @@ export default function DataTable({
                         </button>
                       )}
 
+                      {/* ================= ALUR UTAMA ================= */}
+
+                      {/* 1️⃣ MENUNGGU → LANJUT PROSES */}
                       {STATUS === "MENUNGGU" && (
                         <button
                           className="btn-lanjut"
@@ -106,7 +110,18 @@ export default function DataTable({
                         </button>
                       )}
 
-                      {STATUS === "PROGRES" && (
+                      {/* 2️⃣ PROGRES + BELUM ADA VENDOR → PILIH VENDOR */}
+                      {STATUS === "PROGRES" && !HAS_VENDOR && (
+                        <button
+                          className="btn-warning"
+                          onClick={() => onVendor(d)}
+                        >
+                          Pilih Vendor
+                        </button>
+                      )}
+
+                      {/* 3️⃣ PROGRES + SUDAH ADA VENDOR → LANJUT PROGRES */}
+                      {STATUS === "PROGRES" && HAS_VENDOR && (
                         <button
                           className="btn-lanjut"
                           onClick={() => onProgress(d)}
