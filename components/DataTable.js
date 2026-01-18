@@ -29,90 +29,108 @@ export default function DataTable({
         </thead>
 
         <tbody>
-          {data.length === 0 && (
+          {data.length === 0 ? (
             <tr>
               <td colSpan={11} style={{ textAlign: "center", padding: 20 }}>
                 Tidak ada data
               </td>
             </tr>
+          ) : (
+            data.map((d, i) => {
+              const STATUS = String(d.STATUS || "").toUpperCase().trim();
+
+              return (
+                <tr key={d.NO || i}>
+                  <td>{i + 1}</td>
+                  <td>{d.NAMA_PELANGGAN}</td>
+                  <td>{d.JENIS_TRANSAKSI}</td>
+                  <td>{d.TANGGAL_SURAT}</td>
+                  <td>{d.TANGGAL_TERIMA_SURAT}</td>
+
+                  <td>
+                    {d.FILE_SURAT ? (
+                      <a href={d.FILE_SURAT} target="_blank" rel="noreferrer">
+                        Download
+                      </a>
+                    ) : (
+                      "-"
+                    )}
+                  </td>
+
+                  <td>{d.PROGRES_PEKERJAAN || "-"}</td>
+                  <td>{d.TANGGAL_NYALA || "-"}</td>
+                  <td>{d.DURASI ? `${d.DURASI} Hari` : "-"}</td>
+
+                  <td>
+                    <span className={`badge ${String(d.STATUS).toLowerCase()}`}>
+                      {d.STATUS}
+                    </span>
+                  </td>
+
+                  <td>
+                    <div
+                      className="aksi"
+                      style={{ display: "flex", gap: 6, flexWrap: "wrap" }}
+                    >
+                      {(d.EVIDEN_1 || d.EVIDEN_2) && (
+                        <button
+                          className="btn-info"
+                          onClick={() => onFoto(d)}
+                        >
+                          Foto
+                        </button>
+                      )}
+
+                      <button
+                        className="btn-detail"
+                        onClick={() => onDetail(d)}
+                      >
+                        Detail
+                      </button>
+
+                      {STATUS !== "SELESAI" && (
+                        <button
+                          className="btn-edit"
+                          onClick={() => onEdit(d)}
+                        >
+                          Edit
+                        </button>
+                      )}
+
+                      {STATUS === "MENUNGGU" && (
+                        <button
+                          className="btn-lanjut"
+                          onClick={() => onProses(d)}
+                        >
+                          Lanjut Proses
+                        </button>
+                      )}
+
+                      {STATUS === "PROGRES" && (
+                        <button
+                          className="btn-lanjut"
+                          onClick={() => onProgress(d)}
+                        >
+                          Lanjut Progres Pekerjaan
+                        </button>
+                      )}
+
+                      {role === "ADMIN" && (
+                        <button
+                          className="btn-hapus"
+                          onClick={() => onDelete(d)}
+                        >
+                          Hapus
+                        </button>
+                      )}
+                    </div>
+                  </td>
+                </tr>
+              );
+            })
           )}
-
-            {data.map((d, i) => {
-  const STATUS = String(d.STATUS || "").toUpperCase().trim();
-  return (
-    <tr key={d.NO || i}>
-            <tr key={d.NO || i}>
-              <td>{i + 1}</td>
-              <td>{d.NAMA_PELANGGAN}</td>
-              <td>{d.JENIS_TRANSAKSI}</td>
-              <td>{d.TANGGAL_SURAT}</td>
-              <td>{d.TANGGAL_TERIMA_SURAT}</td>
-
-              <td>
-                {d.FILE_SURAT ? (
-                  <a href={d.FILE_SURAT} target="_blank" rel="noreferrer">
-                    Download
-                  </a>
-                ) : (
-                  "-"
-                )}
-              </td>
-
-              <td>{d.PROGRES_PEKERJAAN || "-"}</td>
-              <td>{d.TANGGAL_NYALA || "-"}</td>
-              <td>{d.DURASI ? `${d.DURASI} Hari` : "-"}</td>
-
-              <td>
-                <span className={`badge ${String(d.STATUS).toLowerCase()}`}>
-                  {d.STATUS}
-                </span>
-              </td>
-<td>
-  <div className="aksi" style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
-
-    {(d.EVIDEN_1 || d.EVIDEN_2) && (
-      <button className="btn-info" onClick={() => onFoto(d)}>
-        Foto
-      </button>
-    )}
-
-    <button className="btn-detail" onClick={() => onDetail(d)}>
-      Detail
-    </button>
-
-    {STATUS !== "SELESAI" && (
-      <button className="btn-edit" onClick={() => onEdit(d)}>
-        Edit
-      </button>
-    )}
-
-    {STATUS === "MENUNGGU" && (
-      <button className="btn-lanjut" onClick={() => onProses(d)}>
-        Lanjut Proses
-      </button>
-    )}
-
-    {STATUS === "PROGRES" && (
-      <button className="btn-lanjut" onClick={() => onProgress(d)}>
-        Lanjut Progres Pekerjaan
-      </button>
-    )}
-
-    {role === "ADMIN" && (
-      <button className="btn-hapus" onClick={() => onDelete(d)}>
-        Hapus
-      </button>
-    )}
-
-  </div>
-</td>
-
-
-            </tr>
-          ))}
         </tbody>
       </table>
     </div>
   );
 }
-
