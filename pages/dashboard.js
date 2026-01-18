@@ -5,6 +5,9 @@ import FilterBar from "../components/FilterBar";
 import DataTable from "../components/DataTable";
 
 import TambahSuratModal from "../components/TambahSuratModal";
+import ProsesPBModal from "../components/ProsesPBModal";
+import ProsesModalPD from "../components/ProsesModalPD";
+
 import ProsesModal from "../components/ProsesModal";
 import VendorModal from "../components/VendorModal";
 import ProgressModal from "../components/ProgresModal";
@@ -263,16 +266,32 @@ function handleDetail(row) {
         }}
       />
 
-      {/* ===== PROSES 2 ===== */}
-      <ProsesModal
-        open={openProses}
-        data={selectedRow}
-        onClose={() => setOpenProses(false)}
-        onSuccess={() => {
-          loadData();
-          showPopup("Proses berhasil disimpan");
-        }}
-      />
+     {/* ===== PROSES 2 : PB ===== */}
+{openProses && selectedRow?.JENIS_TRANSAKSI === "PB" && (
+  <ProsesPBModal
+    open={openProses}
+    data={selectedRow}
+    onClose={() => setOpenProses(false)}
+    onSuccess={() => {
+      loadData();
+      showPopup("Proses PB berhasil disimpan");
+    }}
+  />
+)}
+
+{/* ===== PROSES 2 : PD ===== */}
+{openProses && selectedRow?.JENIS_TRANSAKSI === "PD" && (
+  <ProsesModalPD
+    open={openProses}
+    data={selectedRow}
+    onClose={() => setOpenProses(false)}
+    onSuccess={() => {
+      loadData();
+      showPopup("Proses PD berhasil disimpan");
+    }}
+  />
+)}
+
 
       {/* ===== VENDOR ===== */}
       <VendorModal
@@ -353,4 +372,5 @@ function handleDetail(row) {
   );
   
 }
+
 
