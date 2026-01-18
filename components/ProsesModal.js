@@ -112,7 +112,11 @@ export default function ProsesModal({ open, data, onClose, onSuccess }) {
       fd.append("FILE_SURAT_BALASAN", fileBalasan);
     }
 
-    fetch("/api/proses2", { method: "POST", body: fd })
+    fetch("/api/proses2?action=saveProses2", {
+  method: "POST",
+  body: fd
+});
+
       .then(r => r.json())
       .then(res => {
         setSaving(false);
@@ -293,5 +297,6 @@ export default function ProsesModal({ open, data, onClose, onSuccess }) {
     </div>
   );
 }
+
 
 
