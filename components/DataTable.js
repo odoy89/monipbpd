@@ -38,7 +38,9 @@ export default function DataTable({
           ) : (
             data.map((d, i) => {
               const STATUS = String(d.STATUS || "").toUpperCase().trim();
-              const HAS_VENDOR = Boolean(d.VENDOR); // ⬅️ kunci alur vendor
+
+              // 🔑 KUNCI ALUR VENDOR (INI YANG FIX)
+              const HAS_VENDOR = Boolean(d.VENDOR_PEKERJAAN);
 
               return (
                 <tr key={d.NO || i}>
@@ -98,9 +100,9 @@ export default function DataTable({
                         </button>
                       )}
 
-                      {/* ================= ALUR UTAMA ================= */}
+                      {/* ================= ALUR RESMI ================= */}
 
-                      {/* 1️⃣ MENUNGGU → LANJUT PROSES */}
+                      {/* 1️⃣ MENUNGGU → PROSES */}
                       {STATUS === "MENUNGGU" && (
                         <button
                           className="btn-lanjut"
@@ -110,7 +112,7 @@ export default function DataTable({
                         </button>
                       )}
 
-                      {/* 2️⃣ PROGRES + BELUM ADA VENDOR → PILIH VENDOR */}
+                      {/* 2️⃣ PROGRES + BELUM ADA VENDOR */}
                       {STATUS === "PROGRES" && !HAS_VENDOR && (
                         <button
                           className="btn-warning"
@@ -120,7 +122,7 @@ export default function DataTable({
                         </button>
                       )}
 
-                      {/* 3️⃣ PROGRES + SUDAH ADA VENDOR → LANJUT PROGRES */}
+                      {/* 3️⃣ PROGRES + SUDAH ADA VENDOR */}
                       {STATUS === "PROGRES" && HAS_VENDOR && (
                         <button
                           className="btn-lanjut"
