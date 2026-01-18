@@ -4,22 +4,20 @@ export default async function handler(req, res) {
   }
 
   try {
-    const payload = req.body;
-
     const response = await fetch(
       process.env.NEXT_PUBLIC_APPSCRIPT_URL,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload)
+        body: JSON.stringify(req.body)
       }
     );
 
     const json = await response.json();
-    return res.status(200).json(json);
+    res.status(200).json(json);
 
-  } catch (err) {
-    return res.status(500).json({
+  } catch {
+    res.status(500).json({
       status:"error",
       message:"Gagal koneksi ke AppScript"
     });
