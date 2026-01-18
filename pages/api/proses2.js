@@ -1,4 +1,3 @@
-
 export default async function handler(req, res) {
   if (req.method !== "POST") {
     return res.status(405).json({
@@ -21,9 +20,8 @@ export default async function handler(req, res) {
     }
 
     const APPSCRIPT_URL = process.env.NEXT_PUBLIC_APPSCRIPT_URL;
-
     if (!APPSCRIPT_URL) {
-      console.error("ENV ERROR: NEXT_PUBLIC_APPSCRIPT_URL tidak ada");
+      console.error("ENV ERROR: NEXT_PUBLIC_APPSCRIPT_URL missing");
       return res.status(500).json({
         status: "error",
         message: "Server config error"
@@ -37,12 +35,12 @@ export default async function handler(req, res) {
     });
 
     const text = await response.text();
-
     let result;
+
     try {
       result = JSON.parse(text);
     } catch (e) {
-      console.error("AppScript balikin non-JSON:", text);
+      console.error("Invalid JSON from AppScript:", text);
       return res.status(502).json({
         status: "error",
         message: "Invalid response from AppScript",
