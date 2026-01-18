@@ -1,25 +1,18 @@
 export default async function handler(req, res) {
-  if (req.method !== "POST") {
-    return res.status(405).json({ status:"error" });
-  }
-
   try {
-    const response = await fetch(
-      process.env.NEXT_PUBLIC_APPSCRIPT_URL,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(req.body)
-      }
-    );
+    const r = await fetch(process.env.NEXT_PUBLIC_APPSCRIPT_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action: "ping" })
+    });
 
-    const json = await response.json();
-    res.status(200).json(json);
+    const t = await r.text();
+    return res.status(200).json({ ok:true, t });
 
-  } catch {
-    res.status(500).json({
-      status:"error",
-      message:"Gagal koneksi ke AppScript"
+  } catch (e) {
+    return res.status(500).json({
+      ok:false,
+      error: String(e)
     });
   }
 }
