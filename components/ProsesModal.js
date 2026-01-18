@@ -235,38 +235,7 @@ export default function ProsesModal({ open, data, onClose, onSuccess }) {
   />
 </div>
 
-{/* NO REKSIS */}
-<div className="form-group">
-  <label>No Surat Penyampaian Reksis ke UP3</label>
-  <input
-    value={noReksis}
-    onChange={e => setNoReksis(e.target.value)}
-  />
-</div>
-
-{/* TELEPON */}
-<div className="form-group">
-  <label>Nomor Telepon Pelanggan</label>
-  <input
-    placeholder="08xxxxxxxxxx"
-    value={telepon}
-    onChange={e => setTelepon(e.target.value)}
-  />
-</div>
-
-{/* NODIN */}
-<div className="form-group">
-  <label>
-    <input
-      type="checkbox"
-      checked={nodin}
-      onChange={e => setNodin(e.target.checked)}
-    />{" "}
-    NODIN dikirim ke REN
-  </label>
-</div>
-
-                                              
+                                             
         {/* SURVEY */}
         <div className="form-group">
           <label>
@@ -283,7 +252,38 @@ export default function ProsesModal({ open, data, onClose, onSuccess }) {
           )}
         </div>
 
-        <div className="modal-actions">
+{/* NODIN */}
+<div className="form-group">
+  <label>
+    <input
+      type="checkbox"
+      checked={nodin}
+      onChange={e => setNodin(e.target.checked)}
+    />{" "}
+    NODIN dikirim ke REN
+  </label>
+</div>
+
+{/* NO REKSIS */}
+<div className="form-group">
+  <label>No Surat Penyampaian Reksis ke UP3</label>
+  <input
+    value={noReksis}
+    onChange={e => setNoReksis(e.target.value)}
+  />
+</div>
+             
+{/* TELEPON */}
+<div className="form-group">
+  <label>Nomor Telepon Pelanggan</label>
+  <input
+    placeholder="08xxxxxxxxxx"
+    value={telepon}
+    onChange={e => setTelepon(e.target.value)}
+  />
+</div>
+
+      <div className="modal-actions">
           <button className="btn-ghost" onClick={onClose}>Batal</button>
           <button className="btn-primary" disabled={saving} onClick={handleSubmit}>
             {saving ? "Menyimpan..." : "Simpan"}
@@ -293,4 +293,5 @@ export default function ProsesModal({ open, data, onClose, onSuccess }) {
     </div>
   );
 }
+
 
