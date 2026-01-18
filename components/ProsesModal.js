@@ -1,25 +1,17 @@
 import { useEffect, useState } from "react";
+import { toBase64 } from "@/utils/file";
 
 const ULP_LIST = ["17100","17110","17120","17130","17131","17150","17180"];
 
 export default function ProsesModal({ open, data, onClose, onSuccess }) {
-  if (!open) return null;
+  if (!open || !data) return null;
 
-  /* ================= UX STATE ================= */
+  const jenis = data.JENIS_TRANSAKSI || "";
+
   const [saving, setSaving] = useState(false);
-  const [msg, setMsg] = useState("");
 
-  const jenis = data?.JENIS_TRANSAKSI || "";
-  const isPB = jenis === "PB";
-  const isPD = jenis === "PD";
-
-  /* ================= FORM STATE ================= */
   const [kategori, setKategori] = useState("");
   const [ulp, setUlp] = useState("");
-
-  const [adaSuratBalasan, setAdaSuratBalasan] = useState(false);
-  const [fileBalasan, setFileBalasan] = useState(null);
-  const [fileBalasanLama, setFileBalasanLama] = useState("");
 
   const [potensi, setPotensi] = useState("");
   const [rumah, setRumah] = useState("");
@@ -35,13 +27,16 @@ export default function ProsesModal({ open, data, onClose, onSuccess }) {
   const [telepon, setTelepon] = useState("");
 
   const [survey, setSurvey] = useState(false);
-  const [nodin, setNodin] = useState(false);
-
   const [trafo, setTrafo] = useState("");
   const [jtm, setJtm] = useState("");
   const [jtr, setJtr] = useState("");
 
-  /* ================= LOAD TARIF DAYA ================= */
+  const [nodin, setNodin] = useState(false);
+
+  const [adaBalasan, setAdaBalasan] = useState(false);
+  const [fileBalasan, setFileBalasan] = useState(null);
+
+  /* ===== LOAD TARIF ===== */
   useEffect(() => {
     if (!open) return;
     fetch("/api/tarif-daya")
@@ -49,20 +44,15 @@ export default function ProsesModal({ open, data, onClose, onSuccess }) {
       .then(res => setTarifList(res || {}));
   }, [open]);
 
-  /* ================= PREFILL EDIT ================= */
+  /* ===== PREFILL ===== */
   useEffect(() => {
-    if (!open || !data) return;
-    if (Object.keys(tarifList).length === 0) return;
+    if (!data) return;
 
     setKategori(data.KATEGORI || "");
     setUlp(data.ULP || "");
 
     setPotensi(data.POTENSI_PELANGGAN || "");
     setRumah(data.RUMAH_SELESAI_DIBANGUN || "");
-
-    setAdaSuratBalasan(!!data.FILE_SURAT_BALASAN);
-    setFileBalasan(null);
-    setFileBalasanLama(data.FILE_SURAT_BALASAN || "");
 
     setTarifLama(data.TARIF_LAMA || "");
     setDayaLama(data.DAYA_LAMA || "");
@@ -79,269 +69,146 @@ export default function ProsesModal({ open, data, onClose, onSuccess }) {
     setJtr(data.JTR || "");
 
     setNodin(Boolean(data.NODIN_KE_REN));
-  }, [open, data, tarifList]);
+  }, [data]);
 
-  /* ================= SUBMIT ================= */
-  function handleSubmit() {
-  if (!data?.NO) {
-    alert("NO tidak ditemukan");
-    return;
-  }
+  /* ===== SUBMIT FINAL ===== */
+  async function handleSubmit() {
+    setSaving(true);
 
-  setSaving(true);
-  setMsg("");
+    let fileBase64 = "";
+    let fileName = "";
 
-  const formData = new FormData();
-  formData.append("action", "saveProses2");
-  formData.append("NO", data.NO);
+    if (adaBalasan && fileBalasan) {
+      fileBase64 = await toBase64(fileBalasan);
+      fileName = fileBalasan.name;
+    }
 
-  formData.append("KATEGORI", kategori);
-  formData.append("ULP", ulp);
-  formData.append("POTENSI_PELANGGAN", potensi);
-  formData.append("RUMAH_SELESAI_DIBANGUN", rumah);
+    const payload = {
+      action: "saveProses2",
+      NO: data.NO,
 
-  formData.append("TARIF_LAMA", tarifLama);
-  formData.append("DAYA_LAMA", dayaLama);
-  formData.append("TARIF_BARU", tarifBaru);
-  formData.append("DAYA_BARU", dayaBaru);
-  formData.append("DELTA_VA", deltaVA);
+      KATEGORI: kategori,
+      ULP: ulp,
 
-  formData.append("NO_SURAT_PENYAMPAIAN_REKSIS_KE_UP3", noReksis);
-  formData.append("TELEPON_PELANGGAN", telepon);
+      POTENSI_PELANGGAN: potensi,
+      RUMAH_SELESAI_DIBANGUN: rumah,
 
-  formData.append("SURVEY", survey ? "YA" : "TIDAK");
-  formData.append("TRAFO", trafo);
-  formData.append("JTM", jtm);
-  formData.append("JTR", jtr);
+      TARIF_LAMA: jenis === "PD" ? tarifLama : "",
+      DAYA_LAMA: jenis === "PD" ? dayaLama : "",
+      TARIF_BARU: tarifBaru,
+      DAYA_BARU: dayaBaru,
 
-  formData.append("NODIN_KE_REN", nodin ? "YA" : "TIDAK");
+      DELTA_VA: deltaVA,
+      NO_SURAT_PENYAMPAIAN_REKSIS_KE_UP3: noReksis,
+      TELEPON_PELANGGAN: telepon,
 
-  // ✅ SURAT BALASAN
-  if (adaSuratBalasan && fileBalasan) {
-    formData.append("FILE_SURAT_BALASAN", fileBalasan);
-  }
+      SURVEY: survey,
+      TRAFO: trafo,
+      JTM: jtm,
+      JTR: jtr,
 
-  fetch("/api/proses2", {
-    method: "POST",
-    body: formData
-  })
-    .then(r => r.json())
-    .then(res => {
-      setSaving(false);
-      if (res.status === "ok") {
-        onSuccess("Proses Tahap 2 berhasil disimpan");
-        onClose();
-      } else {
-        alert(res.message || "Gagal menyimpan");
-      }
+      NODIN_KE_REN: nodin,
+
+      FILE_SURAT_BALASAN_BASE64: fileBase64,
+      FILE_SURAT_BALASAN_NAME: fileName
+    };
+
+    fetch("/api/proses2", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
     })
-    .catch(() => {
-      setSaving(false);
-      alert("Koneksi error");
-    });
-}
-
+      .then(r => r.json())
+      .then(res => {
+        setSaving(false);
+        if (res.status === "ok") {
+          onSuccess("Proses berhasil disimpan");
+          onClose();
+        } else {
+          alert(res.message);
+        }
+      })
+      .catch(() => {
+        setSaving(false);
+        alert("Koneksi error");
+      });
+  }
 
   return (
-    <>
-      {/* ===== LOADING ===== */}
-      {saving && (
-        <div className="modal-overlay">
-          <div className="modal-card" style={{ maxWidth: 300, textAlign: "center" }}>
-            <b>Menyimpan data…</b>
-            <p>Mohon tunggu</p>
-          </div>
-        </div>
-      )}
+    <div className="modal-overlay">
+      <div className="modal-card" style={{ maxWidth: 560 }}>
+        <h3>Proses Tahap 2 ({jenis})</h3>
 
-      {/* ===== MESSAGE ===== */}
-      {msg && !saving && (
-        <div className="modal-overlay">
-          <div className="modal-card" style={{ maxWidth: 320, textAlign: "center" }}>
-            <b>{msg}</b>
-            <br /><br />
-            <button
-              className="btn-primary"
-              onClick={() => {
-                setMsg("");
-                onSuccess();
-                onClose();
-              }}
-            >
-              OK
-            </button>
-          </div>
-        </div>
-      )}
+        {/* KATEGORI */}
+        <select value={kategori} onChange={e=>setKategori(e.target.value)}>
+          <option value="">-- Kategori --</option>
+          <option value="SUDAH BAYAR">SUDAH BAYAR</option>
+          <option value="BELUM BAYAR">BELUM BAYAR</option>
+        </select>
 
-      {/* ===== FORM ===== */}
-      {!saving && !msg && (
-        <div className="modal-overlay">
-          <div className="modal-card" style={{ maxWidth: 540 }}>
-            <h3>Proses Tahap 2 ({jenis})</h3>
+        {/* ULP */}
+        <select value={ulp} onChange={e=>setUlp(e.target.value)}>
+          <option value="">-- ULP --</option>
+          {ULP_LIST.map(u=> <option key={u}>{u}</option>)}
+        </select>
 
-        {/* ===== KATEGORI ===== */}
-        <div className="form-group">
-          <label>Kategori</label>
-          <select value={kategori} onChange={e => setKategori(e.target.value)}>
-            <option value="">-- pilih --</option>
-            <option value="SUDAH BAYAR">SUDAH BAYAR</option>
-            <option value="BELUM BAYAR">BELUM BAYAR</option>
-          </select>
-        </div>
-
-        {/* ===== ULP ===== */}
-        <div className="form-group">
-          <label>ULP</label>
-          <select value={ulp} onChange={e => setUlp(e.target.value)}>
-            <option value="">-- pilih ULP --</option>
-            {ULP_LIST.map(u => <option key={u}>{u}</option>)}
-          </select>
-        </div>
-
-        {/* ===== SURAT BALASAN ===== */}
-        <div className="form-group">
-          <label>
-            <input
-              type="checkbox"
-              checked={adaSuratBalasan}
-              onChange={e => setAdaSuratBalasan(e.target.checked)}
-            /> Ada Surat Balasan
-          </label>
-
-          {adaSuratBalasan && (
-  <>
-    {fileBalasanLama && (
-      <small>
-        File lama:{" "}
-        <a href={fileBalasanLama} target="_blank">
-          Download
-        </a>
-      </small>
-    )}
-
-    <input
-      type="file"
-      accept="application/pdf"
-      onChange={e => setFileBalasan(e.target.files[0])}
-    />
-  </>
-)}
-
-        </div>
-
-        {/* ===== POTENSI & RUMAH ===== */}
-        <div className="form-group">
-          <label>Potensi Pelanggan</label>
-          <input value={potensi} onChange={e => setPotensi(e.target.value)} />
-        </div>
-
-        <div className="form-group">
-          <label>Rumah Selesai Dibangun</label>
-          <input value={rumah} onChange={e => setRumah(e.target.value)} />
-        </div>
-
-        {/* ===== PD ONLY ===== */}
-        {isPD && (
+        {/* PD ONLY */}
+        {jenis === "PD" && (
           <>
-            <div className="form-group">
-              <label>Tarif Lama</label>
-              <select value={tarifLama} onChange={e => setTarifLama(e.target.value)}>
-                <option value="">-- pilih --</option>
-                {Object.keys(tarifList).map(t => <option key={t}>{t}</option>)}
-              </select>
-            </div>
+            <select value={tarifLama} onChange={e=>setTarifLama(e.target.value)}>
+              <option value="">Tarif Lama</option>
+              {Object.keys(tarifList).map(t=> <option key={t}>{t}</option>)}
+            </select>
 
-            <div className="form-group">
-              <label>Daya Lama</label>
-              <select value={dayaLama} onChange={e => setDayaLama(e.target.value)}>
-                <option value="">-- pilih --</option>
-                {(tarifList[tarifLama] || []).map(d => <option key={d}>{d}</option>)}
-              </select>
-            </div>
+            <select value={dayaLama} onChange={e=>setDayaLama(e.target.value)}>
+              <option value="">Daya Lama</option>
+              {(tarifList[tarifLama] || []).map(d=> <option key={d}>{d}</option>)}
+            </select>
           </>
         )}
 
-        {/* ===== BARU ===== */}
-        <div className="form-group">
-          <label>Tarif Baru</label>
-          <select value={tarifBaru} onChange={e => setTarifBaru(e.target.value)}>
-            <option value="">-- pilih --</option>
-            {Object.keys(tarifList).map(t => <option key={t}>{t}</option>)}
-          </select>
+        {/* BARU (PB + PD) */}
+        <select value={tarifBaru} onChange={e=>setTarifBaru(e.target.value)}>
+          <option value="">Tarif Baru</option>
+          {Object.keys(tarifList).map(t=> <option key={t}>{t}</option>)}
+        </select>
+
+        <select value={dayaBaru} onChange={e=>setDayaBaru(e.target.value)}>
+          <option value="">Daya Baru</option>
+          {(tarifList[tarifBaru] || []).map(d=> <option key={d}>{d}</option>)}
+        </select>
+
+        {/* SURVEY */}
+        <label>
+          <input type="checkbox" checked={survey} onChange={e=>setSurvey(e.target.checked)} />
+          Survey
+        </label>
+
+        {survey && (
+          <>
+            <input placeholder="TRAFO" value={trafo} onChange={e=>setTrafo(e.target.value)} />
+            <input placeholder="JTM" value={jtm} onChange={e=>setJtm(e.target.value)} />
+            <input placeholder="JTR" value={jtr} onChange={e=>setJtr(e.target.value)} />
+          </>
+        )}
+
+        {/* FILE BALASAN */}
+        <label>
+          <input type="checkbox" checked={adaBalasan} onChange={e=>setAdaBalasan(e.target.checked)} />
+          Ada Surat Balasan
+        </label>
+
+        {adaBalasan && (
+          <input type="file" accept="application/pdf" onChange={e=>setFileBalasan(e.target.files[0])} />
+        )}
+
+        <div className="modal-actions">
+          <button onClick={onClose}>Batal</button>
+          <button onClick={handleSubmit} disabled={saving}>
+            {saving ? "Menyimpan..." : "Simpan"}
+          </button>
         </div>
-
-        <div className="form-group">
-          <label>Daya Baru</label>
-          <select value={dayaBaru} onChange={e => setDayaBaru(e.target.value)}>
-            <option value="">-- pilih --</option>
-            {(tarifList[tarifBaru] || []).map(d => <option key={d}>{d}</option>)}
-          </select>
-        </div>
-
-        <div className="form-group">
-          <label>Delta VA</label>
-          <input value={deltaVA} onChange={e => setDeltaVA(e.target.value)} />
-        </div>
-
-         {/* ===== SURVEY ===== */}
-<div className="form-group">
-  <label>
-    <input
-      type="checkbox"
-      checked={survey}
-      onChange={e => setSurvey(e.target.checked)}
-    />{" "}
-    SURVEY
-  </label>
-
-  {survey && (
-    <div className="survey-row">
-      <div className="survey-field">
-        <label>TRAFO</label>
-        <input value={trafo} onChange={e => setTrafo(e.target.value)} />
-      </div>
-
-      <div className="survey-field">
-        <label>JTM</label>
-        <input value={jtm} onChange={e => setJtm(e.target.value)} />
-      </div>
-
-      <div className="survey-field">
-        <label>JTR</label>
-        <input value={jtr} onChange={e => setJtr(e.target.value)} />
       </div>
     </div>
-  )}
-</div>
-
-        <div className="form-group">
-          <label>No Surat Penyampaian Reksis ke UP3</label>
-          <input value={noReksis} onChange={e => setNoReksis(e.target.value)} />
-        </div>
-
-        <div className="form-group">
-          <label>
-            <input type="checkbox" checked={nodin} onChange={e => setNodin(e.target.checked)} /> NODIN dikirim ke REN
-          </label>
-        </div>
-
-           {/* =====notelpon ===== */}
-          <div className="form-group">
-          <label>Nomor Telepon Pelanggan</label>
-          <input value={telepon} onChange={e => setTelepon(e.target.value)}
-            placeholder="08xxxxxxxxxx"/>
-          </div>
-<div className="modal-actions">
-              <button className="btn-ghost" onClick={onClose}>Batal</button>
-              <button className="btn-primary" onClick={handleSubmit}>
-                Simpan
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-    </>
   );
 }
-
