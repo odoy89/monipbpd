@@ -45,26 +45,28 @@ export default function ProsesModalPD({ open, data, onClose, onSuccess }) {
 
   /* ================= SUBMIT ================= */
   function handleSubmit() {
-    if (!kategori || !ulp || !tarifLama || !dayaLama) {
-      alert("Lengkapi data wajib");
-      return;
-    }
+  if (!kategori || !ulp || !tarifLama || !dayaLama) {
+    alert("Lengkapi data wajib");
+    return;
+  }
 
-    onSuccess({
-      NO: data.NO,
+  fetch("/api/proses2", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      action: "saveProses2",
+      NO: String(data.NO),
+
       KATEGORI: kategori,
       ULP: ulp,
-
-      SURAT_BALASAN: suratBalasan,
-      FILE_SURAT_BALASAN: fileBalasan,
 
       POTENSI_PELANGGAN: potensi,
       RUMAH_SELESAI_DIBANGUN: rumah,
 
       TARIF_LAMA: tarifLama,
       DAYA_LAMA: dayaLama,
-
       DELTA_VA: deltaVA,
+
       NO_SURAT_PENYAMPAIAN_REKSIS_KE_UP3: noReksis,
 
       SURVEY: survey,
@@ -73,10 +75,19 @@ export default function ProsesModalPD({ open, data, onClose, onSuccess }) {
       JTR: survey ? jtr : "",
 
       NODIN_KE_REN: nodin
-    });
-
-    onClose();
-  }
+    })
+  })
+    .then(r => r.json())
+    .then(res => {
+      if (res.status === "ok") {
+        onSuccess();
+        onClose();
+      } else {
+        alert(res.message || "Gagal menyimpan PD");
+      }
+    })
+    .catch(() => alert("Koneksi error"));
+}
 
   return (
     <div className="modal-overlay">
@@ -226,3 +237,4 @@ export default function ProsesModalPD({ open, data, onClose, onSuccess }) {
     </div>
   );
 }
+
