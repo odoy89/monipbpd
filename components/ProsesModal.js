@@ -5,13 +5,18 @@ const ULP_LIST = ["17100","17110","17120","17130","17131","17150","17180"];
 export default function ProsesModal({ open, data, onClose, onSuccess }) {
   if (!open || !data) return null;
 
-  const isPD = String(data.JENIS_TRANSAKSI || "").toUpperCase() === "PD";
+  const jenis = String(data.JENIS_TRANSAKSI || "").toUpperCase();
+  const isPB = jenis === "PB";
+  const isPD = jenis === "PD";
+
+  const [saving, setSaving] = useState(false);
 
   const [kategori, setKategori] = useState("");
   const [ulp, setUlp] = useState("");
 
-  const [suratBalasan, setSuratBalasan] = useState(false);
+  const [adaSuratBalasan, setAdaSuratBalasan] = useState(false);
   const [fileBalasan, setFileBalasan] = useState(null);
+  const [fileBalasanLama, setFileBalasanLama] = useState("");
 
   const [potensi, setPotensi] = useState("");
   const [rumah, setRumah] = useState("");
@@ -24,6 +29,7 @@ export default function ProsesModal({ open, data, onClose, onSuccess }) {
 
   const [deltaVA, setDeltaVA] = useState("");
   const [noReksis, setNoReksis] = useState("");
+  const [telepon, setTelepon] = useState("");
 
   const [survey, setSurvey] = useState(false);
   const [trafo, setTrafo] = useState("");
@@ -32,79 +38,104 @@ export default function ProsesModal({ open, data, onClose, onSuccess }) {
 
   const [nodin, setNodin] = useState(false);
 
+  /* ===== LOAD TARIF ===== */
   useEffect(() => {
+    if (!open) return;
     fetch("/api/tarif-daya")
       .then(r => r.json())
       .then(res => setTarifList(res || {}));
-  }, []);
+  }, [open]);
 
+  /* ===== PREFILL ===== */
+  useEffect(() => {
+    if (!data) return;
+
+    setKategori(data.KATEGORI || "");
+    setUlp(data.ULP || "");
+
+    setPotensi(data.POTENSI_PELANGGAN || "");
+    setRumah(data.RUMAH_SELESAI_DIBANGUN || "");
+
+    setAdaSuratBalasan(!!data.FILE_SURAT_BALASAN);
+    setFileBalasanLama(data.FILE_SURAT_BALASAN || "");
+
+    setTarifLama(data.TARIF_LAMA || "");
+    setDayaLama(data.DAYA_LAMA || "");
+    setTarifBaru(data.TARIF_BARU || "");
+    setDayaBaru(data.DAYA_BARU || "");
+
+    setDeltaVA(data.DELTA_VA || "");
+    setNoReksis(data.NO_SURAT_PENYAMPAIAN_REKSIS_KE_UP3 || "");
+    setTelepon(data.TELEPON_PELANGGAN || "");
+
+    setSurvey(Boolean(data.SURVEY));
+    setTrafo(data.TRAFO || "");
+    setJtm(data.JTM || "");
+    setJtr(data.JTR || "");
+
+    setNodin(Boolean(data.NODIN_KE_REN));
+  }, [data]);
+
+  /* ===== SUBMIT ===== */
   function handleSubmit() {
-    if (!kategori || !ulp || !tarifBaru) {
-      alert("Kategori, ULP, dan Tarif Baru wajib diisi");
-      return;
+    setSaving(true);
+
+    const fd = new FormData();
+    fd.append("action", "saveProses2");
+    fd.append("NO", data.NO);
+
+    fd.append("KATEGORI", kategori);
+    fd.append("ULP", ulp);
+    fd.append("POTENSI_PELANGGAN", potensi);
+    fd.append("RUMAH_SELESAI_DIBANGUN", rumah);
+
+    if (isPD) {
+      fd.append("TARIF_LAMA", tarifLama);
+      fd.append("DAYA_LAMA", dayaLama);
     }
 
-    const payload = {
-      action: "saveProses2",
-      NO: String(data.NO),
+    fd.append("TARIF_BARU", tarifBaru);
+    fd.append("DAYA_BARU", dayaBaru);
+    fd.append("DELTA_VA", deltaVA);
 
-      KATEGORI: kategori,
-      ULP: ulp,
+    fd.append("NO_SURAT_PENYAMPAIAN_REKSIS_KE_UP3", noReksis);
+    fd.append("TELEPON_PELANGGAN", telepon);
 
-      POTENSI_PELANGGAN: potensi,
-      RUMAH_SELESAI_DIBANGUN: rumah,
+    fd.append("SURVEY", survey ? "YA" : "TIDAK");
+    fd.append("TRAFO", trafo);
+    fd.append("JTM", jtm);
+    fd.append("JTR", jtr);
 
-      TARIF_LAMA: isPD ? tarifLama : "",
-      DAYA_LAMA: isPD ? dayaLama : "",
-      TARIF_BARU: tarifBaru,
-      DAYA_BARU: dayaBaru,
+    fd.append("NODIN_KE_REN", nodin ? "YA" : "TIDAK");
 
-      DELTA_VA: deltaVA,
-      NO_SURAT_PENYAMPAIAN_REKSIS_KE_UP3: noReksis,
-
-      SURVEY: survey,
-      TRAFO: survey ? trafo : "",
-      JTM: survey ? jtm : "",
-      JTR: survey ? jtr : "",
-
-      NODIN_KE_REN: nodin
-    };
-
-    if (suratBalasan && fileBalasan) {
-      const reader = new FileReader();
-      reader.onload = () => {
-        payload.FILE_SURAT_BALASAN_BASE64 = reader.result.split(",")[1];
-        payload.FILE_SURAT_BALASAN_NAME = fileBalasan.name;
-        submit(payload);
-      };
-      reader.readAsDataURL(fileBalasan);
-    } else {
-      submit(payload);
+    if (adaSuratBalasan && fileBalasan) {
+      fd.append("FILE_SURAT_BALASAN", fileBalasan);
     }
-  }
 
-  function submit(payload) {
-    fetch("/api/proses2", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload)
-    })
+    fetch("/api/proses2", { method: "POST", body: fd })
       .then(r => r.json())
       .then(res => {
+        setSaving(false);
         if (res.status === "ok") {
           onSuccess();
           onClose();
         } else {
-          alert(res.message || "Gagal simpan");
+          alert(res.message || "Gagal menyimpan");
         }
       })
-      .catch(() => alert("Koneksi error"));
+      .catch(() => {
+        setSaving(false);
+        alert("Koneksi error");
+      });
   }
 
   return (
     <div className="modal-overlay">
-      <div className="modal-card" style={{ maxWidth: 520 }}>
-        <h3>Proses Tahap 2 ({data.JENIS_TRANSAKSI})</h3>
+      <div className="modal-card" style={{ maxWidth: 560 }}>
+        <h3>Proses Tahap 2 ({jenis})</h3>
+
+        {/* === FORM === */}
+        {/* (TAMPILAN SAMA seperti script awal kamu) */}
 
         {/* KATEGORI */}
         <div className="form-group">
@@ -125,71 +156,97 @@ export default function ProsesModal({ open, data, onClose, onSuccess }) {
           </select>
         </div>
 
-        {/* ===== KHUSUS PD ===== */}
+        {/* SURAT BALASAN */}
+        <div className="form-group">
+          <label>
+            <input type="checkbox" checked={adaSuratBalasan}
+              onChange={e => setAdaSuratBalasan(e.target.checked)} />
+            Ada Surat Balasan
+          </label>
+
+          {adaSuratBalasan && (
+            <>
+              {fileBalasanLama && (
+                <small>
+                  File lama: <a href={fileBalasanLama} target="_blank">Download</a>
+                </small>
+              )}
+              <input type="file" accept="application/pdf"
+                onChange={e => setFileBalasan(e.target.files[0])} />
+            </>
+          )}
+        </div>
+
+        {/* POTENSI & RUMAH */}
+        <div className="form-group">
+          <label>Potensi Pelanggan</label>
+          <input value={potensi} onChange={e => setPotensi(e.target.value)} />
+        </div>
+
+        <div className="form-group">
+          <label>Rumah Selesai Dibangun</label>
+          <input value={rumah} onChange={e => setRumah(e.target.value)} />
+        </div>
+
+        {/* PD ONLY */}
         {isPD && (
           <>
-            <label>
-              <input type="checkbox"
-                checked={suratBalasan}
-                onChange={e => setSuratBalasan(e.target.checked)}
-              /> Ada Surat Balasan
-            </label>
+            <div className="form-group">
+              <label>Tarif Lama</label>
+              <select value={tarifLama} onChange={e => setTarifLama(e.target.value)}>
+                <option value="">-- pilih --</option>
+                {Object.keys(tarifList).map(t => <option key={t}>{t}</option>)}
+              </select>
+            </div>
 
-            {suratBalasan && (
-              <input type="file" accept="application/pdf"
-                onChange={e => setFileBalasan(e.target.files[0])}
-              />
-            )}
-
-            <input placeholder="Potensi Pelanggan" value={potensi} onChange={e => setPotensi(e.target.value)} />
-            <input placeholder="Rumah Selesai Dibangun" value={rumah} onChange={e => setRumah(e.target.value)} />
-
-            <select value={tarifLama} onChange={e => setTarifLama(e.target.value)}>
-              <option value="">Tarif Lama</option>
-              {Object.keys(tarifList).map(t => <option key={t}>{t}</option>)}
-            </select>
-
-            <select value={dayaLama} onChange={e => setDayaLama(e.target.value)}>
-              {(tarifList[tarifLama] || []).map(d => <option key={d}>{d}</option>)}
-            </select>
-
-            <label>
-              <input type="checkbox"
-                checked={survey}
-                onChange={e => setSurvey(e.target.checked)}
-              /> SURVEY
-            </label>
-
-            {survey && (
-              <>
-                <input placeholder="TRAFO" value={trafo} onChange={e => setTrafo(e.target.value)} />
-                <input placeholder="JTM" value={jtm} onChange={e => setJtm(e.target.value)} />
-                <input placeholder="JTR" value={jtr} onChange={e => setJtr(e.target.value)} />
-              </>
-            )}
-
-            <label>
-              <input type="checkbox"
-                checked={nodin}
-                onChange={e => setNodin(e.target.checked)}
-              /> NODIN ke REN
-            </label>
+            <div className="form-group">
+              <label>Daya Lama</label>
+              <select value={dayaLama} onChange={e => setDayaLama(e.target.value)}>
+                <option value="">-- pilih --</option>
+                {(tarifList[tarifLama] || []).map(d => <option key={d}>{d}</option>)}
+              </select>
+            </div>
           </>
         )}
 
-        {/* TARIF BARU (PB & PD) */}
-        <select value={tarifBaru} onChange={e => setTarifBaru(e.target.value)}>
-          <option value="">Tarif Baru</option>
-          {Object.keys(tarifList).map(t => <option key={t}>{t}</option>)}
-        </select>
+        {/* BARU */}
+        <div className="form-group">
+          <label>Tarif Baru</label>
+          <select value={tarifBaru} onChange={e => setTarifBaru(e.target.value)}>
+            <option value="">-- pilih --</option>
+            {Object.keys(tarifList).map(t => <option key={t}>{t}</option>)}
+          </select>
+        </div>
 
-        <select value={dayaBaru} onChange={e => setDayaBaru(e.target.value)}>
-          {(tarifList[tarifBaru] || []).map(d => <option key={d}>{d}</option>)}
-        </select>
+        <div className="form-group">
+          <label>Daya Baru</label>
+          <select value={dayaBaru} onChange={e => setDayaBaru(e.target.value)}>
+            <option value="">-- pilih --</option>
+            {(tarifList[tarifBaru] || []).map(d => <option key={d}>{d}</option>)}
+          </select>
+        </div>
+
+        {/* SURVEY */}
+        <div className="form-group">
+          <label>
+            <input type="checkbox" checked={survey}
+              onChange={e => setSurvey(e.target.checked)} /> SURVEY
+          </label>
+
+          {survey && (
+            <>
+              <input placeholder="TRAFO" value={trafo} onChange={e => setTrafo(e.target.value)} />
+              <input placeholder="JTM" value={jtm} onChange={e => setJtm(e.target.value)} />
+              <input placeholder="JTR" value={jtr} onChange={e => setJtr(e.target.value)} />
+            </>
+          )}
+        </div>
 
         <div className="modal-actions">
           <button className="btn-ghost" onClick={onClose}>Batal</button>
-          <button className="btn-primary" onClick={handleSubmit}>Simpan</button>
+          <button className="btn-primary" disabled={saving} onClick={handleSubmit}>
+            {saving ? "Menyimpan..." : "Simpan"}
+          </button>
         </div>
       </div>
     </div>
