@@ -136,26 +136,25 @@ export default function ProsesModal({ open, data, onClose, onSuccess }) {
     payload.FILE_SURAT_BALASAN_NAME = fileName;
   }
 
-  fetch(process.env.NEXT_PUBLIC_APPSCRIPT_URL, {
+  fetch("/api/proses2", {
   method: "POST",
   headers: { "Content-Type": "application/json" },
   body: JSON.stringify(payload)
 })
-    .then(r => r.json())
-    .then(res => {
-      setSaving(false);
-      if (res.status === "ok") {
-        onSuccess("Proses Tahap 2 berhasil disimpan");
-        onClose();
-      } else {
-        alert(res.message || "Gagal menyimpan");
-      }
-    })
-    .catch(() => {
-      setSaving(false);
-      alert("Koneksi error");
-    });
-}
+  .then(r => r.json())
+  .then(res => {
+    setSaving(false);
+    if (res.status === "ok") {
+      onSuccess("Proses Tahap 2 berhasil disimpan");
+      onClose();
+    } else {
+      alert(res.message || "Gagal menyimpan");
+    }
+  })
+  .catch(() => {
+    setSaving(false);
+    alert("Koneksi error");
+  });
 
   return (
     <>
@@ -359,6 +358,7 @@ export default function ProsesModal({ open, data, onClose, onSuccess }) {
     </>
   );
 }
+
 
 
 
