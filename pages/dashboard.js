@@ -5,8 +5,7 @@ import FilterBar from "../components/FilterBar";
 import DataTable from "../components/DataTable";
 
 import TambahSuratModal from "../components/TambahSuratModal";
-import ProsesPBModal from "../components/ProsesPBModal";
-import ProsesModalPD from "../components/ProsesModalPD";
+import ProsesModal from "../components/ProsesModal";
 
 import VendorModal from "../components/VendorModal";
 import ProgressModal from "../components/ProgresModal";
@@ -268,28 +267,14 @@ const jenisTransaksi = String(selectedRow?.JENIS_TRANSAKSI || "")
         }}
       />
 
-    {/* ===== PROSES 2 : PB ===== */}
-{openProses && jenisTransaksi === "PB" && (
-  <ProsesPBModal
+   {openProses && (
+  <ProsesModal
     open={openProses}
     data={selectedRow}
     onClose={() => setOpenProses(false)}
     onSuccess={() => {
       loadData();
-      showPopup("Proses PB berhasil disimpan");
-    }}
-  />
-)}
-
-{/* ===== PROSES 2 : PD ===== */}
-{openProses && jenisTransaksi === "PD" && (
-  <ProsesModalPD
-    open={openProses}
-    data={selectedRow}
-    onClose={() => setOpenProses(false)}
-    onSuccess={() => {
-      loadData();
-      showPopup("Proses PD berhasil disimpan");
+      showPopup("Proses berhasil disimpan");
     }}
   />
 )}
@@ -373,6 +358,7 @@ const jenisTransaksi = String(selectedRow?.JENIS_TRANSAKSI || "")
   );
   
 }
+
 
 
 
