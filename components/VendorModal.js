@@ -86,11 +86,14 @@ function handleSubmit() {
           <div className="form-group">
             <label>Nama Vendor</label>
             <select value={vendor} onChange={e => handleVendorChange(e.target.value)}>
-              <option value="">-- pilih vendor --</option>
-              {vendors.map(v => (
-                <option key={v.nama} value={v.nama}>{v.nama}</option>
-              ))}
-            </select>
+  <option value="">-- pilih vendor --</option>
+  {vendors.map(v => (
+    <option key={v.nama} value={v.nama}>
+      {v.nama}
+    </option>
+  ))}
+</select>
+
           </div>
 
           <div className="form-group">
@@ -119,5 +122,6 @@ function handleSubmit() {
     </>
   );
 }
+
 
 
