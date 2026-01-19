@@ -31,13 +31,12 @@ export default function VendorModal({ open, data, onClose, onSuccess }) {
     });
 }, [open, data]);
 
+function handleVendorChange(val) {
+  setVendor(val);
+  const v = vendors.find(x => x.nama === val);
+  setKontak(v ? v.kontak : "");
+}
 
-
-  function handleVendorChange(val) {
-    setVendor(val);
-    const v = vendors.find(x => x.nama === val);
-    setKontak(v ? v.kontak : "");
-  }
 
 function handleSubmit() {
   if (!vendor) {
@@ -122,6 +121,7 @@ function handleSubmit() {
     </>
   );
 }
+
 
 
 
