@@ -151,6 +151,7 @@ async function submitJSON(fileBase64, fileName) {
 
 
   return (
+    <>
     <div className="modal-overlay">
       <div className="modal-card" style={{ maxWidth: 560 }}>
         <h3>Proses Tahap 2 ({jenis})</h3>
@@ -320,5 +321,7 @@ async function submitJSON(fileBase64, fileName) {
         </div>
       </div>
     </div>
+            </>
   );
             }
+
