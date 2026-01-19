@@ -37,10 +37,14 @@ export default function DataTable({
             </tr>
           ) : (
             data.map((d, i) => {
-              const STATUS = String(d.STATUS || "").toUpperCase().trim();
+              const STATUS = String(d.STATUS || "")
+                .toUpperCase()
+                .trim();
 
-              // 🔑 KUNCI ALUR VENDOR (INI YANG FIX)
-              const HAS_VENDOR = Boolean(d.VENDOR_PEKERJAAN);
+              // ✅ KUNCI ALUR VENDOR (BENAR)
+              const HAS_VENDOR = Boolean(
+                d.VENDOR && String(d.VENDOR).trim() !== ""
+              );
 
               return (
                 <tr key={d.NO || i}>
@@ -65,8 +69,8 @@ export default function DataTable({
                   <td>{d.DURASI ? `${d.DURASI} Hari` : "-"}</td>
 
                   <td>
-                    <span className={`badge ${String(d.STATUS).toLowerCase()}`}>
-                      {d.STATUS}
+                    <span className={`badge ${STATUS.toLowerCase()}`}>
+                      {STATUS}
                     </span>
                   </td>
 
@@ -100,7 +104,7 @@ export default function DataTable({
                         </button>
                       )}
 
-                      {/* ================= ALUR RESMI ================= */}
+                      {/* ===== ALUR RESMI ===== */}
 
                       {/* 1️⃣ MENUNGGU → PROSES */}
                       {STATUS === "MENUNGGU" && (
