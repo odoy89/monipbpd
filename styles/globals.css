@@ -448,10 +448,18 @@ body {
 }
 
 .survey-row {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  display: flex;
   gap: 12px;
 }
+
+.survey-col {
+  flex: 1;
+}
+
+.survey-col input {
+  width: 100%;
+}
+
 
 .survey-col label {
   font-size: 12px;
@@ -510,5 +518,6 @@ body {
     grid-template-columns: 1fr;
   }
 }
+
 
 
