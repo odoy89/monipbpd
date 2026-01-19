@@ -1,7 +1,6 @@
 export default async function handler(req, res) {
   try {
     const body = req.body || {};
-    const action = body.action || "getVendorList";
 
     const resp = await fetch(process.env.NEXT_PUBLIC_APPSCRIPT_URL, {
       method: "POST",
@@ -19,6 +18,24 @@ export default async function handler(req, res) {
     }
 
     const json = JSON.parse(text);
+
+    // 🔥 FIX KRITIS DI SINI
+    if (Array.isArray(json)) {
+      return res.status(200).json({
+        status: "ok",
+        vendors: json.map(v => ({
+          nama: v.NAMA_VENDOR || v.nama,
+          kontak: v.NO_TLPN || v.kontak || ""
+        }))
+      });
+    }
+
+    // kalau sudah rapi
+    if (json.vendors) {
+      return res.status(200).json(json);
+    }
+
+    // fallback
     res.status(200).json(json);
 
   } catch (err) {
@@ -28,4 +45,3 @@ export default async function handler(req, res) {
     });
   }
 }
-
