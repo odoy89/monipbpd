@@ -10,19 +10,23 @@ export default function VendorModal({ open, data, onClose, onSuccess }) {
   useEffect(() => {
   if (!open || !data) return;
 
-  fetch("/api/vendor")
-    .then(r => r.json())
-    .then(res => {
-      const list = Array.isArray(res.vendors) ? res.vendors : [];
-      setVendors(list);
+  fetch("/api/vendor", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({ action: "getVendorList" })
+})
+  .then(r => r.json())
+  .then(res => {
+    const list = Array.isArray(res.vendors) ? res.vendors : [];
+    setVendors(list);
 
-      // 🔥 LOAD DATA LAMA
-      if (data.VENDOR) {
-        setVendor(data.VENDOR);
-        const v = list.find(x => x.nama === data.VENDOR);
-        setKontak(v?.kontak || "");
-      }
-    });
+    // PREFILL JIKA SUDAH ADA VENDOR
+    if (data.VENDOR) {
+      setVendor(data.VENDOR);
+      const v = list.find(x => x.nama === data.VENDOR);
+      setKontak(v?.kontak || "");
+    }
+  });
 }, [open, data]);
 
 
@@ -110,3 +114,4 @@ export default function VendorModal({ open, data, onClose, onSuccess }) {
     </>
   );
 }
+
