@@ -232,6 +232,10 @@ const jenisTransaksi = String(selectedRow?.JENIS_TRANSAKSI || "")
     setSelectedRow(row);
     setOpenProgress(true);
   }}
+onVendor={(row) => {         
+    setSelectedRow(row);
+    setOpenVendor(true);
+  }}
   onFoto={(row) => {
     setPreviewFoto(row);
   }}
@@ -358,6 +362,7 @@ const jenisTransaksi = String(selectedRow?.JENIS_TRANSAKSI || "")
   );
   
 }
+
 
 
 
