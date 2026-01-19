@@ -78,85 +78,81 @@ export default function ProsesModal({ open, data, onClose, onSuccess }) {
 
   /* ===== SUBMIT ===== */
   async function handleSubmit() {
-  setSaving(true);
+    setSaving(true);
 
-  let fileBase64 = "";
-  let fileName = "";
+    let fileBase64 = "";
+    let fileName = "";
 
-  if (adaSuratBalasan && fileBalasan) {
-    const reader = new FileReader();
-    reader.onload = async () => {
-      fileBase64 = reader.result.split(",")[1];
-      fileName = fileBalasan.name;
-      await submitJSON(fileBase64, fileName);
-    };
-    reader.readAsDataURL(fileBalasan);
-  } else {
-    await submitJSON("", "");
+    if (adaSuratBalasan && fileBalasan) {
+      const reader = new FileReader();
+      reader.onload = async () => {
+        fileBase64 = reader.result.split(",")[1];
+        fileName = fileBalasan.name;
+        await submitJSON(fileBase64, fileName);
+      };
+      reader.readAsDataURL(fileBalasan);
+    } else {
+      await submitJSON("", "");
+    }
   }
-}
 
-async function submitJSON(fileBase64, fileName) {
-  const payload = {
-    action: "saveProses2",
-    NO: data.NO,
+  async function submitJSON(fileBase64, fileName) {
+    const payload = {
+      action: "saveProses2",
+      NO: data.NO,
 
-    KATEGORI: kategori,
-    ULP: ulp,
+      KATEGORI: kategori,
+      ULP: ulp,
 
-    POTENSI_PELANGGAN: potensi,
-    RUMAH_SELESAI_DIBANGUN: rumah,
+      POTENSI_PELANGGAN: potensi,
+      RUMAH_SELESAI_DIBANGUN: rumah,
 
-    TARIF_LAMA: isPD ? tarifLama : "",
-    DAYA_LAMA: isPD ? dayaLama : "",
+      TARIF_LAMA: isPD ? tarifLama : "",
+      DAYA_LAMA: isPD ? dayaLama : "",
 
-    TARIF_BARU: tarifBaru,
-    DAYA_BARU: dayaBaru,
-    DELTA_VA: deltaVA,
+      TARIF_BARU: tarifBaru,
+      DAYA_BARU: dayaBaru,
+      DELTA_VA: deltaVA,
 
-    NO_SURAT_PENYAMPAIAN_REKSIS_KE_UP3: noReksis,
-    TELEPON_PELANGGAN: telepon,
+      NO_SURAT_PENYAMPAIAN_REKSIS_KE_UP3: noReksis,
+      TELEPON_PELANGGAN: telepon,
 
-    SURVEY: survey,
-    TRAFO: survey ? trafo : "",
-    JTM: survey ? jtm : "",
-    JTR: survey ? jtr : "",
+      SURVEY: survey,
+      TRAFO: survey ? trafo : "",
+      JTM: survey ? jtm : "",
+      JTR: survey ? jtr : "",
 
-    NODIN_KE_REN: nodin,
+      NODIN_KE_REN: nodin,
 
-    FILE_SURAT_BALASAN_BASE64: fileBase64,
-    FILE_SURAT_BALASAN_NAME: fileName
-  };
+      FILE_SURAT_BALASAN_BASE64: fileBase64,
+      FILE_SURAT_BALASAN_NAME: fileName
+    };
 
-  fetch("/api/proses2", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(payload)
-  })
-    .then(r => r.json())
-    .then(res => {
-      setSaving(false);
-      if (res.status === "ok") {
-        onSuccess();
-        onClose();
-      } else {
-        alert(res.message || "Gagal menyimpan");
-      }
+    fetch("/api/proses2", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
     })
-    .catch(() => {
-      setSaving(false);
-      alert("Koneksi error");
-    });
-}
-
+      .then(r => r.json())
+      .then(res => {
+        setSaving(false);
+        if (res.status === "ok") {
+          onSuccess();
+          onClose();
+        } else {
+          alert(res.message || "Gagal menyimpan");
+        }
+      })
+      .catch(() => {
+        setSaving(false);
+        alert("Koneksi error");
+      });
+  }
 
   return (
     <div className="modal-overlay">
       <div className="modal-card" style={{ maxWidth: 560 }}>
         <h3>Proses Tahap 2 ({jenis})</h3>
-
-        {/* === FORM === */}
-        {/* (TAMPILAN SAMA seperti script awal kamu) */}
 
         {/* KATEGORI */}
         <div className="form-group">
@@ -180,9 +176,11 @@ async function submitJSON(fileBase64, fileName) {
         {/* SURAT BALASAN */}
         <div className="form-group">
           <label>
-            <input type="checkbox" checked={adaSuratBalasan}
-              onChange={e => setAdaSuratBalasan(e.target.checked)} />
-            Ada Surat Balasan
+            <input
+              type="checkbox"
+              checked={adaSuratBalasan}
+              onChange={e => setAdaSuratBalasan(e.target.checked)}
+            /> Ada Surat Balasan
           </label>
 
           {adaSuratBalasan && (
@@ -192,18 +190,22 @@ async function submitJSON(fileBase64, fileName) {
                   File lama: <a href={fileBalasanLama} target="_blank">Download</a>
                 </small>
               )}
-              <input type="file" accept="application/pdf"
-                onChange={e => setFileBalasan(e.target.files[0])} />
+              <input
+                type="file"
+                accept="application/pdf"
+                onChange={e => setFileBalasan(e.target.files[0])}
+              />
             </>
           )}
         </div>
 
-        {/* POTENSI & RUMAH */}
+        {/* POTENSI */}
         <div className="form-group">
           <label>Potensi Pelanggan</label>
           <input value={potensi} onChange={e => setPotensi(e.target.value)} />
         </div>
 
+        {/* RUMAH */}
         <div className="form-group">
           <label>Rumah Selesai Dibangun</label>
           <input value={rumah} onChange={e => setRumah(e.target.value)} />
@@ -247,16 +249,12 @@ async function submitJSON(fileBase64, fileName) {
           </select>
         </div>
 
-{/* DELTA VA */}
-<div className="form-group">
-  <label>Delta VA</label>
-  <input
-    value={deltaVA}
-    onChange={e => setDeltaVA(e.target.value)}
-  />
-</div>
+        {/* DELTA VA */}
+        <div className="form-group">
+          <label>Delta VA</label>
+          <input value={deltaVA} onChange={e => setDeltaVA(e.target.value)} />
+        </div>
 
-                                             
         {/* SURVEY */}
         <div className="form-group">
           <label>
@@ -265,54 +263,35 @@ async function submitJSON(fileBase64, fileName) {
           </label>
 
           {survey && (
-  <div className="survey-row">
-    <div className="survey-col">
-      <label>TRAFO</label>
-      <input value={trafo} onChange={e => setTrafo(e.target.value)} />
-    </div>
-    <div className="survey-col">
-      <label>JTM</label>
-      <input value={jtm} onChange={e => setJtm(e.target.value)} />
-    </div>
-    <div className="survey-col">
-      <label>JTR</label>
-      <input value={jtr} onChange={e => setJtr(e.target.value)} />
-    </div>
-  </div>
-)}
+            <div className="survey-row">
+              <input placeholder="TRAFO" value={trafo} onChange={e => setTrafo(e.target.value)} />
+              <input placeholder="JTM" value={jtm} onChange={e => setJtm(e.target.value)} />
+              <input placeholder="JTR" value={jtr} onChange={e => setJtr(e.target.value)} />
+            </div>
+          )}
+        </div>
 
-{/* NODIN */}
-<div className="form-group">
-  <label>
-    <input
-      type="checkbox"
-      checked={nodin}
-      onChange={e => setNodin(e.target.checked)}
-    />{" "}
-    NODIN dikirim ke REN
-  </label>
-</div>
+        {/* NODIN */}
+        <div className="form-group">
+          <label>
+            <input type="checkbox" checked={nodin}
+              onChange={e => setNodin(e.target.checked)} /> NODIN dikirim ke REN
+          </label>
+        </div>
 
-{/* NO REKSIS */}
-<div className="form-group">
-  <label>No Surat Penyampaian Reksis ke UP3</label>
-  <input
-    value={noReksis}
-    onChange={e => setNoReksis(e.target.value)}
-  />
-</div>
-             
-{/* TELEPON */}
-<div className="form-group">
-  <label>Nomor Telepon Pelanggan</label>
-  <input
-    placeholder="08xxxxxxxxxx"
-    value={telepon}
-    onChange={e => setTelepon(e.target.value)}
-  />
-</div>
+        {/* NO REKSIS */}
+        <div className="form-group">
+          <label>No Surat Penyampaian Reksis ke UP3</label>
+          <input value={noReksis} onChange={e => setNoReksis(e.target.value)} />
+        </div>
 
-      <div className="modal-actions">
+        {/* TELEPON */}
+        <div className="form-group">
+          <label>Nomor Telepon Pelanggan</label>
+          <input value={telepon} onChange={e => setTelepon(e.target.value)} />
+        </div>
+
+        <div className="modal-actions">
           <button className="btn-ghost" onClick={onClose}>Batal</button>
           <button className="btn-primary" disabled={saving} onClick={handleSubmit}>
             {saving ? "Menyimpan..." : "Simpan"}
@@ -323,7 +302,3 @@ async function submitJSON(fileBase64, fileName) {
     </div>
   );
 }
-
-
-
-
