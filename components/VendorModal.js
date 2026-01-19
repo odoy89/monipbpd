@@ -11,21 +11,26 @@ export default function VendorModal({ open, data, onClose, onSuccess }) {
   if (!open || !data) return;
 
   fetch("/api/vendor", {
-  method: "POST",
-  headers: { "Content-Type": "application/json" },
-  body: JSON.stringify({ action: "getVendorList" })
-})
-  .then(r => r.json())
-  .then(res => {
-    const list = Array.isArray(res.vendors) ? res.vendors : [];
-    setVendors(list);
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ action: "getVendorList" })
+  })
+    .then(r => r.json())
+    .then(res => {
+      const list = Array.isArray(res.vendors) ? res.vendors : [];
+      setVendors(list);
 
-    // PREFILL JIKA SUDAH ADA VENDOR
-    if (data.VENDOR) {
-      setVendor(data.VENDOR);
-      const v = list.find(x => x.NAMA_VENDOR === data.VENDOR);
-setKontak(v?.NO_TLPN || "");
-  });
+      // PREFILL VENDOR LAMA
+      if (data.VENDOR) {
+        setVendor(data.VENDOR);
+        const v = list.find(x => x.NAMA_VENDOR === data.VENDOR);
+        setKontak(v?.NO_TLPN || "");
+      }
+    })
+    .catch(err => {
+      console.error("Gagal load vendor:", err);
+    });
+
 }, [open, data]);
 
 
@@ -119,5 +124,6 @@ setKontak(v ? v.NO_TLPN : "");
     </>
   );
 }
+
 
 
