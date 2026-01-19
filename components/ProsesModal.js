@@ -47,34 +47,41 @@ export default function ProsesModal({ open, data, onClose, onSuccess }) {
   }, [open]);
 
   /* ===== PREFILL ===== */
-  useEffect(() => {
-    if (!data) return;
+useEffect(() => {
+  if (!data) return;
 
-    setKategori(data.KATEGORI || "");
-    setUlp(data.ULP || "");
+  setKategori(data.KATEGORI || "");
+  setUlp(data.ULP || "");
 
-    setPotensi(data.POTENSI_PELANGGAN || "");
-    setRumah(data.RUMAH_SELESAI_DIBANGUN || "");
+  setPotensi(data.POTENSI_PELANGGAN || "");
+  setRumah(data.RUMAH_SELESAI_DIBANGUN || "");
 
-    setAdaSuratBalasan(!!data.FILE_SURAT_BALASAN);
-    setFileBalasanLama(data.FILE_SURAT_BALASAN || "");
+  // 🔥 FIX SURAT BALASAN
+  const hasFile =
+    data.FILE_SURAT_BALASAN &&
+    data.FILE_SURAT_BALASAN !== "-" &&
+    data.FILE_SURAT_BALASAN !== "";
 
-    setTarifLama(data.TARIF_LAMA || "");
-    setDayaLama(data.DAYA_LAMA || "");
-    setTarifBaru(data.TARIF_BARU || "");
-    setDayaBaru(data.DAYA_BARU || "");
+  setAdaSuratBalasan(Boolean(hasFile));
+  setFileBalasanLama(hasFile ? data.FILE_SURAT_BALASAN : "");
 
-    setDeltaVA(data.DELTA_VA || "");
-    setNoReksis(data.NO_SURAT_PENYAMPAIAN_REKSIS_KE_UP3 || "");
-    setTelepon(data.TELEPON_PELANGGAN || "");
+  setTarifLama(data.TARIF_LAMA || "");
+  setDayaLama(data.DAYA_LAMA || "");
+  setTarifBaru(data.TARIF_BARU || "");
+  setDayaBaru(data.DAYA_BARU || "");
 
-    setSurvey(Boolean(data.SURVEY));
-    setTrafo(data.TRAFO || "");
-    setJtm(data.JTM || "");
-    setJtr(data.JTR || "");
+  setDeltaVA(data.DELTA_VA || "");
+  setNoReksis(data.NO_SURAT_PENYAMPAIAN_REKSIS_KE_UP3 || "");
+  setTelepon(data.TELEPON_PELANGGAN || "");
 
-    setNodin(Boolean(data.NODIN_KE_REN));
-  }, [data]);
+  setSurvey(Boolean(data.SURVEY));
+  setTrafo(data.TRAFO || "");
+  setJtm(data.JTM || "");
+  setJtr(data.JTR || "");
+
+  setNodin(Boolean(data.NODIN_KE_REN));
+}, [data]);
+
 
   /* ===== SUBMIT ===== */
   async function handleSubmit() {
@@ -302,3 +309,4 @@ export default function ProsesModal({ open, data, onClose, onSuccess }) {
     </div>
   );
 }
+
