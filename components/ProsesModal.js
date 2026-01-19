@@ -3,13 +3,12 @@ import { useEffect, useState } from "react";
 const ULP_LIST = ["17100","17110","17120","17130","17131","17150","17180"];
 
 export default function ProsesModal({ open, data, onClose, onSuccess }) {
+  if (!open || !data) return null;
 
-  /* ===== SAFE DATA ===== */
-  const jenis = String(data?.JENIS_TRANSAKSI || "").toUpperCase();
+  const jenis = String(data.JENIS_TRANSAKSI || "").toUpperCase();
   const isPB = jenis === "PB";
   const isPD = jenis === "PD";
 
-  /* ===== STATE ===== */
   const [saving, setSaving] = useState(false);
 
   const [kategori, setKategori] = useState("");
@@ -78,82 +77,88 @@ export default function ProsesModal({ open, data, onClose, onSuccess }) {
   }, [data]);
 
   /* ===== SUBMIT ===== */
-  function handleSubmit() {
-    setSaving(true);
+  async function handleSubmit() {
+  setSaving(true);
 
-    if (adaSuratBalasan && fileBalasan) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        const base64 = reader.result.split(",")[1];
-        submitJSON(base64, fileBalasan.name);
-      };
-      reader.readAsDataURL(fileBalasan);
-    } else {
-      submitJSON("", "");
-    }
-  }
+  let fileBase64 = "";
+  let fileName = "";
 
-  function submitJSON(fileBase64, fileName) {
-    const payload = {
-      action: "saveProses2",
-      NO: data.NO,
-
-      KATEGORI: kategori,
-      ULP: ulp,
-
-      POTENSI_PELANGGAN: potensi,
-      RUMAH_SELESAI_DIBANGUN: rumah,
-
-      TARIF_LAMA: isPD ? tarifLama : "",
-      DAYA_LAMA: isPD ? dayaLama : "",
-
-      TARIF_BARU: tarifBaru,
-      DAYA_BARU: dayaBaru,
-      DELTA_VA: deltaVA,
-
-      NO_SURAT_PENYAMPAIAN_REKSIS_KE_UP3: noReksis,
-      TELEPON_PELANGGAN: telepon,
-
-      SURVEY: survey,
-      TRAFO: survey ? trafo : "",
-      JTM: survey ? jtm : "",
-      JTR: survey ? jtr : "",
-
-      NODIN_KE_REN: nodin,
-
-      FILE_SURAT_BALASAN_BASE64: fileBase64,
-      FILE_SURAT_BALASAN_NAME: fileName
+  if (adaSuratBalasan && fileBalasan) {
+    const reader = new FileReader();
+    reader.onload = async () => {
+      fileBase64 = reader.result.split(",")[1];
+      fileName = fileBalasan.name;
+      await submitJSON(fileBase64, fileName);
     };
-
-    fetch("/api/proses2", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload)
-    })
-      .then(r => r.json())
-      .then(res => {
-        setSaving(false);
-        if (res.status === "ok") {
-          onSuccess();
-          onClose();
-        } else {
-          alert(res.message || "Gagal menyimpan");
-        }
-      })
-      .catch(() => {
-        setSaving(false);
-        alert("Koneksi error");
-      });
+    reader.readAsDataURL(fileBalasan);
+  } else {
+    await submitJSON("", "");
   }
+}
 
-  /* ===== EARLY EXIT AFTER HOOK ===== */
-  if (!open || !data) return null;
+async function submitJSON(fileBase64, fileName) {
+  const payload = {
+    action: "saveProses2",
+    NO: data.NO,
+
+    KATEGORI: kategori,
+    ULP: ulp,
+
+    POTENSI_PELANGGAN: potensi,
+    RUMAH_SELESAI_DIBANGUN: rumah,
+
+    TARIF_LAMA: isPD ? tarifLama : "",
+    DAYA_LAMA: isPD ? dayaLama : "",
+
+    TARIF_BARU: tarifBaru,
+    DAYA_BARU: dayaBaru,
+    DELTA_VA: deltaVA,
+
+    NO_SURAT_PENYAMPAIAN_REKSIS_KE_UP3: noReksis,
+    TELEPON_PELANGGAN: telepon,
+
+    SURVEY: survey,
+    TRAFO: survey ? trafo : "",
+    JTM: survey ? jtm : "",
+    JTR: survey ? jtr : "",
+
+    NODIN_KE_REN: nodin,
+
+    FILE_SURAT_BALASAN_BASE64: fileBase64,
+    FILE_SURAT_BALASAN_NAME: fileName
+  };
+
+  fetch("/api/proses2", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload)
+  })
+    .then(r => r.json())
+    .then(res => {
+      setSaving(false);
+      if (res.status === "ok") {
+        onSuccess();
+        onClose();
+      } else {
+        alert(res.message || "Gagal menyimpan");
+      }
+    })
+    .catch(() => {
+      setSaving(false);
+      alert("Koneksi error");
+    });
+}
+
 
   return (
     <div className="modal-overlay">
       <div className="modal-card" style={{ maxWidth: 560 }}>
         <h3>Proses Tahap 2 ({jenis})</h3>
 
+        {/* === FORM === */}
+        {/* (TAMPILAN SAMA seperti script awal kamu) */}
+
+        {/* KATEGORI */}
         <div className="form-group">
           <label>Kategori</label>
           <select value={kategori} onChange={e => setKategori(e.target.value)}>
@@ -163,16 +168,16 @@ export default function ProsesModal({ open, data, onClose, onSuccess }) {
           </select>
         </div>
 
+        {/* ULP */}
         <div className="form-group">
           <label>ULP</label>
           <select value={ulp} onChange={e => setUlp(e.target.value)}>
             <option value="">-- pilih ULP --</option>
-            {ULP_LIST.map(u => (
-              <option key={u} value={u}>{u}</option>
-            ))}
+            {ULP_LIST.map(u => <option key={u}>{u}</option>)}
           </select>
         </div>
 
+        {/* SURAT BALASAN */}
         <div className="form-group">
           <label>
             <input type="checkbox" checked={adaSuratBalasan}
@@ -184,7 +189,7 @@ export default function ProsesModal({ open, data, onClose, onSuccess }) {
             <>
               {fileBalasanLama && (
                 <small>
-                  File lama: <a href={fileBalasanLama} target="_blank" rel="noreferrer">Download</a>
+                  File lama: <a href={fileBalasanLama} target="_blank">Download</a>
                 </small>
               )}
               <input type="file" accept="application/pdf"
@@ -193,6 +198,7 @@ export default function ProsesModal({ open, data, onClose, onSuccess }) {
           )}
         </div>
 
+        {/* POTENSI & RUMAH */}
         <div className="form-group">
           <label>Potensi Pelanggan</label>
           <input value={potensi} onChange={e => setPotensi(e.target.value)} />
@@ -203,15 +209,14 @@ export default function ProsesModal({ open, data, onClose, onSuccess }) {
           <input value={rumah} onChange={e => setRumah(e.target.value)} />
         </div>
 
+        {/* PD ONLY */}
         {isPD && (
           <>
             <div className="form-group">
               <label>Tarif Lama</label>
               <select value={tarifLama} onChange={e => setTarifLama(e.target.value)}>
                 <option value="">-- pilih --</option>
-                {Object.keys(tarifList).map(t => (
-                  <option key={t} value={t}>{t}</option>
-                ))}
+                {Object.keys(tarifList).map(t => <option key={t}>{t}</option>)}
               </select>
             </div>
 
@@ -219,21 +224,18 @@ export default function ProsesModal({ open, data, onClose, onSuccess }) {
               <label>Daya Lama</label>
               <select value={dayaLama} onChange={e => setDayaLama(e.target.value)}>
                 <option value="">-- pilih --</option>
-                {(tarifList[tarifLama] || []).map(d => (
-                  <option key={d} value={d}>{d}</option>
-                ))}
+                {(tarifList[tarifLama] || []).map(d => <option key={d}>{d}</option>)}
               </select>
             </div>
           </>
         )}
 
+        {/* BARU */}
         <div className="form-group">
           <label>Tarif Baru</label>
           <select value={tarifBaru} onChange={e => setTarifBaru(e.target.value)}>
             <option value="">-- pilih --</option>
-            {Object.keys(tarifList).map(t => (
-              <option key={t} value={t}>{t}</option>
-            ))}
+            {Object.keys(tarifList).map(t => <option key={t}>{t}</option>)}
           </select>
         </div>
 
@@ -241,17 +243,21 @@ export default function ProsesModal({ open, data, onClose, onSuccess }) {
           <label>Daya Baru</label>
           <select value={dayaBaru} onChange={e => setDayaBaru(e.target.value)}>
             <option value="">-- pilih --</option>
-            {(tarifList[tarifBaru] || []).map(d => (
-              <option key={d} value={d}>{d}</option>
-            ))}
+            {(tarifList[tarifBaru] || []).map(d => <option key={d}>{d}</option>)}
           </select>
         </div>
 
-        <div className="form-group">
-          <label>Delta VA</label>
-          <input value={deltaVA} onChange={e => setDeltaVA(e.target.value)} />
-        </div>
+{/* DELTA VA */}
+<div className="form-group">
+  <label>Delta VA</label>
+  <input
+    value={deltaVA}
+    onChange={e => setDeltaVA(e.target.value)}
+  />
+</div>
 
+                                             
+        {/* SURVEY */}
         <div className="form-group">
           <label>
             <input type="checkbox" checked={survey}
@@ -259,48 +265,60 @@ export default function ProsesModal({ open, data, onClose, onSuccess }) {
           </label>
 
           {survey && (
-            <div className="survey-row">
-              <div className="survey-col">
-                <label>TRAFO</label>
-                <input value={trafo} onChange={e => setTrafo(e.target.value)} />
-              </div>
-              <div className="survey-col">
-                <label>JTM</label>
-                <input value={jtm} onChange={e => setJtm(e.target.value)} />
-              </div>
-              <div className="survey-col">
-                <label>JTR</label>
-                <input value={jtr} onChange={e => setJtr(e.target.value)} />
-              </div>
-            </div>
-          )}
-        </div>
+  <div className="survey-row">
+    <div className="survey-col">
+      <label>TRAFO</label>
+      <input value={trafo} onChange={e => setTrafo(e.target.value)} />
+    </div>
+    <div className="survey-col">
+      <label>JTM</label>
+      <input value={jtm} onChange={e => setJtm(e.target.value)} />
+    </div>
+    <div className="survey-col">
+      <label>JTR</label>
+      <input value={jtr} onChange={e => setJtr(e.target.value)} />
+    </div>
+  </div>
+)}
 
-        <div className="form-group">
-          <label>
-            <input type="checkbox" checked={nodin}
-              onChange={e => setNodin(e.target.checked)} /> NODIN dikirim ke REN
-          </label>
-        </div>
+{/* NODIN */}
+<div className="form-group">
+  <label>
+    <input
+      type="checkbox"
+      checked={nodin}
+      onChange={e => setNodin(e.target.checked)}
+    />{" "}
+    NODIN dikirim ke REN
+  </label>
+</div>
 
-        <div className="form-group">
-          <label>No Surat Penyampaian Reksis ke UP3</label>
-          <input value={noReksis} onChange={e => setNoReksis(e.target.value)} />
-        </div>
+{/* NO REKSIS */}
+<div className="form-group">
+  <label>No Surat Penyampaian Reksis ke UP3</label>
+  <input
+    value={noReksis}
+    onChange={e => setNoReksis(e.target.value)}
+  />
+</div>
+             
+{/* TELEPON */}
+<div className="form-group">
+  <label>Nomor Telepon Pelanggan</label>
+  <input
+    placeholder="08xxxxxxxxxx"
+    value={telepon}
+    onChange={e => setTelepon(e.target.value)}
+  />
+</div>
 
-        <div className="form-group">
-          <label>Nomor Telepon Pelanggan</label>
-          <input placeholder="08xxxxxxxxxx"
-            value={telepon}
-            onChange={e => setTelepon(e.target.value)} />
-        </div>
-
-        <div className="modal-actions">
+      <div className="modal-actions">
           <button className="btn-ghost" onClick={onClose}>Batal</button>
           <button className="btn-primary" disabled={saving} onClick={handleSubmit}>
             {saving ? "Menyimpan..." : "Simpan"}
           </button>
         </div>
+
       </div>
     </div>
   );
