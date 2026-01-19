@@ -10,20 +10,27 @@ export default function VendorModal({ open, data, onClose, onSuccess }) {
   useEffect(() => {
   if (!open || !data) return;
 
-  fetch("/api/vendor")
+  fetch("/api/vendor", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      action: "getVendorList"
+    })
+  })
     .then(r => r.json())
     .then(res => {
       const list = Array.isArray(res.vendors) ? res.vendors : [];
       setVendors(list);
 
-      // 🔥 LOAD DATA LAMA
+      // 🔥 PREFILL VENDOR LAMA (EDIT MODE)
       if (data.VENDOR) {
         setVendor(data.VENDOR);
-        const v = list.find(x => x.nama === data.VENDOR);
-        setKontak(v?.kontak || "");
+        const v = list.find(x => x.nama === data.VENDOR || x.NAMA_VENDOR === data.VENDOR);
+        setKontak(v?.kontak || v?.NO_TLPN || "");
       }
     });
 }, [open, data]);
+
 
 
   function handleVendorChange(val) {
@@ -112,4 +119,5 @@ function handleSubmit() {
     </>
   );
 }
+
 
