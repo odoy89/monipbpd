@@ -118,15 +118,13 @@ export default function DataTable({
 
                       {/* 2️⃣ PROGRES + BELUM ADA VENDOR */}
                       {STATUS === "PROGRES" && !HAS_VENDOR && (
-                        <button
+                       <button
   className="btn-warning"
-  onClick={() => {
-    setVendorData(d);
-    setShowVendor(true);
-  }}
+  onClick={() => onVendor(d)}
 >
   Pilih Vendor
 </button>
+
 
                       )}
 
@@ -159,4 +157,5 @@ export default function DataTable({
     </div>
   );
 }
+
 
