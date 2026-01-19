@@ -53,19 +53,24 @@ export default function ProsesModal({ open, data, onClose, onSuccess }) {
     setUlp(data.ULP || "");
     setPotensi(data.POTENSI_PELANGGAN || "");
     setRumah(data.RUMAH_SELESAI_DIBANGUN || "");
+
     setAdaSuratBalasan(!!data.FILE_SURAT_BALASAN);
     setFileBalasanLama(data.FILE_SURAT_BALASAN || "");
+
     setTarifLama(data.TARIF_LAMA || "");
     setDayaLama(data.DAYA_LAMA || "");
     setTarifBaru(data.TARIF_BARU || "");
     setDayaBaru(data.DAYA_BARU || "");
+
     setDeltaVA(data.DELTA_VA || "");
     setNoReksis(data.NO_SURAT_PENYAMPAIAN_REKSIS_KE_UP3 || "");
     setTelepon(data.TELEPON_PELANGGAN || "");
+
     setSurvey(Boolean(data.SURVEY));
     setTrafo(data.TRAFO || "");
     setJtm(data.JTM || "");
     setJtr(data.JTR || "");
+
     setNodin(Boolean(data.NODIN_KE_REN));
   }, [data]);
 
@@ -93,22 +98,30 @@ export default function ProsesModal({ open, data, onClose, onSuccess }) {
     const payload = {
       action: "saveProses2",
       NO: data.NO,
+
       KATEGORI: kategori,
       ULP: ulp,
+
       POTENSI_PELANGGAN: potensi,
       RUMAH_SELESAI_DIBANGUN: rumah,
+
       TARIF_LAMA: isPD ? tarifLama : "",
       DAYA_LAMA: isPD ? dayaLama : "",
+
       TARIF_BARU: tarifBaru,
       DAYA_BARU: dayaBaru,
       DELTA_VA: deltaVA,
+
       NO_SURAT_PENYAMPAIAN_REKSIS_KE_UP3: noReksis,
       TELEPON_PELANGGAN: telepon,
+
       SURVEY: survey,
       TRAFO: survey ? trafo : "",
       JTM: survey ? jtm : "",
       JTR: survey ? jtr : "",
+
       NODIN_KE_REN: nodin,
+
       FILE_SURAT_BALASAN_BASE64: fileBase64,
       FILE_SURAT_BALASAN_NAME: fileName
     };
@@ -139,8 +152,7 @@ export default function ProsesModal({ open, data, onClose, onSuccess }) {
       <div className="modal-card" style={{ maxWidth: 560 }}>
         <h3>Proses Tahap 2 ({jenis})</h3>
 
-        {/* === FORM === */}
-        {/* (TAMPILAN SAMA seperti script awal kamu) */}
+        {/* === FORM (ISI SAMA PERSIS) === */}
 
         {/* KATEGORI */}
         <div className="form-group">
@@ -157,7 +169,9 @@ export default function ProsesModal({ open, data, onClose, onSuccess }) {
           <label>ULP</label>
           <select value={ulp} onChange={e => setUlp(e.target.value)}>
             <option value="">-- pilih ULP --</option>
-            {ULP_LIST.map(u => <option key={u}>{u}</option>)}
+            {ULP_LIST.map(u => (
+              <option key={u} value={u}>{u}</option>
+            ))}
           </select>
         </div>
 
