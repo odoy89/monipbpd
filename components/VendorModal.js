@@ -23,17 +23,16 @@ export default function VendorModal({ open, data, onClose, onSuccess }) {
     // PREFILL JIKA SUDAH ADA VENDOR
     if (data.VENDOR) {
       setVendor(data.VENDOR);
-      const v = list.find(x => x.nama === data.VENDOR);
-      setKontak(v?.kontak || "");
-    }
+      const v = list.find(x => x.NAMA_VENDOR === data.VENDOR);
+setKontak(v?.NO_TLPN || "");
   });
 }, [open, data]);
 
 
   function handleVendorChange(val) {
     setVendor(val);
-    const v = vendors.find(x => x.nama === val);
-    setKontak(v ? v.kontak : "");
+    const v = vendors.find(x => x.NAMA_VENDOR === val);
+setKontak(v ? v.NO_TLPN : "");
   }
 
   function handleSubmit() {
@@ -83,8 +82,14 @@ export default function VendorModal({ open, data, onClose, onSuccess }) {
             <select value={vendor} onChange={e => handleVendorChange(e.target.value)}>
               <option value="">-- pilih vendor --</option>
               {vendors.map(v => (
-                <option key={v.nama} value={v.nama}>{v.nama}</option>
-              ))}
+  <option
+    key={v.NAMA_VENDOR}
+    value={v.NAMA_VENDOR}
+  >
+    {v.NAMA_VENDOR}
+  </option>
+))}
+
             </select>
           </div>
 
@@ -114,4 +119,5 @@ export default function VendorModal({ open, data, onClose, onSuccess }) {
     </>
   );
 }
+
 
