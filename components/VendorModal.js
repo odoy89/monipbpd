@@ -41,38 +41,40 @@ setKontak(v ? v.NO_TLPN : "");
   }
 
   function handleSubmit() {
-    if (!vendor) {
-      setPopup("Pilih vendor dulu");
-      return;
-    }
-
-    setLoading(true);
-
-    fetch("/api/save-vendor", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        NO: data.NO,
-        VENDOR: vendor,
-        KONTAK_VENDOR: kontak
-      })
-    })
-      .then(r => r.json())
-      .then(res => {
-        if (res.status === "ok") {
-          setPopup("Vendor berhasil disimpan");
-          setTimeout(() => {
-            setPopup("");
-            onSuccess();
-            onClose();
-          }, 1200);
-        } else {
-          setPopup(res.message || "Gagal menyimpan vendor");
-        }
-      })
-      .catch(() => setPopup("Koneksi error"))
-      .finally(() => setLoading(false));
+  if (!vendor) {
+    setPopup("Pilih vendor dulu");
+    return;
   }
+
+  setLoading(true);
+
+  fetch("/api/vendor", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      action: "saveVendorToRecord",
+      NO: String(data.NO),
+      NAMA_VENDOR: vendor,
+      NO_TLPN: kontak
+    })
+  })
+    .then(r => r.json())
+    .then(res => {
+      if (res.status === "ok") {
+        setPopup("Vendor berhasil disimpan");
+        setTimeout(() => {
+          setPopup("");
+          onSuccess();   // reload data
+          onClose();     // tutup modal
+        }, 800);
+      } else {
+        setPopup(res.message || "Gagal menyimpan vendor");
+      }
+    })
+    .catch(() => setPopup("Koneksi error"))
+    .finally(() => setLoading(false));
+}
+
 
   if (!open || !data) return null;
 
@@ -124,6 +126,7 @@ setKontak(v ? v.NO_TLPN : "");
     </>
   );
 }
+
 
 
 
