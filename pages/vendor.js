@@ -144,8 +144,8 @@ function hapus(row) {
           {data.map((d, i) => (
             <tr key={i}>
               <td>{i + 1}</td>
-              <td>{d.NAMA_VENDOR}</td>
-              <td>{d.NO_TLPN}</td>
+              <td>{d.nama}</td>
+              <td>{d.kontak}</td>
               <td>
   <td>
   {role === "ADMIN" && (
@@ -191,3 +191,4 @@ function hapus(row) {
     
   );
 }
+
