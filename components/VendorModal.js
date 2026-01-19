@@ -10,69 +10,61 @@ export default function VendorModal({ open, data, onClose, onSuccess }) {
   useEffect(() => {
   if (!open || !data) return;
 
-  fetch("/api/vendor", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      action: "getVendorList"
-    })
-  })
+  fetch("/api/vendor")
     .then(r => r.json())
     .then(res => {
       const list = Array.isArray(res.vendors) ? res.vendors : [];
       setVendors(list);
 
-      // 🔥 PREFILL VENDOR LAMA (EDIT MODE)
+      // 🔥 LOAD DATA LAMA
       if (data.VENDOR) {
         setVendor(data.VENDOR);
-        const v = list.find(x => x.nama === data.VENDOR || x.NAMA_VENDOR === data.VENDOR);
-        setKontak(v?.kontak || v?.NO_TLPN || "");
+        const v = list.find(x => x.nama === data.VENDOR);
+        setKontak(v?.kontak || "");
       }
     });
 }, [open, data]);
 
-function handleVendorChange(val) {
-  setVendor(val);
-  const v = vendors.find(x => x.nama === val);
-  setKontak(v ? v.kontak : "");
-}
 
-
-function handleSubmit() {
-  if (!vendor) {
-    setPopup("Pilih vendor dulu");
-    return;
+  function handleVendorChange(val) {
+    setVendor(val);
+    const v = vendors.find(x => x.nama === val);
+    setKontak(v ? v.kontak : "");
   }
 
-  setLoading(true);
+  function handleSubmit() {
+    if (!vendor) {
+      setPopup("Pilih vendor dulu");
+      return;
+    }
 
-  fetch("/api/vendor", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      action: "saveVendor",
-      NO: String(data.NO),
-      NAMA_VENDOR: vendor,
-      NO_TLPN: kontak
-    })
-  })
-    .then(r => r.json())
-    .then(res => {
-      if (res.status === "ok") {
-        setPopup("Vendor berhasil disimpan");
-        setTimeout(() => {
-          setPopup("");
-          onSuccess();
-          onClose();
-        }, 1200);
-      } else {
-        setPopup(res.message || "Gagal menyimpan vendor");
-      }
-    })
-    .catch(() => setPopup("Koneksi error"))
-    .finally(() => setLoading(false));
-}
+    setLoading(true);
 
+    fetch("/api/save-vendor", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        NO: data.NO,
+        VENDOR: vendor,
+        KONTAK_VENDOR: kontak
+      })
+    })
+      .then(r => r.json())
+      .then(res => {
+        if (res.status === "ok") {
+          setPopup("Vendor berhasil disimpan");
+          setTimeout(() => {
+            setPopup("");
+            onSuccess();
+            onClose();
+          }, 1200);
+        } else {
+          setPopup(res.message || "Gagal menyimpan vendor");
+        }
+      })
+      .catch(() => setPopup("Koneksi error"))
+      .finally(() => setLoading(false));
+  }
 
   if (!open || !data) return null;
 
@@ -85,14 +77,11 @@ function handleSubmit() {
           <div className="form-group">
             <label>Nama Vendor</label>
             <select value={vendor} onChange={e => handleVendorChange(e.target.value)}>
-  <option value="">-- pilih vendor --</option>
-  {vendors.map(v => (
-    <option key={v.nama} value={v.nama}>
-      {v.nama}
-    </option>
-  ))}
-</select>
-
+              <option value="">-- pilih vendor --</option>
+              {vendors.map(v => (
+                <option key={v.nama} value={v.nama}>{v.nama}</option>
+              ))}
+            </select>
           </div>
 
           <div className="form-group">
@@ -121,7 +110,3 @@ function handleSubmit() {
     </>
   );
 }
-
-
-
-
