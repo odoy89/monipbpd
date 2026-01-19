@@ -321,11 +321,4 @@ async function submitJSON(fileBase64, fileName) {
       </div>
     </div>
   );
-
-
-
-
-
-
-
-
+            }
