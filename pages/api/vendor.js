@@ -9,34 +9,27 @@ export default async function handler(req, res) {
     });
 
     const text = await resp.text();
-
     if (text.startsWith("<")) {
-      return res.status(500).json({
-        status: "error",
-        message: "Apps Script balas HTML"
-      });
+      return res.status(500).json({ status: "error", message: "HTML response" });
     }
 
     const json = JSON.parse(text);
 
-    // 🔥 FIX KRITIS DI SINI
-    if (Array.isArray(json)) {
+    // 🔥 JIKA REQUEST LIST VENDOR
+    if (body.action === "getVendorList") {
+      const list = Array.isArray(json) ? json : [];
+
       return res.status(200).json({
         status: "ok",
-        vendors: json.map(v => ({
-          nama: v.NAMA_VENDOR || v.nama,
-          kontak: v.NO_TLPN || v.kontak || ""
+        vendors: list.map(v => ({
+          nama: v.NAMA_VENDOR,
+          kontak: v.NO_TLPN
         }))
       });
     }
 
-    // kalau sudah rapi
-    if (json.vendors) {
-      return res.status(200).json(json);
-    }
-
-    // fallback
-    res.status(200).json(json);
+    // 🔥 DEFAULT (SAVE / DELETE / DLL)
+    return res.status(200).json(json);
 
   } catch (err) {
     res.status(500).json({
