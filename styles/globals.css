@@ -28,7 +28,6 @@ body {
   padding: 0 20px;
 }
 
-/* ===== JUDUL TENGAH ===== */
 .header-title {
   text-align: center;
   font-size: 20px;
@@ -36,7 +35,6 @@ body {
   color: #1e3c72;
 }
 
-/* ===== USER KANAN ===== */
 .header-user {
   display: flex;
   flex-direction: column;
@@ -45,58 +43,10 @@ body {
   font-size: 12px;
 }
 
-.datetime {
-  display: flex;
-  gap: 10px;
-}
-
-.date {
-  color: #6b21a8;
-}
-
-.time {
-  color: #2563eb;
-  font-weight: 700;
-}
-
-.user-row {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.logout {
-  border: 1px solid #dc2626;
-  background: transparent;
-  color: #dc2626;
-  padding: 4px 10px;
-  border-radius: 6px;
-  font-size: 12px;
-  cursor: pointer;
-}
-
-/* ================= LOGO ================= */
-.logo-box {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.logo {
-  height: 42px;
-}
-
-.logo-text {
-  font-size: 11px;
-  font-weight: 600;
-  color: #1e3c72;
-}
-
 /* ================= MAIN ================= */
 .main {
   flex: 1;
   display: flex;
-  min-height: calc(100vh - 70px);
 }
 
 /* ================= SIDEBAR ================= */
@@ -115,9 +65,6 @@ body {
   padding: 10px 14px;
   border-radius: 8px;
   cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 8px;
 }
 
 .menu:hover,
@@ -129,14 +76,6 @@ body {
 .content {
   flex: 1;
   padding: 20px;
-}
-
-/* ================= STAT ================= */
-.stat-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
-  margin-top: 20px;
 }
 
 /* ================= FILTER ================= */
@@ -151,74 +90,6 @@ body {
   display: grid;
   grid-template-columns: repeat(3, 1fr) auto;
   gap: 14px;
-  align-items: end;
-}
-
-.filter-grid label {
-  font-size: 12px;
-  font-weight: 600;
-}
-
-.filter-grid input,
-.filter-grid select {
-  width: 100%;
-  height: 36px;
-  border-radius: 8px;
-  border: 1px solid #d1d5db;
-  padding: 0 12px;
-}
-
-.filter-bottom {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: 16px;
-}
-
-.search-box {
-  position: relative;
-  width: 260px;
-}
-
-.search-box input {
-  width: 100%;
-  height: 36px;
-  border-radius: 8px;
-  border: 1px solid #d1d5db;
-  padding: 0 36px 0 12px;
-}
-
-.search-icon {
-  position: absolute;
-  right: 10px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: #6b7280;
-}
-
-/* ================= BUTTON ================= */
-.btn-primary {
-  background: #2563eb;
-  color: #fff;
-  border: none;
-  padding: 8px 16px;
-  border-radius: 8px;
-  cursor: pointer;
-}
-
-.btn-ghost {
-  background: #f3f4f6;
-  border: 1px solid #d1d5db;
-  padding: 8px 16px;
-  border-radius: 8px;
-}
-
-.btn-success {
-  background: #16a34a;
-  color: #fff;
-  border: none;
-  padding: 8px 16px;
-  border-radius: 8px;
 }
 
 /* ================= TABLE ================= */
@@ -227,45 +98,25 @@ body {
   border-radius: 12px;
   padding: 16px;
   margin-top: 16px;
-  box-shadow: 0 4px 12px rgba(0,0,0,.06);
+  overflow-x: auto;
 }
 
 .table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 13px;
+  font-size: 14px;
 }
 
 .table th {
   background: #f5f5f5;
   padding: 10px;
   font-weight: 700;
-  text-align: left;
 }
 
 .table td {
   padding: 10px;
   border-top: 1px solid #eee;
 }
-
-.aksi {
-  display: flex;
-  gap: 6px;
-  flex-wrap: wrap;
-}
-
-.aksi button {
-  border: none;
-  padding: 6px 8px;
-  border-radius: 6px;
-  font-size: 12px;
-  cursor: pointer;
-}
-
-.btn-edit { background:#2563eb; color:#fff; }
-.btn-detail { background:#6b7280; color:#fff; }
-.btn-hapus { background:#dc2626; color:#fff; }
-.btn-lanjut { background:#facc15; }
 
 /* ================= BADGE ================= */
 .badge {
@@ -277,29 +128,54 @@ body {
 }
 
 .badge.menunggu { background: #dc2626; }
-.badge.progres { background: #f59e0b; }
-.badge.selesai { background: #16a34a; }
+.badge.progres  { background: #f59e0b; }
+.badge.selesai  { background: #16a34a; }
 
-/* ================= MODAL ================= */
+/* ================= BUTTON ================= */
+.btn-primary {
+  background: #2563eb;
+  color: #fff;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+}
+
+.btn-ghost {
+  background: #f3f4f6;
+  border: 1px solid #d1d5db;
+  padding: 8px 16px;
+  border-radius: 8px;
+}
+
+/* ================================================= */
+/* ================= MODAL (FIX UTAMA) ============== */
+/* ================================================= */
+
 .modal-overlay {
   position: fixed;
   inset: 0;
   background: rgba(0,0,0,0.35);
-  display: flex;
-  align-items: center;
-  justify-content: center;
   z-index: 10000;
+
+  /* 🔥 SCROLL DI SINI */
+  overflow-y: auto;
+
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 80px 20px;
 }
 
+/* 🔥 PENTING: JANGAN ADA OVERFLOW DI SINI */
 .modal-card {
   width: 100%;
   max-width: 520px;
-  max-height: 85vh;
-  overflow-y: auto;
   background: #ffffff;
   border-radius: 14px;
   padding: 18px 20px;
   box-shadow: 0 20px 40px rgba(0,0,0,.18);
+
+  overflow: visible; /* 🔥 INI KUNCI DROPDOWN */
 }
 
 .modal-card h3 {
@@ -327,12 +203,7 @@ body {
   padding: 0 12px;
 }
 
-.form-grid-2 {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-}
-
+/* ================= ACTION ================= */
 .modal-actions {
   display: flex;
   justify-content: flex-end;
@@ -340,137 +211,12 @@ body {
   margin-top: 16px;
 }
 
-.aksi {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-}
-
-.btn-vendor {
-  background: #e5e7eb;
-  color: #111827;
-}
-
-/* ================= POPUP ================= */
-.popup-center {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,.35);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 99999;
-}
-
-.popup-box {
-  background: #16a34a;
-  color: #fff;
-  padding: 18px 24px;
-  border-radius: 12px;
-  font-weight: 600;
-  box-shadow: 0 20px 40px rgba(0,0,0,.25);
-  animation: scaleIn .2s ease;
-}
-
-@keyframes scaleIn {
-  from { transform: scale(.9); opacity: 0 }
-  to { transform: scale(1); opacity: 1 }
-}
-
-
-.popup-box.success {
-  border-left: 6px solid #16a34a;
-}
-
-.popup-box.error {
-  border-left: 6px solid #dc2626;
-}
-
-.popup-box h4 {
-  margin: 0 0 8px;
-}
-
-.table-box {
-  width: 100%;
-  overflow-x: auto;
-}
-
-.table {
-  width: 100%;
-  border-collapse: collapse;
-  white-space: nowrap;
-  font-size: 14px;
-}
-
-.table th,
-.table td {
-  padding: 8px 10px;
-  border-bottom: 1px solid #eee;
-}
-
-.checkbox-inline {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-weight: 600;
-}
-
-/* ===== FORM GROUP ===== */
-.form-group {
-  width: 100%;
-}
-
-/* ===== SURVEY GRID ===== */
+/* ================= SURVEY ================= */
 .survey-row {
   display: grid;
-  grid-template-columns: repeat(3, 1fr); /* 🔥 total = 100% */
+  grid-template-columns: repeat(3, 1fr);
   gap: 12px;
   margin-top: 8px;
-}
-
-.survey-field {
-  display: flex;
-  flex-direction: column;
-}
-
-.survey-field label {
-  font-size: 13px;
-  font-weight: 600;
-  margin-bottom: 4px;
-}
-
-.survey-field input {
-  width: 100%;           /* 🔥 INI KUNCI SEJAJAR */
-  height: 42px;          /* sama dengan input lain */
-  padding: 8px 10px;
-  font-size: 14px;
-  border-radius: 8px;
-}
-
-.survey-row {
-  display: flex;
-  gap: 12px;
-}
-
-.survey-col {
-  flex: 1;
-}
-
-.survey-col input {
-  width: 100%;
-}
-
-
-.survey-col label {
-  font-size: 12px;
-  font-weight: 600;
-}
-
-
-@media (max-width: 768px) {
-  .table {
-    font-size: 12px;
-  }
 }
 
 /* ================= RESPONSIVE ================= */
@@ -479,127 +225,7 @@ body {
     grid-template-columns: 1fr;
   }
 
-  .filter-bottom {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .filter-actions {
-  display: flex;
-  gap: 12px;   /* 🔥 FIX JARAK */
-}
-
-
-@media (max-width: 768px) {
-  .filter-actions {
-    justify-content: flex-start;
+  .modal-overlay {
+    padding: 40px 12px;
   }
 }
-
-  .search-box {
-    width: 100%;
-  }
-
-  .content {
-    padding: 12px;
-  }
-}
-
-@media (max-width: 480px) {
-  .modal-actions {
-    flex-direction: column-reverse;
-  }
-
-  .modal-actions button {
-    width: 100%;
-  }
-
-  .form-grid-2 {
-    grid-template-columns: 1fr;
-  }
-
-/* ===== FIX SELECT DROPDOWN DI MODAL ===== */
-.modal-card {
-  overflow: visible !important; /* 🔥 INI KUNCI UTAMA */
-}
-
-/* khusus select vendor */
-.vendor-select select {
-  position: relative;
-  z-index: 10001;
-}
-
-/* pastikan option tidak kepotong */
-.vendor-select select option {
-  font-size: 14px;
-}
-
-
-  /* ================= VENDOR MODAL FIX ================= */
-.vendor-modal {
-  align-items: flex-start;   
-  padding-top: 80px;        
-
-.vendor-modal .modal-card {
-  margin-bottom: 240px;     
-
-.modal-card select {
-  position: relative;
-  z-index: 10001;
-}
-
-
-.vendor-select {
-  margin-bottom: 140px; 
-}
-
-
-  /* ===== CUSTOM DROPDOWN VENDOR ===== */
-.dropdown {
-  position: relative;
-}
-
-.dropdown-input {
-  height: 38px;
-  border: 1px solid #d1d5db;
-  border-radius: 8px;
-  padding: 0 12px;
-  display: flex;
-  align-items: center;
-  cursor: pointer;
-  background: #fff;
-}
-
-.dropdown-list {
-  position: absolute;
-  top: calc(100% + 4px);   /* 🔥 PASTI KE BAWAH */
-  left: 0;
-  width: 100%;
-  max-height: 240px;
-  overflow-y: auto;
-  background: #fff;
-  border: 1px solid #d1d5db;
-  border-radius: 8px;
-  z-index: 99999;
-  box-shadow: 0 12px 30px rgba(0,0,0,.18);
-}
-
-.dropdown-item {
-  padding: 8px 12px;
-  cursor: pointer;
-}
-
-.dropdown-item:hover {
-  background: #2563eb;
-  color: #fff;
-}
-
-}
-
-
-
-
-
-
-
-
