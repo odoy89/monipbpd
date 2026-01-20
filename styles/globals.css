@@ -294,13 +294,16 @@ body {
 .modal-card {
   width: 100%;
   max-width: 520px;
-  max-height: 85vh;
-  overflow-y: auto;
+  max-height: calc(100vh - 160px); 
+  overflow-y: auto;              
+  overflow-x: visible;
+
   background: #ffffff;
   border-radius: 14px;
   padding: 18px 20px;
   box-shadow: 0 20px 40px rgba(0,0,0,.18);
 }
+
 
 .modal-card h3 {
   margin-bottom: 12px;
@@ -521,16 +524,12 @@ body {
 
 }
 
-/* ===== FIX DROPDOWN SELECT DI MODAL (AMAN) ===== */
-.modal-overlay-ven {
-  align-items: flex-start;
-  padding-top: 80px;
+/* === FIX DROPDOWN SELECT DI DALAM MODAL === */
+.modal-card select {
+  position: relative;
+  z-index: 10001;
 }
 
-.modal-card-ven {
-  max-height: none;        /* 🔥 INI KUNCI */
-  overflow-y: visible;    /* 🔥 INI KUNCI */
-}
 
 
 
