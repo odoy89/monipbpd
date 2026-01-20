@@ -533,6 +533,14 @@ body {
   box-shadow: 0 20px 40px rgba(0,0,0,.18);
 }
 
+  /* ================= VENDOR MODAL FIX ================= */
+.vendor-modal {
+  align-items: flex-start;   
+  padding-top: 80px;        
+
+.vendor-modal .modal-card {
+  margin-bottom: 240px;     
+
 .modal-card select {
   position: relative;
   z-index: 10001;
@@ -585,6 +593,7 @@ body {
 }
 
 }
+
 
 
 
