@@ -90,7 +90,7 @@ setKontak(v ? v.NO_TLPN : "");
       <select
         value={vendor}
         onChange={e => handleVendorChange(e.target.value)}
-        onFocus={e => (e.target.size = 8)}   // 🔥 dropdown kebawah
+        onFocus={e => (e.target.size = 25)}   // 🔥 dropdown kebawah
         onBlur={e => (e.target.size = 1)}    // 🔥 balik normal
       >
         <option value="">-- pilih vendor --</option>
@@ -131,6 +131,7 @@ setKontak(v ? v.NO_TLPN : "");
     </>
   );
 }
+
 
 
 
