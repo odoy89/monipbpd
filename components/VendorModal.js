@@ -84,32 +84,32 @@ setKontak(v ? v.NO_TLPN : "");
         <div className="modal-card">
           <h3>Pilih Vendor</h3>
 
-         <div className="form-group">
+  <div className="form-group">
   <label>Nama Vendor</label>
 
   <select
     value={vendor}
-    size={vendors.length > 8 ? 8 : vendors.length + 1}
+    size={10}                     // 🔥 TINGGI LIST
     onChange={e => {
       handleVendorChange(e.target.value);
-      e.target.blur(); // 🔥 TUTUP SETELAH PILIH
+      e.target.blur();            // tutup setelah pilih
     }}
+    onFocus={e => (e.target.size = 10)}
     onBlur={e => (e.target.size = 1)}
-    onFocus={e => (e.target.size = vendors.length > 8 ? 8 : vendors.length + 1)}
-    style={{ overflowY: "auto" }}
+    style={{
+      overflowY: "auto",
+      minHeight: "200px",          // 🔥 BIKIN JELAS
+      lineHeight: "1.6"
+    }}
   >
     <option value="">-- pilih vendor --</option>
     {vendors.map(v => (
-      <option
-        key={v.NAMA_VENDOR}
-        value={v.NAMA_VENDOR}
-      >
+      <option key={v.NAMA_VENDOR} value={v.NAMA_VENDOR}>
         {v.NAMA_VENDOR}
       </option>
     ))}
   </select>
 </div>
-
 
           <div className="form-group">
             <label>Kontak Vendor</label>
@@ -137,6 +137,7 @@ setKontak(v ? v.NO_TLPN : "");
     </>
   );
 }
+
 
 
 
