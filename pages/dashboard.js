@@ -228,7 +228,7 @@ const jenisTransaksi = String(selectedRow?.JENIS_TRANSAKSI || "")
     setSelectedRow(row);
     setOpenProses(true);
   }}
-   onProgress={(row) => {
+  onProgress={(row) => {
     fetch("/api/detail", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -244,7 +244,7 @@ const jenisTransaksi = String(selectedRow?.JENIS_TRANSAKSI || "")
         }
       });
   }}
-onVendor={(row) => {         
+  onVendor={(row) => {
     setSelectedRow(row);
     setOpenVendor(true);
   }}
@@ -253,8 +253,6 @@ onVendor={(row) => {
   }}
   role={role}
 />
-
-
 
       {/* ===== TAMBAH SURAT ===== */}
       <TambahSuratModal
@@ -374,6 +372,7 @@ onVendor={(row) => {
   );
   
 }
+
 
 
 
