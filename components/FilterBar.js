@@ -16,17 +16,17 @@ export default function FilterBar({
     return [...new Set(data.map(d => d.ULP).filter(Boolean))].sort();
   }, [data]);
 
-  useEffect(() => {
-    const t = setTimeout(() => {
-      onFilter({
-        date: date || "",
-        ulp: ulp || "",
-        progres: status || ""
-      });
-    }, 400);
+ useEffect(() => {
+  const t = setTimeout(() => {
+    onFilter({
+      date: date || "",
+      ulp: ulp || "",
+      progres: status || ""
+    });
+  }, 400);
 
-    return () => clearTimeout(t);
-  }, [date, ulp, status]);
+  return () => clearTimeout(t);
+}, [date, ulp, status, onFilter]);
 
   useEffect(() => {
     onSearch(search);
@@ -100,3 +100,4 @@ export default function FilterBar({
     </div>
   );
 }
+
