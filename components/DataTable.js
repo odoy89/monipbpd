@@ -64,9 +64,31 @@ export default function DataTable({
                     )}
                   </td>
 
-                  <td>{d.PROGRES_PEKERJAAN || "-"}</td>
-                  <td>{d.TANGGAL_NYALA || "-"}</td>
-                  <td>{d.DURASI ? `${d.DURASI} Hari` : "-"}</td>
+                  <td>
+  <span style={{ fontWeight: 600, color: "#2563eb" }}>
+    {d.PROGRES_PEKERJAAN || "-"}
+  </span>
+</td>
+
+                  <td>
+  {d.TANGGAL_NYALA ? (
+    <span style={{ fontWeight: 700, color: "#16a34a" }}>
+      {d.TANGGAL_NYALA}
+    </span>
+  ) : "-"}
+</td>
+
+                  <td>
+  {d.DURASI ? (
+    <span style={{
+      fontWeight: 700,
+      color: d.DURASI > 7 ? "#dc2626" : "#f59e0b"
+    }}>
+      {d.DURASI} Hari
+    </span>
+  ) : "-"}
+</td>
+
 
                   <td>
                     <span className={`badge ${STATUS.toLowerCase()}`}>
@@ -157,5 +179,6 @@ export default function DataTable({
     </div>
   );
 }
+
 
 
