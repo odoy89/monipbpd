@@ -539,6 +539,11 @@ body {
 }
 
 
+.vendor-select {
+  margin-bottom: 140px; 
+}
+
+
   /* ===== CUSTOM DROPDOWN VENDOR ===== */
 .dropdown {
   position: relative;
@@ -580,6 +585,7 @@ body {
 }
 
 }
+
 
 
 
