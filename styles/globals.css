@@ -523,12 +523,17 @@ body {
 
 
 }
-
-/* === FIX DROPDOWN SELECT DI DALAM MODAL === */
-.modal-card select {
-  position: relative;
-  z-index: 10001;
+/* ===== FIX DROPDOWN SELECT DI MODAL (AMAN) ===== */
+.modal-overlay ven {
+  align-items: flex-start;
+  padding-top: 80px;
 }
+
+.modal-card ven {
+  max-height: none;        /* 🔥 INI KUNCI */
+  overflow-y: visible;    /* 🔥 INI KUNCI */
+}
+
 
 
 
