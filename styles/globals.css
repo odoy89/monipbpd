@@ -522,15 +522,16 @@ body {
 }
 
 /* ===== FIX DROPDOWN SELECT DI MODAL (AMAN) ===== */
-.modal-overlay {
+.modal-overlay-ven {
   align-items: flex-start;
   padding-top: 80px;
 }
 
-.modal-card {
+.modal-card-ven {
   max-height: none;        /* 🔥 INI KUNCI */
   overflow-y: visible;    /* 🔥 INI KUNCI */
 }
+
 
 
 
