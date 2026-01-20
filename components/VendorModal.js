@@ -87,22 +87,18 @@ setKontak(v ? v.NO_TLPN : "");
     <div className="form-group">
       <label>Nama Vendor</label>
 
-      <select
-        value={vendor}
-        onChange={e => handleVendorChange(e.target.value)}
-        onFocus={e => (e.target.size = 25)}   // 🔥 dropdown kebawah
-        onBlur={e => (e.target.size = 1)}    // 🔥 balik normal
-      >
-        <option value="">-- pilih vendor --</option>
-        {vendors.map(v => (
-          <option
-            key={v.NAMA_VENDOR}
-            value={v.NAMA_VENDOR}
-          >
-            {v.NAMA_VENDOR}
-          </option>
-        ))}
-      </select>
+     <select
+  value={vendor}
+  onChange={e => handleVendorChange(e.target.value)}
+>
+  <option value="">-- pilih vendor --</option>
+  {vendors.map(v => (
+    <option key={v.NAMA_VENDOR} value={v.NAMA_VENDOR}>
+      {v.NAMA_VENDOR}
+    </option>
+  ))}
+</select>
+
     </div>
 
     <div className="form-group">
@@ -131,6 +127,7 @@ setKontak(v ? v.NO_TLPN : "");
     </>
   );
 }
+
 
 
 
