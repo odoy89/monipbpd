@@ -518,20 +518,22 @@ body {
     grid-template-columns: 1fr;
   }
 
-  /* ===== FIX DROPDOWN VENDOR KE BAWAH ===== */
+/* ===== FIX SELECT DROPDOWN DI MODAL ===== */
 .modal-card {
-  width: 100%;
-  max-width: 520px;
-  max-height: 85vh;
-
-  overflow-y: auto;
-  overflow-x: visible;
-
-  background: #ffffff;
-  border-radius: 14px;
-  padding: 18px 20px;
-  box-shadow: 0 20px 40px rgba(0,0,0,.18);
+  overflow: visible !important; /* 🔥 INI KUNCI UTAMA */
 }
+
+/* khusus select vendor */
+.vendor-select select {
+  position: relative;
+  z-index: 10001;
+}
+
+/* pastikan option tidak kepotong */
+.vendor-select select option {
+  font-size: 14px;
+}
+
 
   /* ================= VENDOR MODAL FIX ================= */
 .vendor-modal {
@@ -593,6 +595,7 @@ body {
 }
 
 }
+
 
 
 
