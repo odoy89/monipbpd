@@ -228,23 +228,22 @@ const jenisTransaksi = String(selectedRow?.JENIS_TRANSAKSI || "")
     setSelectedRow(row);
     setOpenProses(true);
   }}
-  onProgress={(row) => {
-  fetch("/api/detail", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ NO: row.NO })
-  })
-    .then(r => r.json())
-    .then(res => {
-      if (res.status === "ok") {
-        setSelectedRow(res);   // 🔥 DATA LENGKAP
-        setOpenProgress(true);
-      } else {
-        alert(res.message || "Gagal ambil detail progres");
-      }
-    });
-
-
+   onProgress={(row) => {
+    fetch("/api/detail", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ NO: row.NO })
+    })
+      .then(r => r.json())
+      .then(res => {
+        if (res.status === "ok") {
+          setSelectedRow(res);
+          setOpenProgress(true);
+        } else {
+          alert(res.message || "Gagal ambil detail progres");
+        }
+      });
+  }}
 onVendor={(row) => {         
     setSelectedRow(row);
     setOpenVendor(true);
@@ -375,6 +374,7 @@ onVendor={(row) => {
   );
   
 }
+
 
 
 
