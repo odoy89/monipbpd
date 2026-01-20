@@ -28,6 +28,7 @@ body {
   padding: 0 20px;
 }
 
+/* ===== JUDUL TENGAH ===== */
 .header-title {
   text-align: center;
   font-size: 20px;
@@ -35,6 +36,7 @@ body {
   color: #1e3c72;
 }
 
+/* ===== USER KANAN ===== */
 .header-user {
   display: flex;
   flex-direction: column;
@@ -48,8 +50,14 @@ body {
   gap: 10px;
 }
 
-.date { color: #6b21a8; }
-.time { color: #2563eb; font-weight: 700; }
+.date {
+  color: #6b21a8;
+}
+
+.time {
+  color: #2563eb;
+  font-weight: 700;
+}
 
 .user-row {
   display: flex;
@@ -74,7 +82,10 @@ body {
   align-items: center;
 }
 
-.logo { height: 42px; }
+.logo {
+  height: 42px;
+}
+
 .logo-text {
   font-size: 11px;
   font-weight: 600;
@@ -111,7 +122,7 @@ body {
 
 .menu:hover,
 .menu.active {
-  background: rgba(255,255,255,0.18);
+  background: rgba(255, 255, 255, 0.18);
 }
 
 /* ================= CONTENT ================= */
@@ -165,6 +176,7 @@ body {
 }
 
 .search-box {
+  position: relative;
   width: 260px;
 }
 
@@ -173,7 +185,15 @@ body {
   height: 36px;
   border-radius: 8px;
   border: 1px solid #d1d5db;
-  padding: 0 12px;
+  padding: 0 36px 0 12px;
+}
+
+.search-icon {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #6b7280;
 }
 
 /* ================= BUTTON ================= */
@@ -208,14 +228,12 @@ body {
   padding: 16px;
   margin-top: 16px;
   box-shadow: 0 4px 12px rgba(0,0,0,.06);
-  overflow-x: auto;
 }
 
 .table {
   width: 100%;
   border-collapse: collapse;
-  white-space: nowrap;
-  font-size: 14px;
+  font-size: 13px;
 }
 
 .table th {
@@ -227,7 +245,7 @@ body {
 
 .table td {
   padding: 10px;
-  border-bottom: 1px solid #eee;
+  border-top: 1px solid #eee;
 }
 
 .aksi {
@@ -259,8 +277,8 @@ body {
 }
 
 .badge.menunggu { background: #dc2626; }
-.badge.progres  { background: #f59e0b; }
-.badge.selesai  { background: #16a34a; }
+.badge.progres { background: #f59e0b; }
+.badge.selesai { background: #16a34a; }
 
 /* ================= MODAL ================= */
 .modal-overlay {
@@ -271,18 +289,17 @@ body {
   align-items: center;
   justify-content: center;
   z-index: 10000;
-  overflow: auto;
 }
 
 .modal-card {
   width: 100%;
   max-width: 520px;
-  max-height: 90vh;
+  max-height: 85vh;
+  overflow-y: auto;
   background: #ffffff;
   border-radius: 14px;
   padding: 18px 20px;
   box-shadow: 0 20px 40px rgba(0,0,0,.18);
-  overflow: visible;
 }
 
 .modal-card h3 {
@@ -290,7 +307,6 @@ body {
   font-size: 18px;
 }
 
-/* ================= FORM ================= */
 .form-group {
   display: flex;
   flex-direction: column;
@@ -311,6 +327,12 @@ body {
   padding: 0 12px;
 }
 
+.form-grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
 .modal-actions {
   display: flex;
   justify-content: flex-end;
@@ -318,10 +340,90 @@ body {
   margin-top: 16px;
 }
 
-/* ================= SURVEY (FINAL & SEJAJAR) ================= */
+.aksi {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.btn-vendor {
+  background: #e5e7eb;
+  color: #111827;
+}
+
+/* ================= POPUP ================= */
+.popup-center {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 99999;
+}
+
+.popup-box {
+  background: #16a34a;
+  color: #fff;
+  padding: 18px 24px;
+  border-radius: 12px;
+  font-weight: 600;
+  box-shadow: 0 20px 40px rgba(0,0,0,.25);
+  animation: scaleIn .2s ease;
+}
+
+@keyframes scaleIn {
+  from { transform: scale(.9); opacity: 0 }
+  to { transform: scale(1); opacity: 1 }
+}
+
+
+.popup-box.success {
+  border-left: 6px solid #16a34a;
+}
+
+.popup-box.error {
+  border-left: 6px solid #dc2626;
+}
+
+.popup-box h4 {
+  margin: 0 0 8px;
+}
+
+.table-box {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  white-space: nowrap;
+  font-size: 14px;
+}
+
+.table th,
+.table td {
+  padding: 8px 10px;
+  border-bottom: 1px solid #eee;
+}
+
+.checkbox-inline {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+}
+
+/* ===== FORM GROUP ===== */
+.form-group {
+  width: 100%;
+}
+
+/* ===== SURVEY GRID ===== */
 .survey-row {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, 1fr); /* 🔥 total = 100% */
   gap: 12px;
   margin-top: 8px;
 }
@@ -332,17 +434,43 @@ body {
 }
 
 .survey-field label {
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 600;
   margin-bottom: 4px;
 }
 
 .survey-field input {
-  width: 100%;
-  height: 38px;
+  width: 100%;           /* 🔥 INI KUNCI SEJAJAR */
+  height: 42px;          /* sama dengan input lain */
+  padding: 8px 10px;
+  font-size: 14px;
   border-radius: 8px;
-  border: 1px solid #d1d5db;
-  padding: 0 10px;
+}
+
+.survey-row {
+  display: flex;
+  gap: 12px;
+}
+
+.survey-col {
+  flex: 1;
+}
+
+.survey-col input {
+  width: 100%;
+}
+
+
+.survey-col label {
+  font-size: 12px;
+  font-weight: 600;
+}
+
+
+@media (max-width: 768px) {
+  .table {
+    font-size: 12px;
+  }
 }
 
 /* ================= RESPONSIVE ================= */
@@ -353,9 +481,20 @@ body {
 
   .filter-bottom {
     flex-direction: column;
-    gap: 12px;
     align-items: stretch;
   }
+
+  .filter-actions {
+  display: flex;
+  gap: 12px;   /* 🔥 FIX JARAK */
+}
+
+
+@media (max-width: 768px) {
+  .filter-actions {
+    justify-content: flex-start;
+  }
+}
 
   .search-box {
     width: 100%;
@@ -374,4 +513,10 @@ body {
   .modal-actions button {
     width: 100%;
   }
+
+  .form-grid-2 {
+    grid-template-columns: 1fr;
+  }
 }
+
+
