@@ -9,7 +9,6 @@ export default function ProgressModal({ open, data, onClose, onSuccess }) {
   const [eviden1Lama, setEviden1Lama] = useState("");
   const [eviden2Lama, setEviden2Lama] = useState("");
 
-  if (!open || !data) return null;
 
   /* ================= HELPER ================= */
   function toInputDate(val) {
@@ -86,74 +85,64 @@ export default function ProgressModal({ open, data, onClose, onSuccess }) {
 
   /* ================= RENDER ================= */
   return (
-    <div className="modal-overlay">
-      <div className="modal-card" style={{ maxWidth: 480 }}>
-        <h3>Progres Pekerjaan</h3>
+  <>
+    {(!open || !data) ? null : (
+      <div className="modal-overlay">
+        <div className="modal-card" style={{ maxWidth: 480 }}>
+          <h3>Progres Pekerjaan</h3>
 
-        <div className="form-group">
-          <label>Progres Pekerjaan</label>
-          <textarea
-            rows="4"
-            value={progres}
-            onChange={e => setProgres(e.target.value)}
-            placeholder="Tulis progres pekerjaan..."
-          />
-        </div>
-
-        {/* FOTO LAMA */}
-        {eviden1Lama && (
           <div className="form-group">
-            <small>Foto Eviden 1 (lama)</small>
-            <img
-              src={eviden1Lama}
-              style={{ width: "100%", maxHeight: 200, objectFit: "contain" }}
+            <label>Progres Pekerjaan</label>
+            <textarea
+              rows="4"
+              value={progres}
+              onChange={e => setProgres(e.target.value)}
+              placeholder="Tulis progres pekerjaan..."
             />
           </div>
-        )}
 
-        {eviden2Lama && (
+          {eviden1Lama && (
+            <div className="form-group">
+              <small>Foto Eviden 1 (lama)</small>
+              <img src={eviden1Lama} style={{ width: "100%" }} />
+            </div>
+          )}
+
+          {eviden2Lama && (
+            <div className="form-group">
+              <small>Foto Eviden 2 (lama)</small>
+              <img src={eviden2Lama} style={{ width: "100%" }} />
+            </div>
+          )}
+
           <div className="form-group">
-            <small>Foto Eviden 2 (lama)</small>
-            <img
-              src={eviden2Lama}
-              style={{ width: "100%", maxHeight: 200, objectFit: "contain" }}
+            <label>Foto Eviden 1</label>
+            <input type="file" onChange={e => setEviden1(e.target.files[0])} />
+          </div>
+
+          <div className="form-group">
+            <label>Foto Eviden 2</label>
+            <input type="file" onChange={e => setEviden2(e.target.files[0])} />
+          </div>
+
+          <div className="form-group">
+            <label>Tanggal Nyala</label>
+            <input
+              type="date"
+              value={tanggalNyala}
+              onChange={e => setTanggalNyala(e.target.value)}
             />
           </div>
-        )}
 
-        <div className="form-group">
-          <label>Foto Eviden 1</label>
-          <input type="file" accept="image/*" onChange={e => setEviden1(e.target.files[0])}/>
-        </div>
-
-        <div className="form-group">
-          <label>Foto Eviden 2</label>
-          <input type="file" accept="image/*" onChange={e => setEviden2(e.target.files[0])}/>
-        </div>
-
-        <div className="form-group">
-          <label>Tanggal Nyala</label>
-          <input
-            type="date"
-            value={tanggalNyala}
-            onChange={e => setTanggalNyala(e.target.value)}
-          />
-          <small>
-            Kosongkan jika belum nyala → status tetap <b>PROGRES</b>
-          </small>
-        </div>
-
-        <div className="modal-actions">
-          <button className="btn-ghost" onClick={onClose}>Tutup</button>
-          <button
-            className="btn-primary"
-            disabled={loading}
-            onClick={handleSubmit}
-          >
-            {loading ? "Menyimpan..." : "Simpan"}
-          </button>
+          <div className="modal-actions">
+            <button className="btn-ghost" onClick={onClose}>Tutup</button>
+            <button className="btn-primary" onClick={handleSubmit}>
+              Simpan
+            </button>
+          </div>
         </div>
       </div>
-    </div>
-  );
-}
+    )}
+  </>
+);
+
