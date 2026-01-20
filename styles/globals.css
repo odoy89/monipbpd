@@ -520,13 +520,24 @@ body {
 
   /* ===== FIX DROPDOWN VENDOR KE BAWAH ===== */
 .modal-card {
-  overflow: visible !important;
+  width: 100%;
+  max-width: 520px;
+  max-height: 85vh;
+
+  overflow-y: auto;
+  overflow-x: visible;
+
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 18px 20px;
+  box-shadow: 0 20px 40px rgba(0,0,0,.18);
 }
 
 .modal-card select {
   position: relative;
   z-index: 10001;
 }
+
 
   /* ===== CUSTOM DROPDOWN VENDOR ===== */
 .dropdown {
@@ -569,6 +580,7 @@ body {
 }
 
 }
+
 
 
 
