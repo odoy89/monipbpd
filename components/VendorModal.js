@@ -86,29 +86,19 @@ setKontak(v ? v.NO_TLPN : "");
 
   <div className="form-group">
   <label>Nama Vendor</label>
-
-  <select
-    value={vendor}
-    size={10}                     // 🔥 TINGGI LIST
-    onChange={e => {
-      handleVendorChange(e.target.value);
-      e.target.blur();            // tutup setelah pilih
-    }}
-    onFocus={e => (e.target.size = 10)}
-    onBlur={e => (e.target.size = 1)}
-    style={{
-      overflowY: "auto",
-      minHeight: "200px",          // 🔥 BIKIN JELAS
-      lineHeight: "1.6"
-    }}
-  >
-    <option value="">-- pilih vendor --</option>
-    {vendors.map(v => (
-      <option key={v.NAMA_VENDOR} value={v.NAMA_VENDOR}>
-        {v.NAMA_VENDOR}
-      </option>
-    ))}
-  </select>
+<select
+  value={vendor}
+  onChange={e => handleVendorChange(e.target.value)}
+  onFocus={e => e.target.size = 8}   // 🔥 dropdown kebawah
+  onBlur={e => e.target.size = 1}    // 🔥 balik normal
+>
+  <option value="">-- pilih vendor --</option>
+  {vendors.map(v => (
+    <option key={v.NAMA_VENDOR} value={v.NAMA_VENDOR}>
+      {v.NAMA_VENDOR}
+    </option>
+  ))}
+</select>
 </div>
 
           <div className="form-group">
@@ -137,6 +127,7 @@ setKontak(v ? v.NO_TLPN : "");
     </>
   );
 }
+
 
 
 
