@@ -517,6 +517,18 @@ body {
   .form-grid-2 {
     grid-template-columns: 1fr;
   }
+
+  /* ===== FIX DROPDOWN VENDOR KE BAWAH ===== */
+.modal-card {
+  overflow: visible !important;
 }
+
+.modal-card select {
+  position: relative;
+  z-index: 10001;
+}
+
+}
+
 
 
