@@ -80,8 +80,8 @@ setKontak(v ? v.NO_TLPN : "");
 
   return (
     <>
-      <div className="modal-overlay-ven">
-  <div className="modal-card-ven">
+      <div className="modal-overlay">
+  <div className="modal-card">
     <h3>Pilih Vendor</h3>
 
   <div className="form-group vendor-select">
@@ -126,6 +126,7 @@ setKontak(v ? v.NO_TLPN : "");
     </>
   );
 }
+
 
 
 
