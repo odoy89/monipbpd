@@ -84,22 +84,21 @@ setKontak(v ? v.NO_TLPN : "");
   <div className="modal-card">
     <h3>Pilih Vendor</h3>
 
-    <div className="form-group">
-      <label>Nama Vendor</label>
+  <div className="form-group vendor-select">
+  <label>Nama Vendor</label>
+  <select
+    value={vendor}
+    onChange={e => handleVendorChange(e.target.value)}
+  >
+    <option value="">-- pilih vendor --</option>
+    {vendors.map(v => (
+      <option key={v.NAMA_VENDOR} value={v.NAMA_VENDOR}>
+        {v.NAMA_VENDOR}
+      </option>
+    ))}
+  </select>
+</div>
 
-     <select
-  value={vendor}
-  onChange={e => handleVendorChange(e.target.value)}
->
-  <option value="">-- pilih vendor --</option>
-  {vendors.map(v => (
-    <option key={v.NAMA_VENDOR} value={v.NAMA_VENDOR}>
-      {v.NAMA_VENDOR}
-    </option>
-  ))}
-</select>
-
-    </div>
 
     <div className="form-group">
       <label>Kontak Vendor</label>
@@ -127,6 +126,7 @@ setKontak(v ? v.NO_TLPN : "");
     </>
   );
 }
+
 
 
 
