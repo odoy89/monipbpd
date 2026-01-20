@@ -70,14 +70,43 @@ function loadData(filter = {}) {
 }
 
   /* ================= SEARCH ================= */
-  const filteredData = useMemo(() => {
-    if (!search) return data;
-    return data.filter(d =>
-      String(d.NAMA_PELANGGAN || "")
+ const filteredData = useMemo(() => {
+  return data.filter(d => {
+    // 🔍 cari nama
+    if (
+      search &&
+      !String(d.NAMA_PELANGGAN || "")
         .toLowerCase()
         .includes(search.toLowerCase())
-    );
-  }, [data, search]);
+    ) {
+      return false;
+    }
+
+    // 📌 status
+    if (activeFilter.progres && d.STATUS !== activeFilter.progres) {
+      return false;
+    }
+
+    // 🏢 ULP
+    if (activeFilter.ulp && d.ULP !== activeFilter.ulp) {
+      return false;
+    }
+
+    // 📅 tanggal surat
+    if (activeFilter.date) {
+      const tgl = new Date(d.TANGGAL_SURAT);
+      const f = new Date(activeFilter.date);
+      if (
+        tgl.toDateString() !== f.toDateString()
+      ) {
+        return false;
+      }
+    }
+
+    return true;
+  });
+}, [data, search, activeFilter]);
+
 
   /* ================= SUMMARY ================= */
   const summary = useMemo(() => ({
@@ -372,6 +401,7 @@ const jenisTransaksi = String(selectedRow?.JENIS_TRANSAKSI || "")
   );
   
 }
+
 
 
 
