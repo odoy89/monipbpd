@@ -65,10 +65,11 @@ export default function DataTable({
                   </td>
 
                   <td>
-  <span style={{ fontWeight: 600, color: "#2563eb" }}>
+  <span style={{ fontWeight: 700, color: "#2563eb" }}>
     {d.PROGRES_PEKERJAAN || "-"}
   </span>
 </td>
+
 
                   <td>
   {d.TANGGAL_NYALA ? (
@@ -179,6 +180,7 @@ export default function DataTable({
     </div>
   );
 }
+
 
 
 
