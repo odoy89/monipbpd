@@ -9,7 +9,6 @@ export default function ProgressModal({ open, data, onClose, onSuccess }) {
   const [eviden1Lama, setEviden1Lama] = useState("");
   const [eviden2Lama, setEviden2Lama] = useState("");
 
-
   /* ================= HELPER ================= */
   function toInputDate(val) {
     if (!val) return "";
@@ -84,65 +83,66 @@ export default function ProgressModal({ open, data, onClose, onSuccess }) {
   }
 
   /* ================= RENDER ================= */
+  if (!open || !data) {
+    // ❗ PENTING: JANGAN return null
+    return <div style={{ display: "none" }} />;
+  }
+
   return (
-  <>
-    {(!open || !data) ? null : (
-      <div className="modal-overlay">
-        <div className="modal-card" style={{ maxWidth: 480 }}>
-          <h3>Progres Pekerjaan</h3>
+    <div className="modal-overlay">
+      <div className="modal-card" style={{ maxWidth: 480 }}>
+        <h3>Progres Pekerjaan</h3>
 
+        <div className="form-group">
+          <label>Progres Pekerjaan</label>
+          <textarea
+            rows="4"
+            value={progres}
+            onChange={e => setProgres(e.target.value)}
+            placeholder="Tulis progres pekerjaan..."
+          />
+        </div>
+
+        {eviden1Lama && (
           <div className="form-group">
-            <label>Progres Pekerjaan</label>
-            <textarea
-              rows="4"
-              value={progres}
-              onChange={e => setProgres(e.target.value)}
-              placeholder="Tulis progres pekerjaan..."
-            />
+            <small>Foto Eviden 1 (lama)</small>
+            <img src={eviden1Lama} style={{ width: "100%" }} />
           </div>
+        )}
 
-          {eviden1Lama && (
-            <div className="form-group">
-              <small>Foto Eviden 1 (lama)</small>
-              <img src={eviden1Lama} style={{ width: "100%" }} />
-            </div>
-          )}
-
-          {eviden2Lama && (
-            <div className="form-group">
-              <small>Foto Eviden 2 (lama)</small>
-              <img src={eviden2Lama} style={{ width: "100%" }} />
-            </div>
-          )}
-
+        {eviden2Lama && (
           <div className="form-group">
-            <label>Foto Eviden 1</label>
-            <input type="file" onChange={e => setEviden1(e.target.files[0])} />
+            <small>Foto Eviden 2 (lama)</small>
+            <img src={eviden2Lama} style={{ width: "100%" }} />
           </div>
+        )}
 
-          <div className="form-group">
-            <label>Foto Eviden 2</label>
-            <input type="file" onChange={e => setEviden2(e.target.files[0])} />
-          </div>
+        <div className="form-group">
+          <label>Foto Eviden 1</label>
+          <input type="file" onChange={e => setEviden1(e.target.files[0])} />
+        </div>
 
-          <div className="form-group">
-            <label>Tanggal Nyala</label>
-            <input
-              type="date"
-              value={tanggalNyala}
-              onChange={e => setTanggalNyala(e.target.value)}
-            />
-          </div>
+        <div className="form-group">
+          <label>Foto Eviden 2</label>
+          <input type="file" onChange={e => setEviden2(e.target.files[0])} />
+        </div>
 
-          <div className="modal-actions">
-            <button className="btn-ghost" onClick={onClose}>Tutup</button>
-            <button className="btn-primary" onClick={handleSubmit}>
-              Simpan
-            </button>
-          </div>
+        <div className="form-group">
+          <label>Tanggal Nyala</label>
+          <input
+            type="date"
+            value={tanggalNyala}
+            onChange={e => setTanggalNyala(e.target.value)}
+          />
+        </div>
+
+        <div className="modal-actions">
+          <button className="btn-ghost" onClick={onClose}>Tutup</button>
+          <button className="btn-primary" onClick={handleSubmit} disabled={loading}>
+            {loading ? "Menyimpan..." : "Simpan"}
+          </button>
         </div>
       </div>
-    )}
-  </>
-);
-
+    </div>
+  );
+}
