@@ -271,10 +271,22 @@ useEffect(() => {
 
           {survey && (
             <div className="survey-row">
-              <input placeholder="TRAFO" value={trafo} onChange={e => setTrafo(e.target.value)} />
-              <input placeholder="JTM" value={jtm} onChange={e => setJtm(e.target.value)} />
-              <input placeholder="JTR" value={jtr} onChange={e => setJtr(e.target.value)} />
-            </div>
+  <div className="survey-field">
+    <label>TRAFO</label>
+    <input value={trafo} onChange={e => setTrafo(e.target.value)} />
+  </div>
+
+  <div className="survey-field">
+    <label>JTM</label>
+    <input value={jtm} onChange={e => setJtm(e.target.value)} />
+  </div>
+
+  <div className="survey-field">
+    <label>JTR</label>
+    <input value={jtr} onChange={e => setJtr(e.target.value)} />
+  </div>
+</div>
+
           )}
         </div>
 
@@ -309,4 +321,5 @@ useEffect(() => {
     </div>
   );
 }
+
 
