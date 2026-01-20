@@ -243,7 +243,7 @@ const jenisTransaksi = String(selectedRow?.JENIS_TRANSAKSI || "")
         alert(res.message || "Gagal ambil detail progres");
       }
     });
-}}
+
 
 onVendor={(row) => {         
     setSelectedRow(row);
@@ -375,6 +375,7 @@ onVendor={(row) => {
   );
   
 }
+
 
 
 
