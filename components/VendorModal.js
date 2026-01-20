@@ -110,7 +110,6 @@ setKontak(v ? v.NO_TLPN : "");
       <input value={kontak} disabled />
     </div>
 
-
           <div className="modal-actions">
             <button className="btn-ghost" onClick={onClose}>Batal</button>
             <button
@@ -132,6 +131,7 @@ setKontak(v ? v.NO_TLPN : "");
     </>
   );
 }
+
 
 
 
