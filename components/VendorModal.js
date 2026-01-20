@@ -81,30 +81,35 @@ setKontak(v ? v.NO_TLPN : "");
   return (
     <>
       <div className="modal-overlay">
-        <div className="modal-card">
-          <h3>Pilih Vendor</h3>
+  <div className="modal-card">
+    <h3>Pilih Vendor</h3>
 
-  <div className="form-group">
-  <label>Nama Vendor</label>
-<select
-  value={vendor}
-  onChange={e => handleVendorChange(e.target.value)}
-  onFocus={e => e.target.size = 8}   // 🔥 dropdown kebawah
-  onBlur={e => e.target.size = 1}    // 🔥 balik normal
->
-  <option value="">-- pilih vendor --</option>
-  {vendors.map(v => (
-    <option key={v.NAMA_VENDOR} value={v.NAMA_VENDOR}>
-      {v.NAMA_VENDOR}
-    </option>
-  ))}
-</select>
-</div>
+    <div className="form-group">
+      <label>Nama Vendor</label>
 
-          <div className="form-group">
-            <label>Kontak Vendor</label>
-            <input value={kontak} disabled />
-          </div>
+      <select
+        value={vendor}
+        onChange={e => handleVendorChange(e.target.value)}
+        onFocus={e => (e.target.size = 8)}   // 🔥 dropdown kebawah
+        onBlur={e => (e.target.size = 1)}    // 🔥 balik normal
+      >
+        <option value="">-- pilih vendor --</option>
+        {vendors.map(v => (
+          <option
+            key={v.NAMA_VENDOR}
+            value={v.NAMA_VENDOR}
+          >
+            {v.NAMA_VENDOR}
+          </option>
+        ))}
+      </select>
+    </div>
+
+    <div className="form-group">
+      <label>Kontak Vendor</label>
+      <input value={kontak} disabled />
+    </div>
+
 
           <div className="modal-actions">
             <button className="btn-ghost" onClick={onClose}>Batal</button>
@@ -127,6 +132,7 @@ setKontak(v ? v.NO_TLPN : "");
     </>
   );
 }
+
 
 
 
