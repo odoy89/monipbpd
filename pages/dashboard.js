@@ -69,43 +69,53 @@ function loadData(filter = {}) {
     });
 }
 
+function normalizeDate(val) {
+  if (!val) return "";
+  if (val instanceof Date) return val.toISOString().slice(0, 10);
+
+  // format dd/mm/yyyy
+  if (val.includes("/")) {
+    const [d, m, y] = val.split("/");
+    return `${y}-${m.padStart(2,"0")}-${d.padStart(2,"0")}`;
+  }
+
+  return val;
+}
+
+  
   /* ================= SEARCH ================= */
  const filteredData = useMemo(() => {
   return data.filter(d => {
-    // 🔍 cari nama
+
+    // 🔍 NAMA
     if (
       search &&
       !String(d.NAMA_PELANGGAN || "")
         .toLowerCase()
         .includes(search.toLowerCase())
-    ) {
-      return false;
-    }
+    ) return false;
 
-    // 📌 status
-    if (activeFilter.progres && d.STATUS !== activeFilter.progres) {
+    // 📌 STATUS
+    if (activeFilter.progres && d.STATUS !== activeFilter.progres)
       return false;
-    }
 
-    // 🏢 ULP
-    if (activeFilter.ulp && d.ULP !== activeFilter.ulp) {
-      return false;
-    }
+    // 🏢 ULP / UNIT
+    if (
+      activeFilter.ulp &&
+      String(d.ULP || "").trim() !== String(activeFilter.ulp).trim()
+    ) return false;
 
-    // 📅 tanggal surat
+    // 📅 TANGGAL SURAT
     if (activeFilter.date) {
-      const tgl = new Date(d.TANGGAL_SURAT);
-      const f = new Date(activeFilter.date);
-      if (
-        tgl.toDateString() !== f.toDateString()
-      ) {
-        return false;
-      }
+      const rowDate = normalizeDate(d.TANGGAL_SURAT);
+      const filterDate = activeFilter.date;
+      if (rowDate !== filterDate) return false;
     }
 
     return true;
   });
 }, [data, search, activeFilter]);
+
 
 
   /* ================= SUMMARY ================= */
@@ -401,6 +411,7 @@ const jenisTransaksi = String(selectedRow?.JENIS_TRANSAKSI || "")
   );
   
 }
+
 
 
 
