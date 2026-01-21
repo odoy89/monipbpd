@@ -10,7 +10,7 @@ export default function DataTable({
   onFoto
 }) {
   return (
-    <div className="table-box">
+    <div className="table-scroll">
       <table className="table">
         <thead>
           <tr>
@@ -180,6 +180,7 @@ export default function DataTable({
     </div>
   );
 }
+
 
 
 
