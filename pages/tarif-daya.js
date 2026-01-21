@@ -102,7 +102,8 @@ export default function TarifDayaPage() {
       </div>
 
       {/* TABLE */}
-      <table className="table">
+      <div className="table-scroll">
+        <table className="table">
         <thead>
           <tr>
             <th>No</th>
@@ -135,6 +136,7 @@ export default function TarifDayaPage() {
           ))}
         </tbody>
       </table>
+</div>
 
       {popup && (
         <div className="modal-overlay">
