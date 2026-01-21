@@ -84,7 +84,7 @@ setKontak(v ? v.NO_TLPN : "");
   <div className="modal-card">
     <h3>Pilih Vendor</h3>
 
-  <div className="form-group vendor-select">
+  <div className="form-group">
   <label>Nama Vendor</label>
   <select
     value={vendor}
@@ -125,6 +125,7 @@ setKontak(v ? v.NO_TLPN : "");
     </>
   );
 }
+
 
 
 
