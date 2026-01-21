@@ -295,7 +295,7 @@ body {
   width: 100%;
   max-width: 520px;
   max-height: 85vh;
-  overflow-y: auto;
+  overflow-y: visible;
   background: #ffffff;
   border-radius: 14px;
   padding: 18px 20px;
@@ -526,6 +526,7 @@ body {
 .form-group.vendor-select {
   margin-bottom: 80px; /* 🔥 kasih ruang ke bawah */
 }
+
 
 
 
