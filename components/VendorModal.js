@@ -99,12 +99,6 @@ setKontak(v ? v.NO_TLPN : "");
   </select>
 </div>
 
-
-    <div className="form-group">
-      <label>Kontak Vendor</label>
-      <input value={kontak} disabled />
-    </div>
-
           <div className="modal-actions">
             <button className="btn-ghost" onClick={onClose}>Batal</button>
             <button
@@ -126,6 +120,7 @@ setKontak(v ? v.NO_TLPN : "");
     </>
   );
 }
+
 
 
 
