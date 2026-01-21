@@ -94,7 +94,7 @@ function hapus(row) {
     <Layout>
       <h2>Vendor</h2>
 
-      {role === "ADMIN" && (
+     
   <div style={{ display:"flex", gap:8, marginBottom:16 }}>
 
   <input
@@ -128,7 +128,7 @@ function hapus(row) {
     </button>
   )}
 </div>
-)}
+
 
 
       <table className="table">
@@ -148,7 +148,7 @@ function hapus(row) {
               <td>{d.NO_TLPN}</td>
               <td>
   <td>
-  {role === "ADMIN" && (
+  
   <div style={{ display: "flex", gap: 6 }}>
     <button
       className="btn-edit"
@@ -190,4 +190,5 @@ function hapus(row) {
 
     
   );
-}
+
+
