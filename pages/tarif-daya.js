@@ -14,10 +14,10 @@ export default function TarifDayaPage() {
   }
 
   function loadData(){
-    fetch("/api/tarif-daya", {
+    fetch("/api/tarif-daya-crud", {
       method:"POST",
       headers:{ "Content-Type":"application/json" },
-      body: JSON.stringify({ action:"getTarifDayaList" })
+      body: JSON.stringify({ action:"getTarifDayaCrud" })
     })
       .then(r=>r.json())
       .then(res=>{
@@ -28,7 +28,7 @@ export default function TarifDayaPage() {
   useEffect(loadData, []);
 
   function save(){
-    fetch("/api/tarif-daya", {
+    fetch("/api/tarif-daya-crud", {
       method:"POST",
       headers:{ "Content-Type":"application/json" },
       body: JSON.stringify({
@@ -53,7 +53,7 @@ export default function TarifDayaPage() {
   function hapus(row){
     if(!confirm("Hapus tarif daya ini?")) return;
 
-    fetch("/api/tarif-daya", {
+    fetch("/api/tarif-daya-crud", {
       method:"POST",
       headers:{ "Content-Type":"application/json" },
       body: JSON.stringify({
