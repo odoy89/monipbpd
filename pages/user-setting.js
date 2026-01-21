@@ -39,10 +39,26 @@ export default function UserSetting() {
   }
 
   useEffect(() => {
-    const u = JSON.parse(localStorage.getItem("USER"));
-    if (u) setRole(u.role);
-    loadUsers();
-  }, []);
+  const raw = localStorage.getItem("USER");
+  if (!raw) return;
+
+  try {
+    const u = JSON.parse(raw);
+
+    // 🔥 FIX ROLE AMAN
+    const roleFix = (u.role || u.ROLE || u.SEBAGAI || u.LEVEL || "")
+      .toString()
+      .toUpperCase();
+
+    setRole(roleFix);
+
+  } catch (e) {
+    console.error("USER parse error");
+  }
+
+  loadUsers();
+}, []);
+
 
   /* ================= GANTI PASSWORD ================= */
   function changePwd() {
@@ -315,3 +331,4 @@ export default function UserSetting() {
     </Layout>
   );
 }
+
