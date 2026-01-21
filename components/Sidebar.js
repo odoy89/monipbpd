@@ -16,9 +16,14 @@ export default function Sidebar() {
         🏢 Vendor
       </div>
 
+    <div className={isActive("/tarif-daya")} onClick={() => router.push("/tarif-daya")}>
+  ⚡ Tarif Daya
+</div>
+          
       <div className={isActive("/user-setting")} onClick={() => router.push("/user-setting")}>
         👤 User Setting
       </div>
     </aside>
   );
 }
+
