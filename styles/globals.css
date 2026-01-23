@@ -153,10 +153,15 @@ body {
 
 .filter-grid {
   display: grid;
-  grid-template-columns: 1.4fr 1fr 1.6fr 1fr auto;
-  gap: 16px;
+  grid-template-columns: 1.2fr 0.9fr 1.4fr 0.9fr auto;
+  gap: 10px;            
   align-items: end;
 }
+
+.filter-grid select {
+  min-width: 140px;
+}
+
 
 .filter-grid input,
 .filter-grid select,
@@ -177,9 +182,10 @@ body {
 }
 
 .filter-grid .btn-ghost {
-  height: 38px;
-  align-self: end;
+  padding: 8px 14px;
+  margin-left: 4px;   /* 🔥 dikit aja */
 }
+
 
 .filter-bottom {
   display: grid;
@@ -589,6 +595,7 @@ body {
 .form-group.vendor-select {
   margin-bottom: 80px; /* 🔥 kasih ruang ke bawah */
 }
+
 
 
 
