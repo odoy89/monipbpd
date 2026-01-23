@@ -10,24 +10,28 @@ export default function FilterBar({
   const [date, setDate] = useState("");
   const [ulp, setUlp] = useState("");
   const [status, setStatus] = useState("");
+  const [jenisPelanggan, setJenisPelanggan] = useState(""); // ✅ TAMBAH
   const [search, setSearch] = useState("");
 
   const ulpOptions = useMemo(() => {
     return [...new Set(data.map(d => d.ULP).filter(Boolean))].sort();
   }, [data]);
 
- useEffect(() => {
-  const t = setTimeout(() => {
-    onFilter({
-      date: date || "",
-      ulp: ulp || "",
-      progres: status || ""
-    });
-  }, 400);
+  /* ===== KIRIM FILTER KE DASHBOARD ===== */
+  useEffect(() => {
+    const t = setTimeout(() => {
+      onFilter({
+        date: date || "",
+        ulp: ulp || "",
+        progres: status || "",
+        jenisPelanggan: jenisPelanggan || "" // ✅ FIX
+      });
+    }, 400);
 
-  return () => clearTimeout(t);
-}, [date, ulp, status, onFilter]);
+    return () => clearTimeout(t);
+  }, [date, ulp, status, jenisPelanggan, onFilter]);
 
+  /* ===== SEARCH ===== */
   useEffect(() => {
     onSearch(search);
   }, [search]);
@@ -36,7 +40,9 @@ export default function FilterBar({
     setDate("");
     setUlp("");
     setStatus("");
+    setJenisPelanggan("");
     setSearch("");
+
     onFilter({});
     onSearch("");
   }
@@ -44,11 +50,15 @@ export default function FilterBar({
   return (
     <div className="filter-box">
 
-      {/* FILTER */}
+      {/* ===== FILTER ===== */}
       <div className="filter-grid">
         <div>
           <label>Tanggal Surat</label>
-          <input type="date" value={date} onChange={e => setDate(e.target.value)} />
+          <input
+            type="date"
+            value={date}
+            onChange={e => setDate(e.target.value)}
+          />
         </div>
 
         <div>
@@ -61,25 +71,19 @@ export default function FilterBar({
           </select>
         </div>
 
-            <div>
+        <div>
           <label>Jenis Pelanggan</label>
-<select
-  value={filter.jenisPelanggan || ""}
-  onChange={e =>
-    onFilter({
-      ...filter,
-      jenisPelanggan: e.target.value
-    })
-  }
->
-  <option value="">Semua Jenis Pelanggan</option>
-  <option value="RETAIL">RETAIL</option>
-  <option value="PERUMAHAN">PERUMAHAN</option>
-  <option value="TM">TM</option>
-</select>
-</div>
+          <select
+            value={jenisPelanggan}
+            onChange={e => setJenisPelanggan(e.target.value)}
+          >
+            <option value="">Semua Jenis Pelanggan</option>
+            <option value="RETAIL">RETAIL</option>
+            <option value="PERUMAHAN">PERUMAHAN</option>
+            <option value="TM">TM</option>
+          </select>
+        </div>
 
-            
         <div>
           <label>Status</label>
           <select value={status} onChange={e => setStatus(e.target.value)}>
@@ -95,7 +99,7 @@ export default function FilterBar({
         </button>
       </div>
 
-      {/* ACTION */}
+      {/* ===== ACTION ===== */}
       <div className="filter-bottom">
         <div className="search-box">
           <input
@@ -104,20 +108,18 @@ export default function FilterBar({
             onChange={e => setSearch(e.target.value)}
           />
         </div>
-<div style={{ display: "flex", gap: 8 }}>
-  <button className="btn-success" onClick={onDownload}>
-    Download Excel
-  </button>
 
-  <button className="btn-primary" onClick={onTambah}>
-    Tambah Surat
-  </button>
-</div>
+        <div style={{ display: "flex", gap: 8 }}>
+          <button className="btn-success" onClick={onDownload}>
+            Download Excel
+          </button>
 
+          <button className="btn-primary" onClick={onTambah}>
+            Tambah Surat
+          </button>
+        </div>
       </div>
 
     </div>
   );
 }
-
-
