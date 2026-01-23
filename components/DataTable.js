@@ -16,6 +16,7 @@ export default function DataTable({
           <tr>
             <th>No</th>
             <th>Nama</th>
+    <th>Jenis Pelanggan</th>
             <th>Jenis</th>
             <th>Tgl Surat</th>
             <th>Tgl Terima</th>
@@ -50,6 +51,7 @@ export default function DataTable({
                 <tr key={d.NO || i}>
                   <td>{i + 1}</td>
                   <td>{d.NAMA_PELANGGAN}</td>
+                     <td>{d.JENIS_PELANGGAN || "-"}</td>
                   <td>{d.JENIS_TRANSAKSI}</td>
                   <td>{d.TANGGAL_SURAT}</td>
                   <td>{d.TANGGAL_TERIMA_SURAT}</td>
@@ -180,6 +182,7 @@ export default function DataTable({
     </div>
   );
 }
+
 
 
 
