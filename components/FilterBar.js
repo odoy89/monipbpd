@@ -112,12 +112,13 @@ export default function FilterBar({
         </div>
 
 <div style={{
-  fontSize: 14,
-  fontWeight: 600,
-  color: "#374151"
+  marginTop: 6,
+  fontSize: 13,
+  color: "#555"
 }}>
-  Total Data: <span style={{ color: "#2563eb" }}>{total}</span>
+  Menampilkan <b>{total}</b> data
 </div>
+
 
               
         <div style={{ display: "flex", gap: 8 }}>
@@ -134,6 +135,7 @@ export default function FilterBar({
     </div>
   );
 }
+
 
 
 
