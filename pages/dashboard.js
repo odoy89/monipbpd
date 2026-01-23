@@ -105,6 +105,14 @@ function normalizeDate(val) {
       String(d.ULP || "").trim() !== String(activeFilter.ulp).trim()
     ) return false;
 
+// 🧾 JENIS PELANGGAN
+if (
+  activeFilter.jenisPelanggan &&
+  String(d.JENIS_PELANGGAN || "").trim() !==
+    String(activeFilter.jenisPelanggan).trim()
+) return false;
+
+    
     // 📅 TANGGAL SURAT
     if (activeFilter.date) {
       const rowDate = normalizeDate(d.TANGGAL_SURAT);
@@ -411,6 +419,7 @@ const jenisTransaksi = String(selectedRow?.JENIS_TRANSAKSI || "")
   );
   
 }
+
 
 
 
