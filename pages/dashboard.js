@@ -33,6 +33,8 @@ export default function Dashboard() {
   const [downloading, setDownloading] = useState(false);
   const [previewFoto, setPreviewFoto] = useState(null);
 const [role, setRole] = useState("");
+  const totalFiltered = filteredData.length;
+
 
 useEffect(() => {
   const raw = localStorage.getItem("USER");
@@ -249,6 +251,7 @@ const jenisTransaksi = String(selectedRow?.JENIS_TRANSAKSI || "")
       {/* ===== FILTER ===== */}
       <FilterBar
         data={data}
+        total={totalFiltered}
         onFilter={loadData}
         onSearch={setSearch}
         onTambah={() => {
@@ -419,6 +422,7 @@ const jenisTransaksi = String(selectedRow?.JENIS_TRANSAKSI || "")
   );
   
 }
+
 
 
 
