@@ -102,35 +102,35 @@ export default function FilterBar({
       </div>
 
       {/* ===== ACTION ===== */}
-      <div className="filter-bottom">
-        <div className="search-box">
-          <input
-            placeholder="Cari nama pelanggan..."
-            value={search}
-            onChange={e => setSearch(e.target.value)}
-          />
-        </div>
+<div className="filter-bottom">
+  <div className="search-box">
+    <input
+      placeholder="Cari nama pelanggan..."
+      value={search}
+      onChange={e => setSearch(e.target.value)}
+    />
+  </div>
 
-              
-        <div style={{ display: "flex", gap: 8 }}>
-          <button className="btn-success" onClick={onDownload}>
-            Download Excel
-          </button>
+  <div className="filter-actions">
+    <div className="filter-buttons">
+      <button className="btn-success" onClick={onDownload}>
+        Download Excel
+      </button>
 
-          <button className="btn-primary" onClick={onTambah}>
-            Tambah Surat
-          </button>
-        </div>
+      <button className="btn-primary" onClick={onTambah}>
+        Tambah Surat
+      </button>
+    </div>
 
-   <div style={{ marginTop: 6, fontSize: 13, color: "#555" }}>
+    <div className="filter-total">
       Menampilkan <b>{total}</b> data
     </div>
-  
-      </div>
+  </div>
+</div>
 
-    </div>
   );
 }
+
 
 
 
