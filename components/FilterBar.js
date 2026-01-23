@@ -18,14 +18,14 @@ export default function FilterBar({
     return [...new Set(data.map(d => d.ULP).filter(Boolean))].sort();
   }, [data]);
 
-  /* ===== KIRIM FILTER KE DASHBOARD ===== */
+  /* ===== KIRIM FILTER ===== */
   useEffect(() => {
     const t = setTimeout(() => {
       onFilter({
         date: date || "",
         ulp: ulp || "",
         progres: status || "",
-        jenisPelanggan: jenisPelanggan || "" 
+        jenisPelanggan: jenisPelanggan || ""
       });
     }, 400);
 
@@ -35,7 +35,7 @@ export default function FilterBar({
   /* ===== SEARCH ===== */
   useEffect(() => {
     onSearch(search);
-  }, [search]);
+  }, [search, onSearch]);
 
   function handleReset() {
     setDate("");
@@ -43,7 +43,6 @@ export default function FilterBar({
     setStatus("");
     setJenisPelanggan("");
     setSearch("");
-
     onFilter({});
     onSearch("");
   }
@@ -55,11 +54,7 @@ export default function FilterBar({
       <div className="filter-grid">
         <div>
           <label>Tanggal Surat</label>
-          <input
-            type="date"
-            value={date}
-            onChange={e => setDate(e.target.value)}
-          />
+          <input type="date" value={date} onChange={e => setDate(e.target.value)} />
         </div>
 
         <div>
@@ -73,18 +68,17 @@ export default function FilterBar({
         </div>
 
         <div>
-  <label>Jenis Pelanggan</label>
-  <select
-    value={jenisPelanggan}
-    onChange={e => setJenisPelanggan(e.target.value)}
-  >
-    <option value="">-- pilih jenis pelanggan --</option>
-    <option value="RETAIL">RETAIL</option>
-    <option value="PERUMAHAN">PERUMAHAN</option>
-    <option value="TM">TM</option>
-  </select>
-</div>
-
+          <label>Jenis Pelanggan</label>
+          <select
+            value={jenisPelanggan}
+            onChange={e => setJenisPelanggan(e.target.value)}
+          >
+            <option value="">-- pilih jenis pelanggan --</option>
+            <option value="RETAIL">RETAIL</option>
+            <option value="PERUMAHAN">PERUMAHAN</option>
+            <option value="TM">TM</option>
+          </select>
+        </div>
 
         <div>
           <label>Status</label>
@@ -96,44 +90,37 @@ export default function FilterBar({
           </select>
         </div>
 
-        <button type="button" className="btn-ghost" onClick={handleReset}>
+        <button className="btn-ghost" onClick={handleReset}>
           Reset
         </button>
       </div>
 
       {/* ===== ACTION ===== */}
-<div className="filter-bottom">
-  <div className="search-box">
-    <input
-      placeholder="Cari nama pelanggan..."
-      value={search}
-      onChange={e => setSearch(e.target.value)}
-    />
-  </div>
+      <div className="filter-bottom">
+        <div className="search-box">
+          <input
+            placeholder="Cari nama pelanggan..."
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+          />
+        </div>
 
-  <div className="filter-actions">
-    <div className="filter-buttons">
-      <button className="btn-success" onClick={onDownload}>
-        Download Excel
-      </button>
+        <div className="filter-actions">
+          <div className="filter-buttons">
+            <button className="btn-success" onClick={onDownload}>
+              Download Excel
+            </button>
+            <button className="btn-primary" onClick={onTambah}>
+              Tambah Surat
+            </button>
+          </div>
 
-      <button className="btn-primary" onClick={onTambah}>
-        Tambah Surat
-      </button>
+          <div className="filter-total">
+            Menampilkan <b>{total}</b> data
+          </div>
+        </div>
+      </div>
+
     </div>
-
-    <div className="filter-total">
-      Menampilkan <b>{total}</b> data
-    </div>
-  </div>
-</div>
-
   );
 }
-
-
-
-
-
-
-
