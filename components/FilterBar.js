@@ -3,6 +3,7 @@ import { useState, useMemo, useEffect } from "react";
 export default function FilterBar({
   onFilter,
   data = [],
+  total = 0,
   onTambah,
   onSearch,
   onDownload
@@ -124,5 +125,6 @@ export default function FilterBar({
     </div>
   );
 }
+
 
 
