@@ -10,6 +10,7 @@ export default function DetailModal({ open, data, onClose }) {
           <div><b>No:</b> {data.NO}</div>
           <div><b>Kategori:</b> {data.KATEGORI || "-"}</div>
           <div><b>Nama Pelanggan:</b> {data.NAMA_PELANGGAN}</div>
+  <div><b>Jenis Pelanggan:</b> {data.JENIS_PELANGGAN || "-"}</div>
           <div><b>Telpon Pelanggan:</b> {data.TELEPON_PELANGGAN || "-"}</div>
           
           <div><b>Jenis Transaksi:</b> {data.JENIS_TRANSAKSI}</div>
@@ -77,3 +78,4 @@ export default function DetailModal({ open, data, onClose }) {
     </div>
   );
 }
+
