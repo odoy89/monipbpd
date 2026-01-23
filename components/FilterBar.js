@@ -10,7 +10,7 @@ export default function FilterBar({
   const [date, setDate] = useState("");
   const [ulp, setUlp] = useState("");
   const [status, setStatus] = useState("");
-  const [jenisPelanggan, setJenisPelanggan] = useState(""); // ✅ TAMBAH
+  const [jenisPelanggan, setJenisPelanggan] = useState("");
   const [search, setSearch] = useState("");
 
   const ulpOptions = useMemo(() => {
@@ -24,7 +24,7 @@ export default function FilterBar({
         date: date || "",
         ulp: ulp || "",
         progres: status || "",
-        jenisPelanggan: jenisPelanggan || "" // ✅ FIX
+        jenisPelanggan: jenisPelanggan || "" 
       });
     }, 400);
 
@@ -124,4 +124,5 @@ export default function FilterBar({
     </div>
   );
 }
+
 
