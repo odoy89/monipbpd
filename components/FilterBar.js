@@ -61,6 +61,25 @@ export default function FilterBar({
           </select>
         </div>
 
+            <div>
+          <label>Jenis Pelanggan</label>
+<select
+  value={filter.jenisPelanggan || ""}
+  onChange={e =>
+    onFilter({
+      ...filter,
+      jenisPelanggan: e.target.value
+    })
+  }
+>
+  <option value="">Semua Jenis Pelanggan</option>
+  <option value="RETAIL">RETAIL</option>
+  <option value="PERUMAHAN">PERUMAHAN</option>
+  <option value="TM">TM</option>
+</select>
+</div>
+
+            
         <div>
           <label>Status</label>
           <select value={status} onChange={e => setStatus(e.target.value)}>
@@ -100,4 +119,5 @@ export default function FilterBar({
     </div>
   );
 }
+
 
