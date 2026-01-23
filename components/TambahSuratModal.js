@@ -113,7 +113,7 @@ export default function TambahSuratModal({ open, data, onClose, onSuccess }) {
             <input value={nama} onChange={e => setNama(e.target.value)} required />
           </div>
 
-<div>
+<div className="form-group">
   <label>Jenis Pelanggan</label>
   <select
     value={jenisPelanggan}
@@ -126,8 +126,6 @@ export default function TambahSuratModal({ open, data, onClose, onSuccess }) {
   </select>
 </div>
 
-
-  
           <div className="form-group">
             <label>Jenis Transaksi</label>
             <select value={jenis} onChange={e => setJenis(e.target.value)} required>
@@ -169,6 +167,7 @@ export default function TambahSuratModal({ open, data, onClose, onSuccess }) {
     </div>
   );
 }
+
 
 
 
