@@ -111,15 +111,6 @@ export default function FilterBar({
           />
         </div>
 
-<div style={{
-  marginTop: 6,
-  fontSize: 13,
-  color: "#555"
-}}>
-  Menampilkan <b>{total}</b> data
-</div>
-
-
               
         <div style={{ display: "flex", gap: 8 }}>
           <button className="btn-success" onClick={onDownload}>
@@ -130,11 +121,17 @@ export default function FilterBar({
             Tambah Surat
           </button>
         </div>
+
+   <div style={{ marginTop: 6, fontSize: 13, color: "#555" }}>
+      Menampilkan <b>{total}</b> data
+    </div>
+  
       </div>
 
     </div>
   );
 }
+
 
 
 
