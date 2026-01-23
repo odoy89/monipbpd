@@ -33,7 +33,7 @@ export default function Dashboard() {
   const [downloading, setDownloading] = useState(false);
   const [previewFoto, setPreviewFoto] = useState(null);
 const [role, setRole] = useState("");
-  const totalFiltered = filteredData.length;
+  
 
 
 useEffect(() => {
@@ -126,7 +126,7 @@ if (
   });
 }, [data, search, activeFilter]);
 
-
+const totalFiltered = filteredData.length;
 
   /* ================= SUMMARY ================= */
   const summary = useMemo(() => ({
@@ -422,6 +422,7 @@ const jenisTransaksi = String(selectedRow?.JENIS_TRANSAKSI || "")
   );
   
 }
+
 
 
 
