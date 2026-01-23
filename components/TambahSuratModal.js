@@ -2,17 +2,20 @@ import { useEffect, useState } from "react";
 
 export default function TambahSuratModal({ open, data, onClose, onSuccess }) {
   const [nama, setNama] = useState("");
+  const [jenisPelanggan, setJenisPelanggan] = useState("");
   const [jenis, setJenis] = useState("");
   const [tglSurat, setTglSurat] = useState("");
   const [tglTerima, setTglTerima] = useState("");
   const [file, setFile] = useState(null);
   const [saving, setSaving] = useState(false);
+  
 
   useEffect(() => {
     if (!open) return;
 
     if (data) {
       setNama(data.NAMA_PELANGGAN || "");
+      setJenisPelanggan(data.JENIS_PELANGGAN || "");
       setJenis(data.JENIS_TRANSAKSI || "");
       setTglSurat(toInputDate(data.TANGGAL_SURAT));
       setTglTerima(toInputDate(data.TANGGAL_TERIMA_SURAT));
@@ -68,6 +71,7 @@ export default function TambahSuratModal({ open, data, onClose, onSuccess }) {
         action: data ? "update" : "create",
         NO: data?.NO || "",
         NAMA_PELANGGAN: nama,
+        JENIS_PELANGGAN: jenisPelanggan,
         JENIS_TRANSAKSI: jenis,
         TANGGAL_SURAT: tglSurat,
         TANGGAL_TERIMA_SURAT: tglTerima,
@@ -109,6 +113,18 @@ export default function TambahSuratModal({ open, data, onClose, onSuccess }) {
             <input value={nama} onChange={e => setNama(e.target.value)} required />
           </div>
 
+<div className="form-group">
+  <label>Jenis Pelanggan</label>
+  <select
+    value={jenisPelanggan}
+    onChange={e => setJenisPelanggan(e.target.value)}
+  >
+    <option value="">-- pilih jenis pelanggan --</option>
+    <option value="RETAIL">RETAIL</option>
+    <option value="PERUMAHAN TM">PERUMAHAN TM</option>
+  </select>
+</div>
+  
           <div className="form-group">
             <label>Jenis Transaksi</label>
             <select value={jenis} onChange={e => setJenis(e.target.value)} required>
@@ -150,3 +166,4 @@ export default function TambahSuratModal({ open, data, onClose, onSuccess }) {
     </div>
   );
 }
+
