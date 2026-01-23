@@ -72,17 +72,18 @@ export default function FilterBar({
         </div>
 
         <div>
-          <label>Jenis Pelanggan</label>
-          <select
-            value={jenisPelanggan}
-            onChange={e => setJenisPelanggan(e.target.value)}
-          >
-            <option value="">Semua Jenis Pelanggan</option>
-            <option value="RETAIL">RETAIL</option>
-            <option value="PERUMAHAN">PERUMAHAN</option>
-            <option value="TM">TM</option>
-          </select>
-        </div>
+  <label>Jenis Pelanggan</label>
+  <select
+    value={jenisPelanggan}
+    onChange={e => setJenisPelanggan(e.target.value)}
+  >
+    <option value="">-- pilih jenis pelanggan --</option>
+    <option value="RETAIL">RETAIL</option>
+    <option value="PERUMAHAN">PERUMAHAN</option>
+    <option value="TM">TM</option>
+  </select>
+</div>
+
 
         <div>
           <label>Status</label>
@@ -123,3 +124,4 @@ export default function FilterBar({
     </div>
   );
 }
+
