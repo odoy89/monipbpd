@@ -92,6 +92,11 @@ body {
   color: #1e3c72;
 }
 
+.table-box {
+  max-height: 65vh;
+  overflow-y: auto;
+}
+
 /* ================= MAIN ================= */
 .main {
   flex: 1;
@@ -556,6 +561,7 @@ body {
 .form-group.vendor-select {
   margin-bottom: 80px; /* 🔥 kasih ruang ke bawah */
 }
+
 
 
 
