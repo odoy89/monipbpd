@@ -556,15 +556,8 @@ body {
 
   .filter-actions {
     align-items: flex-start;
-  }
-}
-
-
-@media (max-width: 768px) {
-  .filter-actions {
     justify-content: flex-start;
   }
-}
 
   .search-box {
     width: 100%;
@@ -572,6 +565,10 @@ body {
 
   .content {
     padding: 12px;
+  }
+
+  .table {
+    font-size: 12px;
   }
 }
 
@@ -587,13 +584,13 @@ body {
   .form-grid-2 {
     grid-template-columns: 1fr;
   }
-
 }
 
 /* ===== KHUSUS DROPDOWN VENDOR SAJA ===== */
 .form-group.vendor-select {
   margin-bottom: 80px; /* 🔥 kasih ruang ke bawah */
 }
+
 
 
 
