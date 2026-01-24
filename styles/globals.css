@@ -547,8 +547,15 @@ body {
 /* ================= RESPONSIVE ================= */
 @media (max-width: 768px) {
   .filter-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
   }
+
+  .filter-grid .btn-ghost {
+    grid-column: span 2;   /* tombol reset full */
+  }
+}
+
 
   .filter-bottom {
     flex-direction: column;
@@ -595,6 +602,7 @@ body {
 .form-group.vendor-select {
   margin-bottom: 80px; /* 🔥 kasih ruang ke bawah */
 }
+
 
 
 
