@@ -154,7 +154,7 @@ body {
 .filter-grid {
   display: grid;
   grid-template-columns: 1.2fr 0.9fr 1.4fr 0.9fr auto;
-  gap: 10px;            
+  gap: 8px;            
   align-items: end;
 }
 
@@ -167,7 +167,7 @@ body {
 .filter-grid select,
 .search-box input {
   height: 40px;
-  padding: 0 12px;
+  padding: 0 8px;
   border-radius: 8px;
   border: 1px solid #d1d5db;
   font-size: 14px;
@@ -183,7 +183,7 @@ body {
 
 .filter-grid .btn-ghost {
   padding: 8px 14px;
-  margin-left: 4px;   /* 🔥 dikit aja */
+  margin-left: 2px;   
 }
 
 
@@ -595,6 +595,7 @@ body {
 .form-group.vendor-select {
   margin-bottom: 80px; /* 🔥 kasih ruang ke bawah */
 }
+
 
 
 
