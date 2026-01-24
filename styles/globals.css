@@ -153,25 +153,17 @@ body {
 
 .filter-grid {
   display: grid;
-  grid-template-columns: 1.2fr 0.9fr 1.4fr 0.9fr auto;
-  gap: 8px;            
+  grid-template-columns: 160px 140px 200px 140px 90px;
+  gap: 10px;                 
   align-items: end;
 }
 
-.filter-grid select {
-  min-width: 140px;
-}
-
-
 .filter-grid input,
-.filter-grid select,
-.search-box input {
-  height: 40px;
-  padding: 0 8px;
-  border-radius: 8px;
-  border: 1px solid #d1d5db;
-  font-size: 14px;
+.filter-grid select {
+  width: 100%;        
+  min-width: 0;       
 }
+
 
 
 .filter-grid label {
@@ -182,9 +174,10 @@ body {
 }
 
 .filter-grid .btn-ghost {
-  padding: 8px 14px;
-  margin-left: 2px;   
+  width: 100%;
+  padding: 8px 0;
 }
+
 
 
 .filter-bottom {
@@ -595,6 +588,7 @@ body {
 .form-group.vendor-select {
   margin-bottom: 80px; /* 🔥 kasih ruang ke bawah */
 }
+
 
 
 
