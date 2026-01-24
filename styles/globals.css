@@ -151,17 +151,22 @@ body {
   box-shadow: 0 2px 8px rgba(0,0,0,.05);
 }
 
-.filter-grid {
-  display: grid;
-  grid-template-columns: 160px 140px 200px 140px 90px;
-  gap: 10px;                 
-  align-items: end;
+.filter-grid > div {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;              /* jarak label ke input */
 }
 
 .filter-grid input,
 .filter-grid select {
-  width: 100%;        
-  min-width: 0;       
+  height: 42px;          /* 🔥 lebih nyaman */
+  padding: 0 10px;
+  font-size: 14px;
+  border-radius: 8px;
+}
+
+.filter-grid {
+  gap: 12px;             /* jangan 8px, terlalu sempit */
 }
 
 
@@ -174,9 +179,11 @@ body {
 }
 
 .filter-grid .btn-ghost {
-  width: 100%;
-  padding: 8px 0;
+  height: 42px;
+  margin-top: 22px;      /* 🔥 sejajar dengan input */
+  border-radius: 8px;
 }
+
 
 
 
@@ -588,6 +595,7 @@ body {
 .form-group.vendor-select {
   margin-bottom: 80px; /* 🔥 kasih ruang ke bawah */
 }
+
 
 
 
