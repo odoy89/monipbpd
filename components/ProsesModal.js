@@ -38,6 +38,15 @@ export default function ProsesModal({ open, data, onClose, onSuccess }) {
 
   const [nodin, setNodin] = useState(false);
 
+  function hitungDeltaVA(dLama, dBaru) {
+  const lama = Number(dLama) || 0;
+  const baru = Number(dBaru) || 0;
+
+  const delta = Math.abs(baru - lama); 
+  setDeltaVA(delta > 0 ? delta : "");
+}
+
+
   /* ===== LOAD TARIF ===== */
   useEffect(() => {
     if (!open) return;
@@ -231,7 +240,12 @@ useEffect(() => {
 
             <div className="form-group">
               <label>Daya Lama</label>
-              <select value={dayaLama} onChange={e => setDayaLama(e.target.value)}>
+              <select value={dayaLama}   onChange={e => {
+    const val = e.target.value;
+    setDayaLama(val);
+    hitungDeltaVA(val, dayaBaru); 
+  }}
+>
                 <option value="">-- pilih --</option>
                 {(tarifList[tarifLama] || []).map(d => <option key={d}>{d}</option>)}
               </select>
@@ -250,7 +264,12 @@ useEffect(() => {
 
         <div className="form-group">
           <label>Daya Baru</label>
-          <select value={dayaBaru} onChange={e => setDayaBaru(e.target.value)}>
+          <select value={dayaBaru} onChange={e => {
+    const val = e.target.value;
+    setDayaBaru(val);
+    hitungDeltaVA(dayaLama, val); 
+  }}
+>
             <option value="">-- pilih --</option>
             {(tarifList[tarifBaru] || []).map(d => <option key={d}>{d}</option>)}
           </select>
@@ -259,7 +278,12 @@ useEffect(() => {
         {/* DELTA VA */}
         <div className="form-group">
           <label>Delta VA</label>
-          <input value={deltaVA} onChange={e => setDeltaVA(e.target.value)} />
+          <input
+  value={deltaVA}
+  readOnly
+  placeholder="Delta VA otomatis"
+  style={{ background: "#f3f4f6", fontWeight: 600 }}
+/>
         </div>
 
         {/* SURVEY */}
@@ -321,5 +345,6 @@ useEffect(() => {
     </div>
   );
 }
+
 
 
