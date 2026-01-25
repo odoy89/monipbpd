@@ -91,6 +91,24 @@ useEffect(() => {
   setNodin(Boolean(data.NODIN_KE_REN));
 }, [data]);
 
+/* ===== AUTO HITUNG DELTA VA ===== */
+useEffect(() => {
+  const lama = Number(dayaLama) || 0;
+  const baru = Number(dayaBaru) || 0;
+
+  // 🔹 PB → delta = daya baru
+  if (isPB) {
+    setDeltaVA(baru ? String(baru) : "");
+    return;
+  }
+
+  // 🔹 PD → delta = selisih (tanpa minus)
+  if (isPD && lama && baru) {
+    setDeltaVA(String(Math.abs(baru - lama)));
+  } else {
+    setDeltaVA("");
+  }
+}, [dayaLama, dayaBaru, isPB, isPD]);
 
   /* ===== SUBMIT ===== */
   async function handleSubmit() {
@@ -345,6 +363,7 @@ useEffect(() => {
     </div>
   );
 }
+
 
 
 
