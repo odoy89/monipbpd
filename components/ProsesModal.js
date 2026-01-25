@@ -38,14 +38,6 @@ export default function ProsesModal({ open, data, onClose, onSuccess }) {
 
   const [nodin, setNodin] = useState(false);
 
-  function hitungDeltaVA(dLama, dBaru) {
-  const lama = Number(dLama) || 0;
-  const baru = Number(dBaru) || 0;
-
-  const delta = Math.abs(baru - lama); 
-  setDeltaVA(delta > 0 ? delta : "");
-}
-
 
   /* ===== LOAD TARIF ===== */
   useEffect(() => {
@@ -91,7 +83,7 @@ useEffect(() => {
   setNodin(Boolean(data.NODIN_KE_REN));
 }, [data]);
 
-/* ===== AUTO HITUNG DELTA VA ===== */
+  /* ===== AUTO HITUNG DELTA VA ===== */
 useEffect(() => {
   const lama = Number(dayaLama) || 0;
   const baru = Number(dayaBaru) || 0;
@@ -102,13 +94,15 @@ useEffect(() => {
     return;
   }
 
-  // 🔹 PD → delta = selisih (tanpa minus)
-  if (isPD && lama && baru) {
-    setDeltaVA(String(Math.abs(baru - lama)));
+  // 🔹 PD → delta = BARU - LAMA (BOLEH MINUS)
+  if (isPD && dayaBaru && dayaLama) {
+    setDeltaVA(String(baru - lama));
   } else {
     setDeltaVA("");
   }
 }, [dayaLama, dayaBaru, isPB, isPD]);
+
+
 
   /* ===== SUBMIT ===== */
   async function handleSubmit() {
@@ -258,12 +252,7 @@ useEffect(() => {
 
             <div className="form-group">
               <label>Daya Lama</label>
-              <select value={dayaLama}   onChange={e => {
-    const val = e.target.value;
-    setDayaLama(val);
-    hitungDeltaVA(val, dayaBaru); 
-  }}
->
+              <select value={dayaLama} onChange={e => setDayaLama(e.target.value)}>
                 <option value="">-- pilih --</option>
                 {(tarifList[tarifLama] || []).map(d => <option key={d}>{d}</option>)}
               </select>
@@ -282,12 +271,7 @@ useEffect(() => {
 
         <div className="form-group">
           <label>Daya Baru</label>
-          <select value={dayaBaru} onChange={e => {
-    const val = e.target.value;
-    setDayaBaru(val);
-    hitungDeltaVA(dayaLama, val); 
-  }}
->
+          <select value={dayaBaru} onChange={e => setDayaBaru(e.target.value)}>
             <option value="">-- pilih --</option>
             {(tarifList[tarifBaru] || []).map(d => <option key={d}>{d}</option>)}
           </select>
@@ -363,6 +347,7 @@ useEffect(() => {
     </div>
   );
 }
+
 
 
 
