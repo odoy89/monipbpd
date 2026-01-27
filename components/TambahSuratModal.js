@@ -61,13 +61,11 @@ export default function TambahSuratModal({ open, data, onClose, onSuccess }) {
     if (file) fd.append("FILE_SURAT", file);
     if (data?.FILE_SURAT) fd.append("FILE_LAMA", data.FILE_SURAT);
 
-   const res = await fetch(
-  "https://script.google.com/macros/s/AKfycbyZ0Or7zK04P8qCTMjxmuliB_WvqjgAnyWMa66iYojLZKeDEnnOZZwB1V-SBCh-NrG5_A/exec",
-  {
-    method: "POST",
-    body: fd
-  }
-);
+   const res = await fetch("/api/tambah-surat", {
+  method: "POST",
+  body: fd // atau JSON
+});
+
 
 
     const json = await res.json();
@@ -151,6 +149,7 @@ export default function TambahSuratModal({ open, data, onClose, onSuccess }) {
     </div>
   );
 }
+
 
 
 
