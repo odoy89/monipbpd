@@ -38,69 +38,50 @@ export default function TambahSuratModal({ open, data, onClose, onSuccess }) {
     return `${y}-${m}-${d}`;
   }
 
-  function fileToBase64(file) {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => resolve(reader.result.split(",")[1]);
-      reader.onerror = reject;
-      reader.readAsDataURL(file);
+async function handleSubmit(e) {
+  e.preventDefault();
+
+  if (!file && !data?.FILE_SURAT) {
+    alert("File PDF wajib diupload");
+    return;
+  }
+
+  setSaving(true);
+
+  try {
+    const fd = new FormData();
+
+    fd.append("action", data ? "update" : "create");
+    fd.append("NO", data?.NO || "");
+    fd.append("NAMA_PELANGGAN", nama);
+    fd.append("JENIS_PELANGGAN", jenisPelanggan);
+    fd.append("JENIS_TRANSAKSI", jenis);
+    fd.append("TANGGAL_SURAT", tglSurat);
+    fd.append("TANGGAL_TERIMA_SURAT", tglTerima);
+
+    if (file) fd.append("FILE_SURAT", file);
+    if (data?.FILE_SURAT) fd.append("FILE_LAMA", data.FILE_SURAT);
+
+    const res = await fetch("/api/tambah-surat", {
+      method: "POST",
+      body: fd        // 🔥 FORM DATA
     });
-  }
 
-  async function handleSubmit(e) {
-    e.preventDefault();
+    const json = await res.json();
+    setSaving(false);
 
-    // Validasi: kalau create (data undefined) wajib upload file; kalau edit boleh pakai FILE_LAMA
-    if (!file && !data?.FILE_SURAT) {
-      alert("File PDF wajib diupload");
-      return;
+    if (json.status === "ok") {
+      onSuccess();
+      onClose();
+    } else {
+      alert(json.message || "Gagal menyimpan");
     }
-
-    setSaving(true);
-
-    try {
-      let fileBase64 = "";
-      let fileName = "";
-
-      if (file) {
-        fileBase64 = await fileToBase64(file);
-        fileName = file.name;
-      }
-
-      const payload = {
-        action: data ? "update" : "create",
-        NO: data?.NO || "",
-        NAMA_PELANGGAN: nama,
-        JENIS_PELANGGAN: jenisPelanggan,
-        JENIS_TRANSAKSI: jenis,
-        TANGGAL_SURAT: tglSurat,
-        TANGGAL_TERIMA_SURAT: tglTerima,
-        FILE_BASE64: fileBase64,
-        FILE_NAME: fileName,
-        FILE_LAMA: data?.FILE_SURAT || ""
-      };
-
-      const res = await fetch("/api/tambah-surat", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload)
-      });
-
-      const json = await res.json();
-      setSaving(false);
-
-      if (json.status === "ok") {
-        onSuccess();
-        onClose();
-      } else {
-        alert(json.message || "Gagal menyimpan");
-      }
-    } catch (err) {
-      setSaving(false);
-      console.error("TAMBAH SURAT ERROR CLIENT:", err);
-      alert("Gagal koneksi ke server");
-    }
+  } catch (err) {
+    setSaving(false);
+    alert("Gagal koneksi ke server");
   }
+}
+
 
   return (
     <div className="modal-overlay">
@@ -167,6 +148,7 @@ export default function TambahSuratModal({ open, data, onClose, onSuccess }) {
     </div>
   );
 }
+
 
 
 
