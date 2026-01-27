@@ -28,6 +28,7 @@ export default async function handler(req, res) {
     return res.status(200).json(json);
 
   } catch (err) {
+    console.error("API PROGRES ERROR:", err);
     return res.status(500).json({
       status: "error",
       message: "Gagal koneksi ke AppScript"
