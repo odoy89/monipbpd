@@ -62,7 +62,7 @@ export default function TambahSuratModal({ open, data, onClose, onSuccess }) {
     if (data?.FILE_SURAT) fd.append("FILE_LAMA", data.FILE_SURAT);
 
    const res = await fetch(
-  "https://script.google.com/macros/s/AKfycbzShG42uSeTZbQkW3VW8vdbB247NnRIlB381UdY_S-Xdq7eAowOb8pc_8RfifHX-QdOfg/exec",
+  "https://script.google.com/macros/s/AKfycbyZ0Or7zK04P8qCTMjxmuliB_WvqjgAnyWMa66iYojLZKeDEnnOZZwB1V-SBCh-NrG5_A/exec",
   {
     method: "POST",
     body: fd
@@ -151,5 +151,6 @@ export default function TambahSuratModal({ open, data, onClose, onSuccess }) {
     </div>
   );
 }
+
 
 
