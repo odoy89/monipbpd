@@ -8,7 +8,6 @@ export default function TambahSuratModal({ open, data, onClose, onSuccess }) {
   const [tglTerima, setTglTerima] = useState("");
   const [file, setFile] = useState(null);
   const [saving, setSaving] = useState(false);
-  
 
   useEffect(() => {
     if (!open) return;
@@ -17,8 +16,8 @@ export default function TambahSuratModal({ open, data, onClose, onSuccess }) {
       setNama(data.NAMA_PELANGGAN || "");
       setJenisPelanggan(data.JENIS_PELANGGAN || "");
       setJenis(data.JENIS_TRANSAKSI || "");
-      setTglSurat(toInputDate(data.TANGGAL_SURAT));
-      setTglTerima(toInputDate(data.TANGGAL_TERIMA_SURAT));
+      setTglSurat(data.TANGGAL_SURAT || "");
+      setTglTerima(data.TANGGAL_TERIMA_SURAT || "");
       setFile(null);
     } else {
       setNama("");
@@ -31,57 +30,48 @@ export default function TambahSuratModal({ open, data, onClose, onSuccess }) {
 
   if (!open) return null;
 
-  function toInputDate(val) {
-    if (!val) return "";
-    if (val.includes("-")) return val;
-    const [d, m, y] = val.split("/");
-    return `${y}-${m}-${d}`;
-  }
+  async function handleSubmit(e) {
+    e.preventDefault();
 
-async function handleSubmit(e) {
-  e.preventDefault();
-
-  if (!file && !data?.FILE_SURAT) {
-    alert("File PDF wajib diupload");
-    return;
-  }
-
-  setSaving(true);
-
-  try {
-    const fd = new FormData();
-
-    fd.append("action", data ? "update" : "create");
-    fd.append("NO", data?.NO || "");
-    fd.append("NAMA_PELANGGAN", nama);
-    fd.append("JENIS_PELANGGAN", jenisPelanggan);
-    fd.append("JENIS_TRANSAKSI", jenis);
-    fd.append("TANGGAL_SURAT", tglSurat);
-    fd.append("TANGGAL_TERIMA_SURAT", tglTerima);
-
-    if (file) fd.append("FILE_SURAT", file);
-    if (data?.FILE_SURAT) fd.append("FILE_LAMA", data.FILE_SURAT);
-
-    const res = await fetch("/api/tambah-surat", {
-      method: "POST",
-      body: fd        // 🔥 FORM DATA
-    });
-
-    const json = await res.json();
-    setSaving(false);
-
-    if (json.status === "ok") {
-      onSuccess();
-      onClose();
-    } else {
-      alert(json.message || "Gagal menyimpan");
+    if (!file && !data?.FILE_SURAT) {
+      alert("File PDF wajib diupload");
+      return;
     }
-  } catch (err) {
-    setSaving(false);
-    alert("Gagal koneksi ke server");
-  }
-}
 
+    setSaving(true);
+
+    try {
+      const fd = new FormData();
+      fd.append("action", data ? "update" : "create");
+      fd.append("NO", data?.NO || "");
+      fd.append("NAMA_PELANGGAN", nama);
+      fd.append("JENIS_PELANGGAN", jenisPelanggan);
+      fd.append("JENIS_TRANSAKSI", jenis);
+      fd.append("TANGGAL_SURAT", tglSurat);
+      fd.append("TANGGAL_TERIMA_SURAT", tglTerima);
+
+      if (file) fd.append("FILE_SURAT", file);
+      if (data?.FILE_SURAT) fd.append("FILE_LAMA", data.FILE_SURAT);
+
+      const res = await fetch("/api/tambah-surat", {
+        method: "POST",
+        body: fd
+      });
+
+      const json = await res.json();
+      setSaving(false);
+
+      if (json.status === "ok") {
+        onSuccess();
+        onClose();
+      } else {
+        alert(json.message || "Gagal menyimpan");
+      }
+    } catch {
+      setSaving(false);
+      alert("Gagal koneksi ke server");
+    }
+  }
 
   return (
     <div className="modal-overlay">
@@ -94,18 +84,15 @@ async function handleSubmit(e) {
             <input value={nama} onChange={e => setNama(e.target.value)} required />
           </div>
 
-<div className="form-group">
-  <label>Jenis Pelanggan</label>
-  <select
-    value={jenisPelanggan}
-    onChange={e => setJenisPelanggan(e.target.value)}
-  >
-    <option value="">Semua Jenis Pelanggan</option>
-    <option value="RETAIL">RETAIL</option>
-    <option value="PERUMAHAN">PERUMAHAN</option>
-    <option value="TM">TM</option>
-  </select>
-</div>
+          <div className="form-group">
+            <label>Jenis Pelanggan</label>
+            <select value={jenisPelanggan} onChange={e => setJenisPelanggan(e.target.value)}>
+              <option value="">Pilih</option>
+              <option value="RETAIL">RETAIL</option>
+              <option value="PERUMAHAN">PERUMAHAN</option>
+              <option value="TM">TM</option>
+            </select>
+          </div>
 
           <div className="form-group">
             <label>Jenis Transaksi</label>
@@ -128,12 +115,6 @@ async function handleSubmit(e) {
 
           <div className="form-group">
             <label>File Surat (PDF)</label>
-            {data?.FILE_SURAT && (
-              <small>
-                File lama:{" "}
-                <a href={data.FILE_SURAT} target="_blank" rel="noreferrer">Download</a>
-              </small>
-            )}
             <input type="file" accept="application/pdf" onChange={e => setFile(e.target.files[0])} />
           </div>
 
@@ -148,8 +129,3 @@ async function handleSubmit(e) {
     </div>
   );
 }
-
-
-
-
-
