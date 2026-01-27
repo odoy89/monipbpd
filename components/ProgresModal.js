@@ -17,6 +17,13 @@ export default function ProgressModal({ open, data, onClose, onSuccess }) {
     return `${y}-${m}-${d}`;
   }
 
+  function fileToBase64(file) {
+    return new Promise(resolve => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result.split(",")[1]);
+      reader.readAsDataURL(file);
+    });
+  }
 
   /* ================= PREFILL ================= */
   useEffect(() => {
@@ -30,38 +37,50 @@ export default function ProgressModal({ open, data, onClose, onSuccess }) {
 
   /* ================= SUBMIT ================= */
   async function handleSubmit() {
-  if (!data?.NO) return alert("NO tidak ditemukan");
+    if (!data?.NO) {
+      alert("NO tidak ditemukan");
+      return;
+    }
 
-  setLoading(true);
+    setLoading(true);
 
-  const fd = new FormData();
-  fd.append("NO", data.NO);
-  fd.append("PROGRES_PEKERJAAN", progres);
-  fd.append("TANGGAL_NYALA", tanggalNyala);
+    const payload = {
+      action: "saveProgres",
+      NO: String(data.NO),
+      PROGRES_PEKERJAAN: progres,
+      TANGGAL_NYALA: tanggalNyala || ""
+    };
 
-  if (eviden1) fd.append("EVIDEN_1", eviden1);
-  if (eviden2) fd.append("EVIDEN_2", eviden2);
+    if (eviden1) {
+      payload.EVIDEN_1_BASE64 = await fileToBase64(eviden1);
+      payload.EVIDEN_1_NAME = eviden1.name;
+    }
 
-  fetch("/api/progres", {
-    method: "POST",
-    body: fd
-  })
-    .then(r => r.json())
-    .then(res => {
-      setLoading(false);
-      if (res.status === "ok") {
-        onSuccess();
-        onClose();
-      } else {
-        alert("Gagal simpan progres");
-      }
+    if (eviden2) {
+      payload.EVIDEN_2_BASE64 = await fileToBase64(eviden2);
+      payload.EVIDEN_2_NAME = eviden2.name;
+    }
+
+    fetch("/api/progres", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
     })
-    .catch(() => {
-      setLoading(false);
-      alert("Koneksi error");
-    });
-}
-
+      .then(r => r.json())
+      .then(res => {
+        setLoading(false);
+        if (res.status === "success" || res.status === "ok") {
+          onSuccess();
+          onClose();
+        } else {
+          alert(res.message || "Gagal menyimpan progres");
+        }
+      })
+      .catch(() => {
+        setLoading(false);
+        alert("Koneksi error");
+      });
+  }
 
   /* ================= RENDER ================= */
   if (!open || !data) {
@@ -127,4 +146,3 @@ export default function ProgressModal({ open, data, onClose, onSuccess }) {
     </div>
   );
 }
-
