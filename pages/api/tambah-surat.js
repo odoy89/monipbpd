@@ -1,22 +1,46 @@
-import formidable from "formidable";
-
-export const config = {
-  api: { bodyParser: false }
-};
-
 export default async function handler(req, res) {
   if (req.method !== "POST") {
-    return res.status(405).json({ status: "error" });
+    return res.status(405).json({
+      status: "error",
+      message: "Method not allowed"
+    });
   }
 
-  const form = formidable({ keepExtensions: true });
+  try {
+    const payload =
+      typeof req.body === "string"
+        ? JSON.parse(req.body)
+        : req.body;
 
-  form.parse(req, async (err, fields, files) => {
-    if (err) {
-      return res.status(500).json({ status: "error" });
+    if (!payload?.action) {
+      return res.status(400).json({
+        status: "error",
+        message: "Action tidak ditemukan"
+      });
     }
 
-    // ⬇️ teruskan ke Apps Script / proses drive
-    return res.status(200).json({ status: "ok" });
-  });
+    const APPSCRIPT_URL = process.env.NEXT_PUBLIC_APPSCRIPT_URL;
+    if (!APPSCRIPT_URL) {
+      return res.status(500).json({
+        status: "error",
+        message: "Server config error"
+      });
+    }
+
+    const response = await fetch(APPSCRIPT_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+
+    const text = await response.text();
+    const result = JSON.parse(text);
+    return res.status(200).json(result);
+
+  } catch (err) {
+    return res.status(500).json({
+      status: "error",
+      message: "Gagal koneksi ke AppScript"
+    });
+  }
 }
