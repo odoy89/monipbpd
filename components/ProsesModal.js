@@ -106,76 +106,62 @@ useEffect(() => {
 
   /* ===== SUBMIT ===== */
   async function handleSubmit() {
-    setSaving(true);
+  setSaving(true);
 
-    let fileBase64 = "";
-    let fileName = "";
+  try {
+    const fd = new FormData();
+
+    fd.append("action", "saveProses2");
+    fd.append("NO", data.NO);
+
+    fd.append("KATEGORI", kategori);
+    fd.append("ULP", ulp);
+
+    fd.append("POTENSI_PELANGGAN", potensi);
+    fd.append("RUMAH_SELESAI_DIBANGUN", rumah);
+
+    fd.append("TARIF_LAMA", isPD ? tarifLama : "");
+    fd.append("DAYA_LAMA", isPD ? dayaLama : "");
+
+    fd.append("TARIF_BARU", tarifBaru);
+    fd.append("DAYA_BARU", dayaBaru);
+    fd.append("DELTA_VA", deltaVA);
+
+    fd.append("NO_SURAT_PENYAMPAIAN_REKSIS_KE_UP3", noReksis);
+    fd.append("TELEPON_PELANGGAN", telepon);
+
+    fd.append("SURVEY", survey ? "YA" : "TIDAK");
+    fd.append("TRAFO", survey ? trafo : "");
+    fd.append("JTM", survey ? jtm : "");
+    fd.append("JTR", survey ? jtr : "");
+
+    fd.append("NODIN_KE_REN", nodin ? "YA" : "TIDAK");
 
     if (adaSuratBalasan && fileBalasan) {
-      const reader = new FileReader();
-      reader.onload = async () => {
-        fileBase64 = reader.result.split(",")[1];
-        fileName = fileBalasan.name;
-        await submitJSON(fileBase64, fileName);
-      };
-      reader.readAsDataURL(fileBalasan);
-    } else {
-      await submitJSON("", "");
+      fd.append("FILE_SURAT_BALASAN", fileBalasan);
     }
-  }
 
-  async function submitJSON(fileBase64, fileName) {
-    const payload = {
-      action: "saveProses2",
-      NO: data.NO,
-
-      KATEGORI: kategori,
-      ULP: ulp,
-
-      POTENSI_PELANGGAN: potensi,
-      RUMAH_SELESAI_DIBANGUN: rumah,
-
-      TARIF_LAMA: isPD ? tarifLama : "",
-      DAYA_LAMA: isPD ? dayaLama : "",
-
-      TARIF_BARU: tarifBaru,
-      DAYA_BARU: dayaBaru,
-      DELTA_VA: deltaVA,
-
-      NO_SURAT_PENYAMPAIAN_REKSIS_KE_UP3: noReksis,
-      TELEPON_PELANGGAN: telepon,
-
-      SURVEY: survey,
-      TRAFO: survey ? trafo : "",
-      JTM: survey ? jtm : "",
-      JTR: survey ? jtr : "",
-
-      NODIN_KE_REN: nodin,
-
-      FILE_SURAT_BALASAN_BASE64: fileBase64,
-      FILE_SURAT_BALASAN_NAME: fileName
-    };
-
-    fetch("/api/proses2", {
+    const res = await fetch("/api/proses2", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload)
-    })
-      .then(r => r.json())
-      .then(res => {
-        setSaving(false);
-        if (res.status === "ok") {
-          onSuccess();
-          onClose();
-        } else {
-          alert(res.message || "Gagal menyimpan");
-        }
-      })
-      .catch(() => {
-        setSaving(false);
-        alert("Koneksi error");
-      });
+      body: fd
+    });
+
+    const json = await res.json();
+    setSaving(false);
+
+    if (json.status === "ok") {
+      onSuccess();
+      onClose();
+    } else {
+      alert(json.message || "Gagal menyimpan");
+    }
+
+  } catch (err) {
+    setSaving(false);
+    alert("Koneksi error");
   }
+}
+
 
   return (
     <div className="modal-overlay">
@@ -347,6 +333,7 @@ useEffect(() => {
     </div>
   );
 }
+
 
 
 
