@@ -80,15 +80,11 @@ export default function TambahSuratModal({ open, data, onClose, onSuccess }) {
         FILE_LAMA: data?.FILE_SURAT || ""
       };
 
-     const res = await fetch(
-  "https://script.google.com/macros/s/AKfycbzShG42uSeTZbQkW3VW8vdbB247NnRIlB381UdY_S-Xdq7eAowOb8pc_8RfifHX-QdOfg/exec",
-  {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(payload)
-  }
-);
-
+      const res = await fetch("/api/tambah-surat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
 
       const json = await res.json();
       setSaving(false);
