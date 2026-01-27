@@ -98,7 +98,7 @@ export default function TambahSuratModal({ open, data, onClose, onSuccess }) {
     } catch (err) {
       setSaving(false);
       console.error("TAMBAH SURAT ERROR CLIENT:", err);
-      alert("Gagal koneksi ke server");
+      alert("Gagal koneksi ke server / file upload pdf lebih dari 3MB ");
     }
   }
 
@@ -167,3 +167,4 @@ export default function TambahSuratModal({ open, data, onClose, onSuccess }) {
     </div>
   );
 }
+
