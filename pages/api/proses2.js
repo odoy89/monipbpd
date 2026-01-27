@@ -1,10 +1,3 @@
-import formidable from "formidable";
-import fs from "fs";
-
-export const config = {
-  api: { bodyParser: false }
-};
-
 export default async function handler(req, res) {
   if (req.method !== "POST") {
     return res.status(405).json({
@@ -13,47 +6,33 @@ export default async function handler(req, res) {
     });
   }
 
-  const form = formidable({ keepExtensions: true });
+  try {
+    const response = await fetch(process.env.NEXT_PUBLIC_APPSCRIPT_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(req.body)
+    });
 
-  form.parse(req, async (err, fields, files) => {
-    if (err) {
-      return res.status(500).json({
-        status: "error",
-        message: "Form parse error"
-      });
-    }
+    const text = await response.text();
 
+    let data;
     try {
-      const payload = {
-        ...fields,
-        action: "saveProses2"
-      };
-
-      // jika ada file surat balasan
-      if (files.FILE_SURAT_BALASAN) {
-        const file = files.FILE_SURAT_BALASAN;
-        payload.FILE_SURAT_BALASAN_BASE64 = fs
-          .readFileSync(file.filepath)
-          .toString("base64");
-        payload.FILE_SURAT_BALASAN_NAME = file.originalFilename;
-      }
-
-      const response = await fetch(process.env.NEXT_PUBLIC_APPSCRIPT_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload)
-      });
-
-      const text = await response.text();
-      const json = JSON.parse(text);
-
-      return res.status(200).json(json);
-
-    } catch (e) {
+      data = JSON.parse(text);
+    } catch {
       return res.status(500).json({
         status: "error",
-        message: "Gagal memproses data"
+        message: "Response AppScript bukan JSON",
+        raw: text
       });
     }
-  });
+
+    return res.status(200).json(data);
+
+  } catch (err) {
+    console.error("PROSES2 API ERROR:", err);
+    return res.status(500).json({
+      status: "error",
+      message: "Gagal koneksi ke AppScript"
+    });
+  }
 }
