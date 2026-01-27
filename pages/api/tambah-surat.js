@@ -1,3 +1,10 @@
+import formidable from "formidable";
+import fs from "fs";
+
+export const config = {
+  api: { bodyParser: false }
+};
+
 export default async function handler(req, res) {
   if (req.method !== "POST") {
     return res.status(405).json({
@@ -6,41 +13,48 @@ export default async function handler(req, res) {
     });
   }
 
-  try {
-    const payload =
-      typeof req.body === "string"
-        ? JSON.parse(req.body)
-        : req.body;
+  const form = formidable({ keepExtensions: true });
 
-    if (!payload?.action) {
-      return res.status(400).json({
-        status: "error",
-        message: "Action tidak ditemukan"
-      });
-    }
-
-    const APPSCRIPT_URL = process.env.NEXT_PUBLIC_APPSCRIPT_URL;
-    if (!APPSCRIPT_URL) {
+  form.parse(req, async (err, fields, files) => {
+    if (err) {
       return res.status(500).json({
         status: "error",
-        message: "Server config error"
+        message: "Form parse error"
       });
     }
 
-    const response = await fetch(APPSCRIPT_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-    });
+    try {
+      const payload = {
+        ...fields,
+        action: fields.action || "create"
+      };
 
-    const text = await response.text();
-    const result = JSON.parse(text);
-    return res.status(200).json(result);
+      // FILE PDF
+      if (files.FILE_SURAT) {
+        const file = files.FILE_SURAT;
+        payload.FILE_BASE64 = fs
+          .readFileSync(file.filepath)
+          .toString("base64");
+        payload.FILE_NAME = file.originalFilename;
+      }
 
-  } catch (err) {
-    return res.status(500).json({
-      status: "error",
-      message: "Gagal koneksi ke AppScript"
-    });
-  }
+      const response = await fetch(process.env.NEXT_PUBLIC_APPSCRIPT_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+
+      const text = await response.text();
+      const json = JSON.parse(text);
+
+      return res.status(200).json(json);
+
+    } catch (e) {
+      console.error("TAMBAH SURAT API ERROR:", e);
+      return res.status(500).json({
+        status: "error",
+        message: "Gagal memproses tambah surat"
+      });
+    }
+  });
 }
