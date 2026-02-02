@@ -294,10 +294,24 @@ const jenisTransaksi = String(selectedRow?.JENIS_TRANSAKSI || "")
         }
       });
   }}
+
   onVendor={(row) => {
-    setSelectedRow(row);
-    setOpenVendor(true);
-  }}
+  fetch("/api/detail", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ NO: row.NO })
+  })
+    .then(r => r.json())
+    .then(res => {
+      if (res.status === "ok") {
+        setSelectedRow(res);   // 🔥 DATA LENGKAP
+        setOpenVendor(true);
+      } else {
+        alert(res.message || "Gagal ambil detail vendor");
+      }
+    });
+}}
+
   onFoto={(row) => {
     setPreviewFoto(row);
   }}
@@ -422,6 +436,7 @@ const jenisTransaksi = String(selectedRow?.JENIS_TRANSAKSI || "")
   );
   
 }
+
 
 
 
