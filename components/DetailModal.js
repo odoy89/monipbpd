@@ -40,9 +40,8 @@ export default function DetailModal({ open, data, onClose }) {
             {data.NODIN_KE_REN ? "YA" : "TIDAK"}
           </div>
 
-          <div><b>Vendor:</b> {data.VENDOR || "-"}</div>
-            <div><b>Vendor:</b> {data.VENDOR_JARINGAN || "-"}</div>
-            <div><b>Vendor:</b> {data.VENDOR_TIANG || "-"}</div>
+            <div><b>Vendor Jaringan:</b> {data.VENDOR_JARINGAN || "-"}</div>
+            <div><b>Vendor Tiang:</b> {data.VENDOR_TIANG || "-"}</div>
           <div><b>Progres Pekerjaan:</b> {data.PROGRES_PEKERJAAN || "-"}</div>
 
           {data.EVIDEN_1 && (
@@ -80,5 +79,6 @@ export default function DetailModal({ open, data, onClose }) {
     </div>
   );
 }
+
 
 
