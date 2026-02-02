@@ -20,9 +20,9 @@ export default function VendorModal({ open, data, onClose, onSuccess }) {
         const list = Array.isArray(res.vendors) ? res.vendors : [];
         setVendors(list);
 
-        // PREFILL DATA LAMA
-        if (data.VENDOR_JARINGAN) setVendorJaringan(data.VENDOR_JARINGAN);
-        if (data.VENDOR_TIANG) setVendorTiang(data.VENDOR_TIANG);
+        // 🔥 PREFILL DATA LAMA
+        setVendorJaringan(data.VENDOR_JARINGAN || "");
+        setVendorTiang(data.VENDOR_TIANG || "");
       })
       .catch(err => {
         console.error("Gagal load vendor:", err);
@@ -55,7 +55,7 @@ export default function VendorModal({ open, data, onClose, onSuccess }) {
             setPopup("");
             onSuccess();
             onClose();
-          }, 800);
+          }, 700);
         } else {
           setPopup(res.message || "Gagal menyimpan vendor");
         }
@@ -72,6 +72,7 @@ export default function VendorModal({ open, data, onClose, onSuccess }) {
         <div className="modal-card">
           <h3>Pilih Vendor</h3>
 
+          {/* ===== VENDOR JARINGAN ===== */}
           <div className="form-group">
             <label>Vendor Jaringan</label>
             <select
@@ -80,13 +81,14 @@ export default function VendorModal({ open, data, onClose, onSuccess }) {
             >
               <option value="">-- pilih vendor jaringan --</option>
               {vendors.map(v => (
-                <option key={v.NAMA_VENDOR} value={v.NAMA_VENDOR}>
+                <option key={`j-${v.NAMA_VENDOR}`} value={v.NAMA_VENDOR}>
                   {v.NAMA_VENDOR}
                 </option>
               ))}
             </select>
           </div>
 
+          {/* ===== VENDOR TIANG ===== */}
           <div className="form-group">
             <label>Vendor Tiang</label>
             <select
@@ -95,7 +97,7 @@ export default function VendorModal({ open, data, onClose, onSuccess }) {
             >
               <option value="">-- pilih vendor tiang --</option>
               {vendors.map(v => (
-                <option key={v.NAMA_VENDOR} value={v.NAMA_VENDOR}>
+                <option key={`t-${v.NAMA_VENDOR}`} value={v.NAMA_VENDOR}>
                   {v.NAMA_VENDOR}
                 </option>
               ))}
