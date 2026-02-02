@@ -44,8 +44,10 @@ export default function DataTable({
 
               // ✅ KUNCI ALUR VENDOR (BENAR)
               const HAS_VENDOR = Boolean(
-                d.VENDOR && String(d.VENDOR).trim() !== ""
-              );
+  (d.VENDOR_JARINGAN && String(d.VENDOR_JARINGAN).trim() !== "") ||
+  (d.VENDOR_TIANG && String(d.VENDOR_TIANG).trim() !== "")
+);
+
 
               return (
                 <tr key={d.NO || i}>
@@ -182,6 +184,7 @@ export default function DataTable({
     </div>
   );
 }
+
 
 
 
