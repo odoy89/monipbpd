@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 
 export default function VendorModal({ open, data, onClose, onSuccess }) {
   const [vendors, setVendors] = useState([]);
-  const [vendor, setVendor] = useState("");
-  const [kontak, setKontak] = useState("");
+  const [vendorJaringan, setVendorJaringan] = useState("");
+const [vendorTiang, setVendorTiang] = useState("");
   const [loading, setLoading] = useState(false);
   const [popup, setPopup] = useState("");
 
@@ -21,11 +21,8 @@ export default function VendorModal({ open, data, onClose, onSuccess }) {
       setVendors(list);
 
       // PREFILL VENDOR LAMA
-      if (data.VENDOR) {
-        setVendor(data.VENDOR);
-        const v = list.find(x => x.NAMA_VENDOR === data.VENDOR);
-        setKontak(v?.NO_TLPN || "");
-      }
+     if (data.VENDOR_JARINGAN) setVendorJaringan(data.VENDOR_JARINGAN);
+if (data.VENDOR_TIANG) setVendorTiang(data.VENDOR_TIANG);
     })
     .catch(err => {
       console.error("Gagal load vendor:", err);
@@ -41,10 +38,11 @@ setKontak(v ? v.NO_TLPN : "");
   }
 
   function handleSubmit() {
-  if (!vendor) {
-    setPopup("Pilih vendor dulu");
-    return;
-  }
+  if (!vendorJaringan && !vendorTiang) {
+  setPopup("Pilih minimal satu vendor");
+  return;
+}
+
 
   setLoading(true);
 
@@ -52,11 +50,11 @@ setKontak(v ? v.NO_TLPN : "");
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
-      action: "saveVendorToRecord",
-      NO: String(data.NO),
-      NAMA_VENDOR: vendor,
-      NO_TLPN: kontak
-    })
+  action: "saveVendorToRecord",
+  NO: String(data.NO),
+  VENDOR_JARINGAN: vendorJaringan,
+  VENDOR_TIANG: vendorTiang
+})
   })
     .then(r => r.json())
     .then(res => {
@@ -85,12 +83,13 @@ setKontak(v ? v.NO_TLPN : "");
     <h3>Pilih Vendor</h3>
 
   <div className="form-group">
-  <label>Nama Vendor</label>
+  <div className="form-group">
+  <label>Vendor Jaringan</label>
   <select
-    value={vendor}
-    onChange={e => handleVendorChange(e.target.value)}
+    value={vendorJaringan}
+    onChange={e => setVendorJaringan(e.target.value)}
   >
-    <option value="">-- pilih vendor --</option>
+    <option value="">-- pilih vendor jaringan --</option>
     {vendors.map(v => (
       <option key={v.NAMA_VENDOR} value={v.NAMA_VENDOR}>
         {v.NAMA_VENDOR}
@@ -98,11 +97,22 @@ setKontak(v ? v.NO_TLPN : "");
     ))}
   </select>
 </div>
-    
- <div className="form-group">
-      <label>Kontak Vendor</label>
-      <input value={kontak} disabled />
-    </div>
+
+<div className="form-group">
+  <label>Vendor Tiang</label>
+  <select
+    value={vendorTiang}
+    onChange={e => setVendorTiang(e.target.value)}
+  >
+    <option value="">-- pilih vendor tiang --</option>
+    {vendors.map(v => (
+      <option key={v.NAMA_VENDOR} value={v.NAMA_VENDOR}>
+        {v.NAMA_VENDOR}
+      </option>
+    ))}
+  </select>
+</div>
+
     
           <div className="modal-actions">
             <button className="btn-ghost" onClick={onClose}>Batal</button>
@@ -125,6 +135,7 @@ setKontak(v ? v.NO_TLPN : "");
     </>
   );
 }
+
 
 
 
