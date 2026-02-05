@@ -115,12 +115,15 @@ if (
 ) return false;
 
     
-    // 📅 TANGGAL SURAT
-    if (activeFilter.date) {
-      const rowDate = normalizeDate(d.TANGGAL_SURAT);
-      const filterDate = activeFilter.date;
-      if (rowDate !== filterDate) return false;
-    }
+   // 📅 FILTER RANGE TANGGAL SURAT
+if (activeFilter.dateFrom || activeFilter.dateTo) {
+  const rowDate = normalizeDate(d.TANGGAL_SURAT);
+  if (!rowDate) return false;
+
+  if (activeFilter.dateFrom && rowDate < activeFilter.dateFrom) return false;
+  if (activeFilter.dateTo && rowDate > activeFilter.dateTo) return false;
+}
+
 
     return true;
   });
@@ -436,6 +439,7 @@ const jenisTransaksi = String(selectedRow?.JENIS_TRANSAKSI || "")
   );
   
 }
+
 
 
 
