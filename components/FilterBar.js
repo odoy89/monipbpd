@@ -8,7 +8,8 @@ export default function FilterBar({
   onSearch,
   onDownload
 }) {
-  const [date, setDate] = useState("");
+  const [dateFrom, setDateFrom] = useState("");
+const [dateTo, setDateTo] = useState("");
   const [ulp, setUlp] = useState("");
   const [status, setStatus] = useState("");
   const [jenisPelanggan, setJenisPelanggan] = useState("");
@@ -22,11 +23,12 @@ export default function FilterBar({
   useEffect(() => {
     const t = setTimeout(() => {
       onFilter({
-        date: date || "",
-        ulp: ulp || "",
-        progres: status || "",
-        jenisPelanggan: jenisPelanggan || "" 
-      });
+  dateFrom: dateFrom || "",
+  dateTo: dateTo || "",
+  ulp: ulp || "",
+  progres: status || "",
+  jenisPelanggan: jenisPelanggan || "" 
+});
     }, 400);
 
     return () => clearTimeout(t);
@@ -38,7 +40,8 @@ export default function FilterBar({
   }, [search]);
 
   function handleReset() {
-    setDate("");
+    setDateFrom("");
+setDateTo("");
     setUlp("");
     setStatus("");
     setJenisPelanggan("");
@@ -54,13 +57,22 @@ export default function FilterBar({
       {/* ===== FILTER ===== */}
       <div className="filter-grid">
         <div>
-          <label>Tanggal Surat</label>
-          <input
-            type="date"
-            value={date}
-            onChange={e => setDate(e.target.value)}
-          />
-        </div>
+  <label>Tanggal Surat</label>
+  <div style={{ display: "flex", gap: 6 }}>
+    <input
+      type="date"
+      value={dateFrom}
+      onChange={e => setDateFrom(e.target.value)}
+    />
+    <span style={{ alignSelf: "center" }}>s/d</span>
+    <input
+      type="date"
+      value={dateTo}
+      onChange={e => setDateTo(e.target.value)}
+    />
+  </div>
+</div>
+
 
         <div>
           <label>Unit / ULP</label>
@@ -130,5 +142,6 @@ export default function FilterBar({
  </div>
   );
 }
+
 
 
