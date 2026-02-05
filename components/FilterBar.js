@@ -21,18 +21,19 @@ const [dateTo, setDateTo] = useState("");
 
   /* ===== KIRIM FILTER KE DASHBOARD ===== */
   useEffect(() => {
-    const t = setTimeout(() => {
-      onFilter({
-  dateFrom: dateFrom || "",
-  dateTo: dateTo || "",
-  ulp: ulp || "",
-  progres: status || "",
-  jenisPelanggan: jenisPelanggan || "" 
-});
-    }, 400);
+  const t = setTimeout(() => {
+    onFilter({
+      dateFrom: dateFrom || "",
+      dateTo: dateTo || "",
+      ulp: ulp || "",
+      progres: status || "",
+      jenisPelanggan: jenisPelanggan || ""
+    });
+  }, 400);
 
-    return () => clearTimeout(t);
-  }, [date, ulp, status, jenisPelanggan, onFilter]);
+  return () => clearTimeout(t);
+}, [dateFrom, dateTo, ulp, status, jenisPelanggan, onFilter]);
+
 
   /* ===== SEARCH ===== */
   useEffect(() => {
@@ -142,6 +143,7 @@ setDateTo("");
  </div>
   );
 }
+
 
 
 
