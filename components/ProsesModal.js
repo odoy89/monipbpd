@@ -1,6 +1,15 @@
 import { useEffect, useState } from "react";
 
-const ULP_LIST = ["17100","17110","17120","17130","17131","17150","17180"];
+const ULP_LIST = [
+  "KARANG",
+  "NATAR",
+  "WAY HALIM",
+  "KALIANDA",
+  "SIDOMULYO",
+  "SUTAMI",
+  "TELUK BETUNG"
+];
+
 
 export default function ProsesModal({ open, data, onClose, onSuccess }) {
   if (!open || !data) return null;
@@ -347,3 +356,4 @@ useEffect(() => {
     </div>
   );
 }
+
